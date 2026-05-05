@@ -1,0 +1,700 @@
+OK
+/opt/scout-workshop
+/opt/scout-workshop/logs
+/opt/scout-workshop/scripts
+/opt/scout-workshop/skills
+/opt/scout-workshop/state
+/opt/scout-workshop/state/screenshots
+/opt/scout-workshop/vault
+/opt/scout-workshop/vault/production-sites
+/opt/scout-workshop/vault/references
+/opt/scout-workshop/vault/references/awwwards
+/opt/scout-workshop/vault/references/dribbble
+/opt/scout-workshop/vault/references/framer-showcase
+/opt/scout-workshop/vault/references/wordpress-showcase
+/opt/scout-workshop/vault/techniques
+/opt/scout-workshop/vault/templates
+/opt/scout-workshop/vault/templates/completed
+/opt/scout-workshop/vault/templates/in-progress
+/opt/scout-workshop/vault/wisdom
+=== Task 2: vault git init ===
+Tue May  5 07:14:31 UTC 2026
+Initialized empty Git repository in /opt/scout-workshop/vault/.git/
+[main (root-commit) 07c4f19] Day 1 bootstrap — vault foundation
+ 1 file changed, 29 insertions(+)
+ create mode 100644 README.md
+To github.com:Xander1993/scout-workshop-vault.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+=== Task 3: Python venv creation ===
+Tue May  5 07:14:38 UTC 2026
+The virtual environment was not created successfully because ensurepip is not
+available.  On Debian/Ubuntu systems, you need to install the python3-venv
+package using the following command.
+
+    apt install python3.12-venv
+
+You may need to use sudo with that command.  After installing the python3-venv
+package, recreate your virtual environment.
+
+Failing command: /opt/scout-workshop/venv/bin/python3
+
+venv created
+/bin/bash: line 13: /opt/scout-workshop/venv/bin/pip: No such file or directory
+pip upgraded
+=== Fix: install python3.12-venv ===
+Tue May  5 07:16:30 UTC 2026
+sudo: a terminal is required to read the password; either use the -S option to read from standard input or configure an askpass helper
+sudo: a password is required
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  python3-pip-whl python3-setuptools-whl
+The following NEW packages will be installed:
+  python3-pip-whl python3-setuptools-whl python3.12-venv
+0 upgraded, 3 newly installed, 0 to remove and 48 not upgraded.
+Need to get 2429 kB of archives.
+After this operation, 2777 kB of additional disk space will be used.
+Ign:1 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3-pip-whl all 24.0+dfsg-1ubuntu1.3
+Ign:2 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3-setuptools-whl all 68.1.2-2ubuntu1.2
+Ign:3 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3.12-venv amd64 3.12.3-1ubuntu0.13
+Get:1 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3-pip-whl all 24.0+dfsg-1ubuntu1.3 [1707 kB]
+Ign:2 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3-setuptools-whl all 68.1.2-2ubuntu1.2
+Ign:3 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3.12-venv amd64 3.12.3-1ubuntu0.13
+Get:2 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3-setuptools-whl all 68.1.2-2ubuntu1.2 [716 kB]
+Get:3 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3.12-venv amd64 3.12.3-1ubuntu0.13 [5672 B]
+debconf: unable to initialize frontend: Dialog
+debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (This frontend requires a controlling tty.)
+debconf: falling back to frontend: Teletype
+dpkg-preconfigure: unable to re-open stdin: 
+Fetched 2429 kB in 6min 9s (6588 B/s)
+Selecting previously unselected package python3-pip-whl.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 141258 files and directories currently installed.)
+Preparing to unpack .../python3-pip-whl_24.0+dfsg-1ubuntu1.3_all.deb ...
+Unpacking python3-pip-whl (24.0+dfsg-1ubuntu1.3) ...
+Selecting previously unselected package python3-setuptools-whl.
+Preparing to unpack .../python3-setuptools-whl_68.1.2-2ubuntu1.2_all.deb ...
+Unpacking python3-setuptools-whl (68.1.2-2ubuntu1.2) ...
+Selecting previously unselected package python3.12-venv.
+Preparing to unpack .../python3.12-venv_3.12.3-1ubuntu0.13_amd64.deb ...
+Unpacking python3.12-venv (3.12.3-1ubuntu0.13) ...
+Setting up python3-setuptools-whl (68.1.2-2ubuntu1.2) ...
+Setting up python3-pip-whl (24.0+dfsg-1ubuntu1.3) ...
+Setting up python3.12-venv (3.12.3-1ubuntu0.13) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (This frontend requires a controlling tty.)
+debconf: falling back to frontend: Teletype
+
+Restarting services...
+
+Service restarts being deferred:
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart docker.service
+ systemctl restart systemd-logind.service
+ systemctl restart unattended-upgrades.service
+
+No containers need to be restarted.
+
+User sessions running outdated binaries:
+ deployer @ user manager service: systemd[845], tmux: server[3159872]
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Pending kernel upgrade
+----------------------
+
+Newer kernel available
+
+The currently running kernel version is 6.8.0-107-generic which is not the 
+expected kernel version 6.8.0-111-generic.
+
+Restarting the system to load the new kernel will not be handled automatically, 
+so you should consider rebooting.
+
+=== Task 3: Python venv creation (retry) ===
+Tue May  5 07:27:49 UTC 2026
+venv created OK
+pip upgraded
+=== Task 3: pip install packages ===
+Tue May  5 07:27:58 UTC 2026
+Collecting qdrant-client
+  Downloading qdrant_client-1.17.1-py3-none-any.whl.metadata (11 kB)
+Collecting openai
+  Downloading openai-2.34.0-py3-none-any.whl.metadata (31 kB)
+Collecting requests
+  Using cached requests-2.33.1-py3-none-any.whl.metadata (4.8 kB)
+Collecting python-dotenv
+  Using cached python_dotenv-1.2.2-py3-none-any.whl.metadata (27 kB)
+Collecting pillow
+  Downloading pillow-12.2.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (8.8 kB)
+Collecting playwright
+  Downloading playwright-1.59.0-py3-none-manylinux1_x86_64.whl.metadata (3.5 kB)
+Collecting firecrawl-py
+  Downloading firecrawl_py-4.24.0-py3-none-any.whl.metadata (9.7 kB)
+Collecting python-telegram-bot
+  Using cached python_telegram_bot-22.7-py3-none-any.whl.metadata (17 kB)
+Collecting grpcio>=1.41.0 (from qdrant-client)
+  Downloading grpcio-1.80.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.8 kB)
+Collecting httpx>=0.20.0 (from httpx[http2]>=0.20.0->qdrant-client)
+  Using cached httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting numpy>=1.26 (from qdrant-client)
+  Using cached numpy-2.4.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Collecting portalocker<4.0,>=2.7.0 (from qdrant-client)
+  Downloading portalocker-3.2.0-py3-none-any.whl.metadata (8.7 kB)
+Collecting protobuf>=3.20.0 (from qdrant-client)
+  Downloading protobuf-7.34.1-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
+Collecting pydantic!=2.0.*,!=2.1.*,!=2.2.0,>=1.10.8 (from qdrant-client)
+  Downloading pydantic-2.13.3-py3-none-any.whl.metadata (108 kB)
+Collecting urllib3<3,>=1.26.14 (from qdrant-client)
+  Using cached urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+Collecting anyio<5,>=3.5.0 (from openai)
+  Using cached anyio-4.13.0-py3-none-any.whl.metadata (4.5 kB)
+Collecting distro<2,>=1.7.0 (from openai)
+  Using cached distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+Collecting jiter<1,>=0.10.0 (from openai)
+  Using cached jiter-0.14.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)
+Collecting sniffio (from openai)
+  Using cached sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting tqdm>4 (from openai)
+  Using cached tqdm-4.67.3-py3-none-any.whl.metadata (57 kB)
+Collecting typing-extensions<5,>=4.11 (from openai)
+  Using cached typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting idna>=2.8 (from anyio<5,>=3.5.0->openai)
+  Downloading idna-3.13-py3-none-any.whl.metadata (8.0 kB)
+Collecting certifi (from httpx>=0.20.0->httpx[http2]>=0.20.0->qdrant-client)
+  Downloading certifi-2026.4.22-py3-none-any.whl.metadata (2.5 kB)
+Collecting httpcore==1.* (from httpx>=0.20.0->httpx[http2]>=0.20.0->qdrant-client)
+  Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx>=0.20.0->httpx[http2]>=0.20.0->qdrant-client)
+  Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting annotated-types>=0.6.0 (from pydantic!=2.0.*,!=2.1.*,!=2.2.0,>=1.10.8->qdrant-client)
+  Using cached annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.46.3 (from pydantic!=2.0.*,!=2.1.*,!=2.2.0,>=1.10.8->qdrant-client)
+  Downloading pydantic_core-2.46.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+Collecting typing-inspection>=0.4.2 (from pydantic!=2.0.*,!=2.1.*,!=2.2.0,>=1.10.8->qdrant-client)
+  Using cached typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+Collecting charset_normalizer<4,>=2 (from requests)
+  Using cached charset_normalizer-3.4.7-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+Collecting pyee<14,>=13 (from playwright)
+  Downloading pyee-13.0.1-py3-none-any.whl.metadata (3.0 kB)
+Collecting greenlet<4.0.0,>=3.1.1 (from playwright)
+  Downloading greenlet-3.5.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.7 kB)
+Collecting websockets (from firecrawl-py)
+  Using cached websockets-16.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.8 kB)
+Collecting nest-asyncio (from firecrawl-py)
+  Using cached nest_asyncio-1.6.0-py3-none-any.whl.metadata (2.8 kB)
+Collecting aiohttp (from firecrawl-py)
+  Using cached aiohttp-3.13.5-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.1 kB)
+Collecting h2<5,>=3 (from httpx[http2]>=0.20.0->qdrant-client)
+  Using cached h2-4.3.0-py3-none-any.whl.metadata (5.1 kB)
+Collecting hyperframe<7,>=6.1 (from h2<5,>=3->httpx[http2]>=0.20.0->qdrant-client)
+  Using cached hyperframe-6.1.0-py3-none-any.whl.metadata (4.3 kB)
+Collecting hpack<5,>=4.1 (from h2<5,>=3->httpx[http2]>=0.20.0->qdrant-client)
+  Using cached hpack-4.1.0-py3-none-any.whl.metadata (4.6 kB)
+Collecting aiohappyeyeballs>=2.5.0 (from aiohttp->firecrawl-py)
+  Using cached aiohappyeyeballs-2.6.1-py3-none-any.whl.metadata (5.9 kB)
+Collecting aiosignal>=1.4.0 (from aiohttp->firecrawl-py)
+  Using cached aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+Collecting attrs>=17.3.0 (from aiohttp->firecrawl-py)
+  Using cached attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Collecting frozenlist>=1.1.1 (from aiohttp->firecrawl-py)
+  Using cached frozenlist-1.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+Collecting multidict<7.0,>=4.5 (from aiohttp->firecrawl-py)
+  Using cached multidict-6.7.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.3 kB)
+Collecting propcache>=0.2.0 (from aiohttp->firecrawl-py)
+  Using cached propcache-0.4.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (13 kB)
+Collecting yarl<2.0,>=1.17.0 (from aiohttp->firecrawl-py)
+  Using cached yarl-1.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (79 kB)
+Downloading qdrant_client-1.17.1-py3-none-any.whl (389 kB)
+Downloading portalocker-3.2.0-py3-none-any.whl (22 kB)
+Using cached urllib3-2.6.3-py3-none-any.whl (131 kB)
+Downloading openai-2.34.0-py3-none-any.whl (1.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 28.3 MB/s  0:00:00
+Using cached anyio-4.13.0-py3-none-any.whl (114 kB)
+Using cached distro-1.9.0-py3-none-any.whl (20 kB)
+Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
+Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
+Using cached jiter-0.14.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (353 kB)
+Downloading pydantic-2.13.3-py3-none-any.whl (471 kB)
+Downloading pydantic_core-2.46.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 38.3 MB/s  0:00:00
+Using cached typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Using cached requests-2.33.1-py3-none-any.whl (64 kB)
+Using cached charset_normalizer-3.4.7-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (216 kB)
+Downloading idna-3.13-py3-none-any.whl (68 kB)
+Using cached python_dotenv-1.2.2-py3-none-any.whl (22 kB)
+Downloading pillow-12.2.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 44.2 MB/s  0:00:00
+Downloading playwright-1.59.0-py3-none-manylinux1_x86_64.whl (47.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 47.2/47.2 MB 26.9 MB/s  0:00:01
+Downloading greenlet-3.5.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (611 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 611.4/611.4 kB 41.8 MB/s  0:00:00
+Downloading pyee-13.0.1-py3-none-any.whl (15 kB)
+Downloading firecrawl_py-4.24.0-py3-none-any.whl (225 kB)
+Using cached python_telegram_bot-22.7-py3-none-any.whl (745 kB)
+Using cached annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Downloading certifi-2026.4.22-py3-none-any.whl (135 kB)
+Downloading grpcio-1.80.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (6.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.8/6.8 MB 29.1 MB/s  0:00:00
+Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Using cached h2-4.3.0-py3-none-any.whl (61 kB)
+Using cached hpack-4.1.0-py3-none-any.whl (34 kB)
+Using cached hyperframe-6.1.0-py3-none-any.whl (13 kB)
+Using cached numpy-2.4.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.6 MB)
+Downloading protobuf-7.34.1-cp310-abi3-manylinux2014_x86_64.whl (324 kB)
+Using cached tqdm-4.67.3-py3-none-any.whl (78 kB)
+Using cached typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+Using cached aiohttp-3.13.5-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.8 MB)
+Using cached multidict-6.7.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (256 kB)
+Using cached yarl-1.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (100 kB)
+Using cached aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+Using cached aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+Using cached attrs-26.1.0-py3-none-any.whl (67 kB)
+Using cached frozenlist-1.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (242 kB)
+Using cached propcache-0.4.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (221 kB)
+Using cached nest_asyncio-1.6.0-py3-none-any.whl (5.2 kB)
+Using cached sniffio-1.3.1-py3-none-any.whl (10 kB)
+Using cached websockets-16.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (184 kB)
+Installing collected packages: websockets, urllib3, typing-extensions, tqdm, sniffio, python-dotenv, protobuf, propcache, portalocker, pillow, numpy, nest-asyncio, multidict, jiter, idna, hyperframe, hpack, h11, greenlet, frozenlist, distro, charset_normalizer, certifi, attrs, annotated-types, aiohappyeyeballs, yarl, typing-inspection, requests, pyee, pydantic-core, httpcore, h2, grpcio, anyio, aiosignal, pydantic, playwright, httpx, aiohttp, python-telegram-bot, openai, firecrawl-py, qdrant-client
+
+Successfully installed aiohappyeyeballs-2.6.1 aiohttp-3.13.5 aiosignal-1.4.0 annotated-types-0.7.0 anyio-4.13.0 attrs-26.1.0 certifi-2026.4.22 charset_normalizer-3.4.7 distro-1.9.0 firecrawl-py-4.24.0 frozenlist-1.8.0 greenlet-3.5.0 grpcio-1.80.0 h11-0.16.0 h2-4.3.0 hpack-4.1.0 httpcore-1.0.9 httpx-0.28.1 hyperframe-6.1.0 idna-3.13 jiter-0.14.0 multidict-6.7.1 nest-asyncio-1.6.0 numpy-2.4.4 openai-2.34.0 pillow-12.2.0 playwright-1.59.0 portalocker-3.2.0 propcache-0.4.1 protobuf-7.34.1 pydantic-2.13.3 pydantic-core-2.46.3 pyee-13.0.1 python-dotenv-1.2.2 python-telegram-bot-22.7 qdrant-client-1.17.1 requests-2.33.1 sniffio-1.3.1 tqdm-4.67.3 typing-extensions-4.15.0 typing-inspection-0.4.2 urllib3-2.6.3 websockets-16.0 yarl-1.23.0
+packages installed
+=== Task 3: playwright install chromium ===
+Tue May  5 07:28:23 UTC 2026
+playwright chromium installed
+=== Task 4: Fabric verify + symlink ===
+Tue May  5 07:28:40 UTC 2026
+/home/deployer/openclaw/vendor/fabric/bin/fabric
+1.4.434
+lrwxrwxrwx 1 deployer deployer 48 May  5 07:28 /opt/scout-workshop/venv/bin/fabric -> /home/deployer/openclaw/vendor/fabric/bin/fabric
+1.4.434
+=== Task 5: yt-dlp install ===
+Tue May  5 07:28:45 UTC 2026
+2026.03.17
+yt-dlp OK
+=== Task 6: DDEV install ===
+Tue May  5 07:31:23 UTC 2026
+ddev_linux-amd64.v1.25.2.tar.gz: OK
+[32mDownload verified. Ready to place ddev, ddev-hostname, and mkcert in your /usr/local/bin.[0m
+[33mRunning "sudo mv -f ddev ddev-hostname mkcert /usr/local/bin/" Please enter your password if prompted.[0m
+[33mRunning mkcert -install, which may request your sudo password.'.[0m
+Created a new local CA 💥
+The local CA is now installed in the system trust store! ⚡️
+
+[32mddev is now installed. Run "ddev" and "ddev --version" to verify your installation and see usage.[0m
+DDEV install done
+ddev version v1.25.2
+=== Task 7: Create Qdrant collection scout_workshop ===
+Tue May  5 07:31:49 UTC 2026
+created
+status=green, dim=1536, distance=Cosine
+indexed fields: ['techniques', 'reference_type', 'layout_pattern', 'typography_style', 'color_mood', 'vertical']
+=== Task 8: chmod + file inventory ===
+chmod +x verify_bootstrap.py OK
+
+--- Files written ---
+-rw-rw-r-- 1 deployer deployer 1.7K May  5 07:35 /opt/scout-workshop/.env.example
+-rw-rw-r-- 1 deployer deployer 1.3K May  5 07:35 /opt/scout-workshop/Makefile
+-rw-rw-r-- 1 deployer deployer 3.7K May  5 07:36 /opt/scout-workshop/README.md
+-rw-rw-r-- 1 deployer deployer  27K May  5 07:33 /opt/scout-workshop/scripts/scout_lib.py
+-rwxrwxr-x 1 deployer deployer 9.5K May  5 07:35 /opt/scout-workshop/scripts/verify_bootstrap.py
+
+--- make help smoke test ---
+make: Entering directory '/opt/scout-workshop'
+Scout-Workshop — make targets:
+
+  [36mhelp              [0m Show available targets
+  [36mverify            [0m Run all Day 1 verification checks (Qdrant, embedding, Telegram, Firecrawl, screenshot)
+  [36mscout-test        [0m Placeholder — Scout playbook lands Day 2
+  [36mworkshop-test     [0m Placeholder — Workshop playbook lands Day 3
+  [36mlogs              [0m Tail recent logs (last 100 lines per file)
+  [36mclean-state       [0m Clear state/ directory (screenshots + resumability cache)
+
+make: Leaving directory '/opt/scout-workshop'
+WARNING scout_workshop: Multimodal embedding failed (model=google/gemini-embedding-2-preview, image=/opt/scout-workshop/state/screenshots/test-embed.png, err=HTTPError: 400 Client Error: Bad Request for url: https://openrouter.ai/api/v1/embeddings); falling back to text-only embedding. Investigate OpenRouter payload shape — see TODO in scout_lib._embed_multimodal().
+# Day 1 Bootstrap Verification — FAILED
+
+- Started:  2026-05-05T07:38:04+00:00
+- Finished: 2026-05-05T07:38:06+00:00
+- VPS:      srv1420550
+- User:     deployer
+
+| # | Check | Result | Detail |
+|---|---|---|---|
+| 1 | Qdrant collection | ✓ PASS | dim=1536, distance=COSINE |
+| 2 | Embedding (text-only) | ✗ FAIL | ValueError: Embedding returned 3072 dims; expected 1536 from google/gemini-embedding-2-preview |
+| 3 | Embedding (multimodal text+image) | ✗ FAIL | ValueError: Embedding returned 3072 dims; expected 1536 from google/gemini-embedding-2-preview Traceback (most recent call last):   File "/opt/scout-workshop/scripts/scout_lib.py", line 262, in embed_with_mode     return _embed_multimodal(text, image_path, model, api_key), "multimodal"            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   File "/opt/scout-workshop/scripts/scout_lib.py", line 229, in _embed_multimodal     data = _retry(_call, context=f"embed (multimodal) model={model}")            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   File "/opt/scout-workshop/scripts/scout_lib.py", line 129, in _retry     return fn()            ^^^^   File "/opt/scout-workshop/scripts/scout_lib.py", line 226, in _call     r.raise_for_status()   File "/opt/scout-workshop/venv/lib/python3.12/site-packages/requests/models.py", line 1028, in raise_for_status     raise HTTPError(http_error_msg, response=self) requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://openrouter.ai/api/v1/embeddings  During handling of the above exception, another exception occurred:  Traceback (most recent call last):   File "/opt/scout-workshop/scripts/verify_bootstrap.py", line 107, in check_embedding_multimodal     vec, mode = sl.embed_with_mode("scout workshop foundation test", image_path=str(img))                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   File "/opt/scout-workshop/scripts/scout_lib.py", line 273, in embed_with_mode     return _embed_text(text, model, api_key), "multimodal-fallback"            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   File "/opt/scout-workshop/scripts/scout_lib.py", line 184, in _embed_text     return _extract_vec(data, model)            ^^^^^^^^^^^^^^^^^^^^^^^^^   File "/opt/scout-workshop/scripts/scout_lib.py", line 163, in _extract_vec     raise ValueError( ValueError: Embedding returned 3072 dims; expected 1536 from google/gemini-embedding-2-preview  |
+| 4 | Qdrant insert + retrieve + delete | ✗ FAIL | Skipped (no multimodal vector) |
+| 5 | Telegram send | ✓ PASS | Sent (visual confirmation required on phone) |
+| 6 | Firecrawl scrape (example.com) | ✗ FAIL | TargetClosedError: BrowserType.launch: Target page, context or browser has been closed Browser logs:  <launching> /home/deployer/.cache/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-linux64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-dSgZA4 --remote-debugging-pipe --no-startup-window <launched> pid=1922060 [pid=1922060][err] /home/deployer/.cache/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-linux64/chrome-headless-shell: error while loading shared libraries: libatk-1.0.so.0: cannot open shared object file: No such file or directory Call log:   - <launching> /home/deployer/.cache/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-linux64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-dSgZA4 --remote-debugging-pipe --no-startup-window   - <launched> pid=1922060   - [pid=1922060][err] /home/deployer/.cache/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-linux64/chrome-headless-shell: error while loading shared libraries: libatk-1.0.so.0: cannot open shared object file: No such file or directory   - [pid=1922060] <gracefully close start>   - [pid=1922060] <kill>   - [pid=1922060] <will force kill>   - [pid=1922060] exception while trying to kill process: Error: kill ESRCH   - [pid=1922060] <process did exit: exitCode=127, signal=null>   - [pid=1922060] starting temporary directories cleanup   - [pid=1922060] finished temporary directories cleanup   - [pid=1922060] <gracefully close end>  |
+| 7 | Playwright screenshot (example.com) | ✗ FAIL | TargetClosedError: BrowserType.launch: Target page, context or browser has been closed Browser logs:  <launching> /home/deployer/.cache/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-linux64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-n5E1mx --remote-debugging-pipe --no-startup-window <launched> pid=1922073 [pid=1922073][err] /home/deployer/.cache/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-linux64/chrome-headless-shell: error while loading shared libraries: libatk-1.0.so.0: cannot open shared object file: No such file or directory Call log:   - <launching> /home/deployer/.cache/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-linux64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-n5E1mx --remote-debugging-pipe --no-startup-window   - <launched> pid=1922073   - [pid=1922073][err] /home/deployer/.cache/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-linux64/chrome-headless-shell: error while loading shared libraries: libatk-1.0.so.0: cannot open shared object file: No such file or directory   - [pid=1922073] <gracefully close start>   - [pid=1922073] <kill>   - [pid=1922073] <will force kill>   - [pid=1922073] exception while trying to kill process: Error: kill ESRCH   - [pid=1922073] <process did exit: exitCode=127, signal=null>   - [pid=1922073] starting temporary directories cleanup   - [pid=1922073] finished temporary directories cleanup   - [pid=1922073] <gracefully close end>  |
+
+One or more checks failed. Investigate before proceeding to Day 2.
+
+=== Patch step 3: drop + recreate scout_workshop at 3072 dims ===
+Tue May  5 07:50:11 UTC 2026
+{"result":true,"status":"ok","time":0.019541193}
+created
+
+status=green
+dim=3072, distance=Cosine
+indexed fields (6): ['color_mood', 'layout_pattern', 'reference_type', 'techniques', 'typography_style', 'vertical']
+=== Patch step 4: playwright install-deps chromium ===
+Tue May  5 07:50:20 UTC 2026
+Installing dependencies...
+Hit:1 https://download.docker.com/linux/ubuntu noble InRelease
+Get:2 https://pkgs.tailscale.com/stable/ubuntu noble InRelease
+Get:3 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+Get:4 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1651 kB]
+Get:5 http://security.ubuntu.com/ubuntu noble-security/main Translation-en [261 kB]
+Get:6 http://security.ubuntu.com/ubuntu noble-security/main amd64 c-n-f Metadata [11.0 kB]
+Get:7 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1182 kB]
+Get:8 http://security.ubuntu.com/ubuntu noble-security/universe amd64 c-n-f Metadata [23.1 kB]
+Hit:9 http://archive.ubuntu.com/ubuntu noble InRelease
+Get:10 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Get:11 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+Get:12 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1959 kB]
+Get:13 http://archive.ubuntu.com/ubuntu noble-updates/main Translation-en [349 kB]
+Get:14 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 c-n-f Metadata [17.1 kB]
+Get:15 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1685 kB]
+Get:16 http://archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [325 kB]
+Get:17 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 c-n-f Metadata [34.5 kB]
+Get:18 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [3113 kB]
+Get:19 http://archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [718 kB]
+Get:20 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [40.6 kB]
+Get:21 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [30.6 kB]
+Fetched 11.8 MB in 57s (205 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+libdbus-1-3 set to manually installed.
+libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.1).
+libdrm2 set to manually installed.
+libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.1).
+libgbm1 set to manually installed.
+libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.8).
+libglib2.0-0t64 set to manually installed.
+libnspr4 is already the newest version (2:4.35-1.1build1).
+libnspr4 set to manually installed.
+libnss3 is already the newest version (2:3.98-1ubuntu0.1).
+libnss3 set to manually installed.
+libx11-6 is already the newest version (2:1.8.7-1build1).
+libx11-6 set to manually installed.
+libxcb1 is already the newest version (1.15-1ubuntu2).
+libxcb1 set to manually installed.
+libxcomposite1 is already the newest version (1:0.4.5-1build3).
+libxcomposite1 set to manually installed.
+libxext6 is already the newest version (2:1.3.4-1build2).
+libxext6 set to manually installed.
+libxfixes3 is already the newest version (1:6.0.0-2build1).
+libxfixes3 set to manually installed.
+libxkbcommon0 is already the newest version (1.6.0-1build1).
+libxkbcommon0 set to manually installed.
+libxrandr2 is already the newest version (2:1.5.2-2build1).
+libxrandr2 set to manually installed.
+libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+libfontconfig1 set to manually installed.
+libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.1).
+libfreetype6 set to manually installed.
+The following additional packages will be installed:
+  at-spi2-common fontconfig libasound2-data libavahi-client3
+  libavahi-common-data libavahi-common3 libdatrie1 libfontenc1 libgraphite2-3
+  libharfbuzz0b libpixman-1-0 libthai-data libthai0 libxcb-render0 libxfont2
+  x11-xkb-utils xfonts-encodings xfonts-utils xserver-common
+Suggested packages:
+  alsa-utils libasound2-plugins cups-common
+Recommended packages:
+  fonts-ipafont-mincho fonts-liberation-sans-narrow fonts-tlwg-loma
+  alsa-ucm-conf alsa-topology-conf at-spi2-core xfonts-base
+The following NEW packages will be installed:
+  at-spi2-common fontconfig fonts-freefont-ttf fonts-ipafont-gothic
+  fonts-liberation fonts-noto-color-emoji fonts-tlwg-loma-otf fonts-unifont
+  fonts-wqy-zenhei libasound2-data libasound2t64 libatk-bridge2.0-0t64
+  libatk1.0-0t64 libatspi2.0-0t64 libavahi-client3 libavahi-common-data
+  libavahi-common3 libcairo2 libcups2t64 libdatrie1 libfontenc1 libgraphite2-3
+  libharfbuzz0b libpango-1.0-0 libpixman-1-0 libthai-data libthai0
+  libxcb-render0 libxdamage1 libxfont2 x11-xkb-utils xfonts-cyrillic
+  xfonts-encodings xfonts-scalable xfonts-utils xserver-common xvfb
+0 upgraded, 37 newly installed, 0 to remove and 49 not upgraded.
+Need to get 36.6 MB of archives.
+After this operation, 106 MB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+Get:2 http://archive.ubuntu.com/ubuntu noble/main amd64 at-spi2-common all 2.52.0-1build1 [8674 B]
+Get:3 http://archive.ubuntu.com/ubuntu noble/main amd64 fontconfig amd64 2.15.0-1.1ubuntu2 [180 kB]
+Get:4 http://archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+Get:5 http://archive.ubuntu.com/ubuntu noble/main amd64 fonts-liberation all 1:2.1.5-3 [1603 kB]
+Get:6 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 fonts-noto-color-emoji all 2.047-0ubuntu0.24.04.1 [9764 kB]
+Get:7 http://archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+Get:8 http://archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+Get:9 http://archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+Get:10 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libasound2-data all 1.2.11-1ubuntu0.2 [21.3 kB]
+Get:11 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libasound2t64 amd64 1.2.11-1ubuntu0.2 [398 kB]
+Get:12 http://archive.ubuntu.com/ubuntu noble/main amd64 libatk1.0-0t64 amd64 2.52.0-1build1 [55.3 kB]
+Get:13 http://archive.ubuntu.com/ubuntu noble/main amd64 libatspi2.0-0t64 amd64 2.52.0-1build1 [80.5 kB]
+Get:14 http://archive.ubuntu.com/ubuntu noble/main amd64 libatk-bridge2.0-0t64 amd64 2.52.0-1build1 [66.0 kB]
+Get:15 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libavahi-common-data amd64 0.8-13ubuntu6.1 [29.9 kB]
+Get:16 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libavahi-common3 amd64 0.8-13ubuntu6.1 [23.4 kB]
+Get:17 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libavahi-client3 amd64 0.8-13ubuntu6.1 [26.8 kB]
+Get:18 http://archive.ubuntu.com/ubuntu noble/main amd64 libpixman-1-0 amd64 0.42.2-1build1 [279 kB]
+Get:19 http://archive.ubuntu.com/ubuntu noble/main amd64 libxcb-render0 amd64 1.15-1ubuntu2 [16.2 kB]
+Get:20 http://archive.ubuntu.com/ubuntu noble/main amd64 libcairo2 amd64 1.18.0-3build1 [566 kB]
+Get:21 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libcups2t64 amd64 2.4.7-1.2ubuntu7.9 [273 kB]
+Get:22 http://archive.ubuntu.com/ubuntu noble/main amd64 libdatrie1 amd64 0.2.13-3build1 [19.0 kB]
+Get:23 http://archive.ubuntu.com/ubuntu noble/main amd64 libfontenc1 amd64 1:1.1.8-1build1 [14.0 kB]
+Get:24 http://archive.ubuntu.com/ubuntu noble/main amd64 libgraphite2-3 amd64 1.3.14-2build1 [73.0 kB]
+Get:25 http://archive.ubuntu.com/ubuntu noble/main amd64 libharfbuzz0b amd64 8.3.0-2build2 [469 kB]
+Get:26 http://archive.ubuntu.com/ubuntu noble/main amd64 libthai-data all 0.1.29-2build1 [158 kB]
+Get:27 http://archive.ubuntu.com/ubuntu noble/main amd64 libthai0 amd64 0.1.29-2build1 [18.9 kB]
+Get:28 http://archive.ubuntu.com/ubuntu noble/main amd64 libpango-1.0-0 amd64 1.52.1+ds-1build1 [231 kB]
+Get:29 http://archive.ubuntu.com/ubuntu noble/main amd64 libxdamage1 amd64 1:1.1.6-1build1 [6150 B]
+Get:30 http://archive.ubuntu.com/ubuntu noble/main amd64 libxfont2 amd64 1:2.0.6-1build1 [93.0 kB]
+Get:31 http://archive.ubuntu.com/ubuntu noble/main amd64 x11-xkb-utils amd64 7.7+8build2 [170 kB]
+Get:32 http://archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+Get:33 http://archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+Get:34 http://archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+Get:35 http://archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+Get:36 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 xserver-common all 2:21.1.12-1ubuntu1.5 [34.6 kB]
+Get:37 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 xvfb amd64 2:21.1.12-1ubuntu1.5 [877 kB]
+debconf: unable to initialize frontend: Dialog
+debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (This frontend requires a controlling tty.)
+debconf: falling back to frontend: Teletype
+dpkg-preconfigure: unable to re-open stdin: 
+Fetched 36.6 MB in 49s (754 kB/s)
+Selecting previously unselected package fonts-ipafont-gothic.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 141274 files and directories currently installed.)
+Preparing to unpack .../00-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+Selecting previously unselected package at-spi2-common.
+Preparing to unpack .../01-at-spi2-common_2.52.0-1build1_all.deb ...
+Unpacking at-spi2-common (2.52.0-1build1) ...
+Selecting previously unselected package fontconfig.
+Preparing to unpack .../02-fontconfig_2.15.0-1.1ubuntu2_amd64.deb ...
+Unpacking fontconfig (2.15.0-1.1ubuntu2) ...
+Selecting previously unselected package fonts-freefont-ttf.
+Preparing to unpack .../03-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+Selecting previously unselected package fonts-liberation.
+Preparing to unpack .../04-fonts-liberation_1%3a2.1.5-3_all.deb ...
+Unpacking fonts-liberation (1:2.1.5-3) ...
+Selecting previously unselected package fonts-noto-color-emoji.
+Preparing to unpack .../05-fonts-noto-color-emoji_2.047-0ubuntu0.24.04.1_all.deb ...
+Unpacking fonts-noto-color-emoji (2.047-0ubuntu0.24.04.1) ...
+Selecting previously unselected package fonts-tlwg-loma-otf.
+Preparing to unpack .../06-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+Selecting previously unselected package fonts-unifont.
+Preparing to unpack .../07-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+Unpacking fonts-unifont (1:15.1.01-1build1) ...
+Selecting previously unselected package fonts-wqy-zenhei.
+Preparing to unpack .../08-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+Selecting previously unselected package libasound2-data.
+Preparing to unpack .../09-libasound2-data_1.2.11-1ubuntu0.2_all.deb ...
+Unpacking libasound2-data (1.2.11-1ubuntu0.2) ...
+Selecting previously unselected package libasound2t64:amd64.
+Preparing to unpack .../10-libasound2t64_1.2.11-1ubuntu0.2_amd64.deb ...
+Unpacking libasound2t64:amd64 (1.2.11-1ubuntu0.2) ...
+Selecting previously unselected package libatk1.0-0t64:amd64.
+Preparing to unpack .../11-libatk1.0-0t64_2.52.0-1build1_amd64.deb ...
+Unpacking libatk1.0-0t64:amd64 (2.52.0-1build1) ...
+Selecting previously unselected package libatspi2.0-0t64:amd64.
+Preparing to unpack .../12-libatspi2.0-0t64_2.52.0-1build1_amd64.deb ...
+Unpacking libatspi2.0-0t64:amd64 (2.52.0-1build1) ...
+Selecting previously unselected package libatk-bridge2.0-0t64:amd64.
+Preparing to unpack .../13-libatk-bridge2.0-0t64_2.52.0-1build1_amd64.deb ...
+Unpacking libatk-bridge2.0-0t64:amd64 (2.52.0-1build1) ...
+Selecting previously unselected package libavahi-common-data:amd64.
+Preparing to unpack .../14-libavahi-common-data_0.8-13ubuntu6.1_amd64.deb ...
+Unpacking libavahi-common-data:amd64 (0.8-13ubuntu6.1) ...
+Selecting previously unselected package libavahi-common3:amd64.
+Preparing to unpack .../15-libavahi-common3_0.8-13ubuntu6.1_amd64.deb ...
+Unpacking libavahi-common3:amd64 (0.8-13ubuntu6.1) ...
+Selecting previously unselected package libavahi-client3:amd64.
+Preparing to unpack .../16-libavahi-client3_0.8-13ubuntu6.1_amd64.deb ...
+Unpacking libavahi-client3:amd64 (0.8-13ubuntu6.1) ...
+Selecting previously unselected package libpixman-1-0:amd64.
+Preparing to unpack .../17-libpixman-1-0_0.42.2-1build1_amd64.deb ...
+Unpacking libpixman-1-0:amd64 (0.42.2-1build1) ...
+Selecting previously unselected package libxcb-render0:amd64.
+Preparing to unpack .../18-libxcb-render0_1.15-1ubuntu2_amd64.deb ...
+Unpacking libxcb-render0:amd64 (1.15-1ubuntu2) ...
+Selecting previously unselected package libcairo2:amd64.
+Preparing to unpack .../19-libcairo2_1.18.0-3build1_amd64.deb ...
+Unpacking libcairo2:amd64 (1.18.0-3build1) ...
+Selecting previously unselected package libcups2t64:amd64.
+Preparing to unpack .../20-libcups2t64_2.4.7-1.2ubuntu7.9_amd64.deb ...
+Unpacking libcups2t64:amd64 (2.4.7-1.2ubuntu7.9) ...
+Selecting previously unselected package libdatrie1:amd64.
+Preparing to unpack .../21-libdatrie1_0.2.13-3build1_amd64.deb ...
+Unpacking libdatrie1:amd64 (0.2.13-3build1) ...
+Selecting previously unselected package libfontenc1:amd64.
+Preparing to unpack .../22-libfontenc1_1%3a1.1.8-1build1_amd64.deb ...
+Unpacking libfontenc1:amd64 (1:1.1.8-1build1) ...
+Selecting previously unselected package libgraphite2-3:amd64.
+Preparing to unpack .../23-libgraphite2-3_1.3.14-2build1_amd64.deb ...
+Unpacking libgraphite2-3:amd64 (1.3.14-2build1) ...
+Selecting previously unselected package libharfbuzz0b:amd64.
+Preparing to unpack .../24-libharfbuzz0b_8.3.0-2build2_amd64.deb ...
+Unpacking libharfbuzz0b:amd64 (8.3.0-2build2) ...
+Selecting previously unselected package libthai-data.
+Preparing to unpack .../25-libthai-data_0.1.29-2build1_all.deb ...
+Unpacking libthai-data (0.1.29-2build1) ...
+Selecting previously unselected package libthai0:amd64.
+Preparing to unpack .../26-libthai0_0.1.29-2build1_amd64.deb ...
+Unpacking libthai0:amd64 (0.1.29-2build1) ...
+Selecting previously unselected package libpango-1.0-0:amd64.
+Preparing to unpack .../27-libpango-1.0-0_1.52.1+ds-1build1_amd64.deb ...
+Unpacking libpango-1.0-0:amd64 (1.52.1+ds-1build1) ...
+Selecting previously unselected package libxdamage1:amd64.
+Preparing to unpack .../28-libxdamage1_1%3a1.1.6-1build1_amd64.deb ...
+Unpacking libxdamage1:amd64 (1:1.1.6-1build1) ...
+Selecting previously unselected package libxfont2:amd64.
+Preparing to unpack .../29-libxfont2_1%3a2.0.6-1build1_amd64.deb ...
+Unpacking libxfont2:amd64 (1:2.0.6-1build1) ...
+Selecting previously unselected package x11-xkb-utils.
+Preparing to unpack .../30-x11-xkb-utils_7.7+8build2_amd64.deb ...
+Unpacking x11-xkb-utils (7.7+8build2) ...
+Selecting previously unselected package xfonts-encodings.
+Preparing to unpack .../31-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+Selecting previously unselected package xfonts-utils.
+Preparing to unpack .../32-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+Unpacking xfonts-utils (1:7.7+6build3) ...
+Selecting previously unselected package xfonts-cyrillic.
+Preparing to unpack .../33-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+Selecting previously unselected package xfonts-scalable.
+Preparing to unpack .../34-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+Selecting previously unselected package xserver-common.
+Preparing to unpack .../35-xserver-common_2%3a21.1.12-1ubuntu1.5_all.deb ...
+Unpacking xserver-common (2:21.1.12-1ubuntu1.5) ...
+Selecting previously unselected package xvfb.
+Preparing to unpack .../36-xvfb_2%3a21.1.12-1ubuntu1.5_amd64.deb ...
+Unpacking xvfb (2:21.1.12-1ubuntu1.5) ...
+Setting up libgraphite2-3:amd64 (1.3.14-2build1) ...
+Setting up libpixman-1-0:amd64 (0.42.2-1build1) ...
+Setting up fontconfig (2.15.0-1.1ubuntu2) ...
+Regenerating fonts cache... done.
+Setting up libxdamage1:amd64 (1:1.1.6-1build1) ...
+Setting up libdatrie1:amd64 (0.2.13-3build1) ...
+Setting up fonts-noto-color-emoji (2.047-0ubuntu0.24.04.1) ...
+Setting up libxcb-render0:amd64 (1.15-1ubuntu2) ...
+Setting up x11-xkb-utils (7.7+8build2) ...
+Setting up fonts-wqy-zenhei (0.9.45-8) ...
+Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+Setting up libcairo2:amd64 (1.18.0-3build1) ...
+Setting up libasound2-data (1.2.11-1ubuntu0.2) ...
+Setting up libfontenc1:amd64 (1:1.1.8-1build1) ...
+Setting up libasound2t64:amd64 (1.2.11-1ubuntu0.2) ...
+Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+Setting up libavahi-common-data:amd64 (0.8-13ubuntu6.1) ...
+Setting up libatspi2.0-0t64:amd64 (2.52.0-1build1) ...
+Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+Setting up at-spi2-common (2.52.0-1build1) ...
+Setting up fonts-liberation (1:2.1.5-3) ...
+Setting up libharfbuzz0b:amd64 (8.3.0-2build2) ...
+Setting up libthai-data (0.1.29-2build1) ...
+Setting up xserver-common (2:21.1.12-1ubuntu1.5) ...
+Setting up libxfont2:amd64 (1:2.0.6-1build1) ...
+Setting up fonts-unifont (1:15.1.01-1build1) ...
+Setting up libatk1.0-0t64:amd64 (2.52.0-1build1) ...
+Setting up xvfb (2:21.1.12-1ubuntu1.5) ...
+Setting up libavahi-common3:amd64 (0.8-13ubuntu6.1) ...
+Setting up xfonts-utils (1:7.7+6build3) ...
+Setting up libthai0:amd64 (0.1.29-2build1) ...
+Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+Setting up libavahi-client3:amd64 (0.8-13ubuntu6.1) ...
+Setting up xfonts-scalable (1:1.0.3-1.3) ...
+Setting up libatk-bridge2.0-0t64:amd64 (2.52.0-1build1) ...
+Setting up libpango-1.0-0:amd64 (1.52.1+ds-1build1) ...
+Setting up libcups2t64:amd64 (2.4.7-1.2ubuntu7.9) ...
+Processing triggers for man-db (2.12.0-4build2) ...
+Processing triggers for libc-bin (2.39-0ubuntu8.7) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (This frontend requires a controlling tty.)
+debconf: falling back to frontend: Teletype
+
+Restarting services...
+
+Service restarts being deferred:
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart docker.service
+ systemctl restart systemd-logind.service
+ systemctl restart unattended-upgrades.service
+
+No containers need to be restarted.
+
+User sessions running outdated binaries:
+ deployer @ user manager service: systemd[845], tmux: server[3159872]
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Pending kernel upgrade
+----------------------
+
+Newer kernel available
+
+The currently running kernel version is 6.8.0-107-generic which is not the 
+expected kernel version 6.8.0-111-generic.
+
+Restarting the system to load the new kernel will not be handled automatically, 
+so you should consider rebooting.
+
+playwright deps install done
+# Day 1 Bootstrap Verification — FAILED
+
+- Started:  2026-05-05T07:52:30+00:00
+- Finished: 2026-05-05T07:52:35+00:00
+- VPS:      srv1420550
+- User:     deployer
+
+| # | Check | Result | Detail |
+|---|---|---|---|
+| 1 | Qdrant collection | ✓ PASS | dim=3072, distance=COSINE |
+| 2 | Embedding (text-only) | ✓ PASS | len=3072, sample[:3]=[0.030069752, 0.020946825, 0.019902777] |
+| 3 | Embedding (multimodal text+image) | ✓ PASS | len=3072, mode=multimodal, image=test-embed.png, sample[:3]=[0.018143661, 0.009024512, 0.011030431] |
+| 4 | Qdrant insert + retrieve + delete | ✗ FAIL | AttributeError: 'QdrantClient' object has no attribute 'search' |
+| 5 | Telegram send | ✓ PASS | Sent (visual confirmation required on phone) |
+| 6 | Firecrawl scrape (example.com) | ✓ PASS | markdown_len=129, title='Example Domain' |
+| 7 | Playwright screenshot (example.com) | ✓ PASS | path=/opt/scout-workshop/state/screenshots/test.png, size=19571 |
+
+One or more checks failed. Investigate before proceeding to Day 2.
+
+# Day 1 Bootstrap Verification — PASSED
+
+- Started:  2026-05-05T07:53:32+00:00
+- Finished: 2026-05-05T07:53:36+00:00
+- VPS:      srv1420550
+- User:     deployer
+
+| # | Check | Result | Detail |
+|---|---|---|---|
+| 1 | Qdrant collection | ✓ PASS | dim=3072, distance=COSINE |
+| 2 | Embedding (text-only) | ✓ PASS | len=3072, sample[:3]=[0.030069752, 0.020946825, 0.019902777] |
+| 3 | Embedding (multimodal text+image) | ✓ PASS | len=3072, mode=multimodal, image=test-embed.png, sample[:3]=[0.018143661, 0.009024512, 0.011030431] |
+| 4 | Qdrant insert + retrieve + delete | ✓ PASS | point_id=add2ce26-4c84-5fd6-98f6-236c065d13bb, score=1.0000 |
+| 5 | Telegram send | ✓ PASS | Sent (visual confirmation required on phone) |
+| 6 | Firecrawl scrape (example.com) | ✓ PASS | markdown_len=129, title='Example Domain' |
+| 7 | Playwright screenshot (example.com) | ✓ PASS | path=/opt/scout-workshop/state/screenshots/test.png, size=19571 |
+
+All checks passed. Foundation is ready for Day 2 (Scout) and Day 3 (Workshop).
+
