@@ -27,12 +27,19 @@ from __future__ import annotations
 import base64
 import functools
 import hashlib
+import json
 import logging
+import os
+import re
+import subprocess
 import time
+import uuid
+from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import requests
+import yaml
 from dotenv import dotenv_values
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
@@ -271,14 +278,14 @@ def embed_with_mode(text: str, image_path: str | None = None) -> tuple[list[floa
 
 
 def embed(text: str, image_path: str | None = None) -> list[float]:
-    """Generate a 1536-dim embedding via OpenRouter Gemini Embedding 2 Preview.
+    """Generate a 3072-dim embedding via OpenRouter Gemini Embedding 2 Preview.
 
     Args:
         text: Anchor text. Required.
         image_path: Optional local PNG/JPEG/WebP path for multimodal embedding.
 
     Returns:
-        1536-element list of floats. If multimodal is requested but fails, this
+        3072-element list of floats. If multimodal is requested but fails, this
         function silently falls back to text-only embedding of `text` (a WARNING
         is logged via the `scout_workshop` logger). Callers that need to detect
         fallback should use embed_with_mode() instead.
@@ -293,49 +300,9 @@ def embed(text: str, image_path: str | None = None) -> list[float]:
 
 
 # ────────────────────────────────────────────────────────────────────────
-# Reranking
+# Reranking — Day 1's stub was untested and returned tuples; replaced by
+# the Day 2 §4 version below (returns list[dict] including document text).
 # ────────────────────────────────────────────────────────────────────────
-
-
-def rerank(query: str, documents: list[str], top_k: int = 10) -> list[tuple[int, float]]:
-    """Rerank documents against a query via OpenRouter Cohere Rerank 4 Pro.
-
-    Args:
-        query: The search query.
-        documents: Candidate documents (treated as plain strings).
-        top_k: Number of top results to return.
-
-    Returns:
-        List of (original_index, relevance_score) tuples sorted by score
-        descending. Indices reference the position in `documents`.
-
-    Raises:
-        RuntimeError on API failure after retries.
-    """
-    env = load_env()
-    api_key = env["OPENROUTER_API_KEY"]
-    model = env.get("RERANK_MODEL", "cohere/rerank-4-pro")
-
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-        **_OPENROUTER_HEADERS_EXTRA,
-    }
-    payload = {
-        "model": model,
-        "query": query,
-        "documents": documents,
-        "top_n": min(top_k, len(documents)),
-    }
-
-    def _call():
-        r = requests.post(OPENROUTER_RERANK_URL, headers=headers, json=payload, timeout=60)
-        r.raise_for_status()
-        return r.json()
-
-    data = _retry(_call, context=f"rerank model={model}")
-    results = data.get("results", [])
-    return [(item["index"], item["relevance_score"]) for item in results]
 
 
 # ────────────────────────────────────────────────────────────────────────
@@ -669,3 +636,258 @@ def telegram_send(message: str, chat_ids: list[str] | None = None) -> None:
                 return r.json()
 
             _retry(_call, context=f"telegram chat={chat_id}")
+
+
+# =============================================================================
+# Day 2 additions — vault-bus model, daemon helpers, source utilities.
+# =============================================================================
+
+# Aliases for Day 1 symbols — avoid rewriting Day 1 in case anything else
+# (Workshop on Day 3, hermes touch points, etc.) imports the original names.
+qdrant_client = qdrant_client_init   # Day 1 named the constructor qdrant_client_init
+COLLECTION_NAME = COLLECTION         # Day 1 named the constant COLLECTION
+
+VAULT_DIR = Path(os.environ.get("VAULT_DIR", "/opt/scout-workshop/vault"))
+STATE_DIR = Path(os.environ.get("STATE_DIR", "/opt/scout-workshop/state"))
+LOG_DIR = Path(os.environ.get("LOG_DIR", "/opt/scout-workshop/logs"))
+
+
+# ----- ID & dedup --------------------------------------------------------
+
+def stable_url_hash(url: str, length: int = 16) -> str:
+    """Short hex hash of a URL — used for filesystem slugs and seen-urls dedup index.
+
+    NOT used as a Qdrant point ID. Qdrant only accepts unsigned ints or UUIDs;
+    hex strings get rejected at upsert. Use `stable_point_id()` for that.
+    """
+    return hashlib.sha256(url.strip().encode("utf-8")).hexdigest()[:length]
+
+
+def stable_point_id(url: str) -> str:
+    """Deterministic UUID v5 derived from URL. THIS is the Qdrant point ID.
+
+    Same URL → same UUID, on any machine, across replays. This guarantees
+    that re-ingesting the same reference is idempotent — Qdrant.upsert with
+    the same point_id overwrites cleanly, no duplicates.
+    """
+    return str(uuid.uuid5(uuid.NAMESPACE_URL, url.strip()))
+
+
+def slugify(text: str, max_len: int = 40) -> str:
+    text = text.lower().strip()
+    text = re.sub(r"[^\w\s-]", "", text)
+    text = re.sub(r"[\s_-]+", "-", text)
+    return text[:max_len].rstrip("-")
+
+
+def reference_slug(url: str, title: str) -> str:
+    """Filesystem-friendly slug for vault/references/<source>/<slug>/. Not a point ID."""
+    return f"{stable_url_hash(url, 8)}-{slugify(title)}"
+
+
+# ----- State files -------------------------------------------------------
+
+def load_state(name: str) -> dict:
+    path = STATE_DIR / name
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def save_state(name: str, data: dict) -> None:
+    path = STATE_DIR / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
+    tmp.replace(path)  # atomic on same fs
+
+
+def is_seen(url: str, seen_index: dict) -> bool:
+    h = stable_url_hash(url)
+    for entry in seen_index.get("urls", []):
+        if entry.get("hash") == h:
+            return True
+    return False
+
+
+def mark_seen(url: str, outcome: str, seen_index: dict) -> dict:
+    h = stable_url_hash(url)
+    seen_index.setdefault("urls", []).append({
+        "url": url,
+        "hash": h,
+        "first_seen": iso_now(),
+        "outcome": outcome,
+    })
+    return seen_index
+
+
+# ----- Time --------------------------------------------------------------
+
+def iso_now() -> str:
+    return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+# ----- Vault note I/O ----------------------------------------------------
+
+def parse_note(path: Path) -> tuple[dict, str]:
+    """Parse a markdown note with YAML frontmatter. Returns (frontmatter, body)."""
+    text = path.read_text(encoding="utf-8")
+    if not text.startswith("---\n"):
+        raise ValueError(f"No frontmatter in {path}")
+    _, fm, body = text.split("---\n", 2)
+    return yaml.safe_load(fm), body.lstrip("\n")
+
+
+def write_note(path: Path, frontmatter: dict, body: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fm_yaml = yaml.safe_dump(frontmatter, sort_keys=False, allow_unicode=True).strip()
+    path.write_text(f"---\n{fm_yaml}\n---\n\n{body.strip()}\n", encoding="utf-8")
+
+
+def find_unembedded_notes(vault_root: Path = VAULT_DIR) -> list[Path]:
+    """Walk vault/references/ and return notes whose qdrant_point_id is null/missing."""
+    refs_root = vault_root / "references"
+    if not refs_root.exists():
+        return []
+    pending = []
+    for note_path in refs_root.rglob("note.md"):
+        try:
+            fm, _ = parse_note(note_path)
+        except Exception:
+            continue
+        if not fm.get("qdrant_point_id"):
+            pending.append(note_path)
+    return pending
+
+
+# ----- Qdrant payload mapping --------------------------------------------
+
+PAYLOAD_FIELDS = (
+    "id source source_url scraped_at title vertical reference_type "
+    "techniques color_mood typography_style layout_pattern palette_hex"
+).split()
+
+
+def frontmatter_to_payload(fm: dict) -> dict:
+    return {k: fm.get(k) for k in PAYLOAD_FIELDS if k in fm}
+
+
+def upsert_reference(point_id: str, vector: list[float], payload: dict) -> None:
+    """Upsert a single reference into the scout_workshop collection.
+
+    Uses the modern qdrant-client API (>=1.7) which is what we standardized on Day 1.
+    """
+    qdrant_client().upsert(
+        collection_name=COLLECTION_NAME,
+        points=[PointStruct(id=point_id, vector=vector, payload=payload)],
+    )
+
+
+def reference_already_indexed(point_id: str) -> bool:
+    res = qdrant_client().retrieve(
+        collection_name=COLLECTION_NAME,
+        ids=[point_id],
+        with_payload=False,
+        with_vectors=False,
+    )
+    return len(res) > 0
+
+
+# ----- Git operations ----------------------------------------------------
+
+def git(*args: str, cwd: Path = VAULT_DIR, check: bool = True) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        ["git", *args], cwd=cwd, check=check, capture_output=True, text=True,
+    )
+
+
+def vault_pull() -> bool:
+    """Pull vault. Returns True if there were new commits, False otherwise."""
+    before = git("rev-parse", "HEAD").stdout.strip()
+    git("pull", "--rebase", "--autostash")
+    after = git("rev-parse", "HEAD").stdout.strip()
+    return before != after
+
+
+def vault_commit(message: str, paths: list[Path]) -> Optional[str]:
+    """Stage paths, commit, return commit sha or None if nothing to commit."""
+    rel = [str(p.relative_to(VAULT_DIR)) for p in paths]
+    git("add", *rel)
+    status = git("status", "--porcelain").stdout.strip()
+    if not status:
+        return None
+    git("commit", "-m", message)
+    return git("rev-parse", "HEAD").stdout.strip()
+
+
+def vault_push(max_attempts: int = 3) -> None:
+    """Push vault to origin/main with rebase-on-conflict retry.
+
+    Conflicts can happen when the Routine commits at 06:00 UTC while the
+    daemon's 06:00 timer tick is mid-flight, or when you push from your
+    laptop in parallel. Handle by pulling-rebasing-and-retrying up to
+    max_attempts times. Don't auto-resolve merge conflicts — those raise
+    the underlying CalledProcessError to caller.
+    """
+    last_err: Optional[Exception] = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            git("push", "origin", "main")
+            return
+        except subprocess.CalledProcessError as e:
+            last_err = e
+            if attempt == max_attempts:
+                break
+            git("pull", "--rebase", "--autostash", "origin", "main")
+            time.sleep(attempt * 5)
+    if last_err is not None:
+        raise last_err
+
+
+# ----- Telegram ----------------------------------------------------------
+
+def send_telegram(text: str, chat_id: Optional[str] = None) -> dict:
+    chat_id = chat_id or os.environ["TELEGRAM_CHAT_IDS"].split(",")[0].strip()
+    token = os.environ["TELEGRAM_BOT_TOKEN"]
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    r = requests.post(
+        url,
+        json={
+            "chat_id": chat_id,
+            "text": text,
+            "disable_web_page_preview": True,
+        },
+        timeout=15,
+    )
+    r.raise_for_status()
+    return r.json()
+
+
+# ----- Cohere reranking (smoke + Workshop later) -------------------------
+#
+# Replaces Day 1's stub `rerank(query, documents, top_k)` (returned
+# list[tuple[int, float]] without the document text). The Day 2 version
+# returns dicts including the document text, which Workshop (Day 3) will need.
+
+def rerank(query: str, candidates: list[str], top_n: int = 5) -> list[dict]:
+    """Cohere Rerank 4 Pro via OpenRouter.
+
+    Returns a list of {index, relevance_score, document} dicts, sorted desc.
+    """
+    payload = {
+        "model": "cohere/rerank-4-pro",
+        "query": query,
+        "documents": candidates,
+        "top_n": min(top_n, len(candidates)),
+    }
+    r = requests.post(
+        "https://openrouter.ai/api/v1/rerank",
+        headers={
+            "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+            "Content-Type": "application/json",
+        },
+        json=payload,
+        timeout=30,
+    )
+    r.raise_for_status()
+    return r.json().get("results", [])

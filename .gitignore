@@ -5,3 +5,5 @@ venv/
 __pycache__/
 *.pyc
 vault/
+day-2-bootstrap.md
+logs/ingest-daemon.log
