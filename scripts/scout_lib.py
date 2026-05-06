@@ -847,8 +847,15 @@ def vault_push(max_attempts: int = 3) -> None:
 # ----- Telegram ----------------------------------------------------------
 
 def send_telegram(text: str, chat_id: Optional[str] = None) -> dict:
-    chat_id = chat_id or os.environ["TELEGRAM_CHAT_IDS"].split(",")[0].strip()
-    token = os.environ["TELEGRAM_BOT_TOKEN"]
+    # Convention (matches Day 1's _embed_text/_embed_multimodal): every lib
+    # function that needs secrets calls load_env() and reads from its result.
+    # This makes the function work from any caller — systemd (EnvironmentFile=
+    # populates os.environ), interactive shell (load_env reads .env from disk),
+    # cron, or pytest. Don't read os.environ[KEY] directly — that raises
+    # KeyError when the caller didn't source .env.
+    env = load_env()
+    chat_id = chat_id or env["TELEGRAM_CHAT_IDS"].split(",")[0].strip()
+    token = env["TELEGRAM_BOT_TOKEN"]
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     r = requests.post(
         url,
@@ -874,6 +881,8 @@ def rerank(query: str, candidates: list[str], top_n: int = 5) -> list[dict]:
 
     Returns a list of {index, relevance_score, document} dicts, sorted desc.
     """
+    # See send_telegram() above for the rationale on load_env() over os.environ.
+    env = load_env()
     payload = {
         "model": "cohere/rerank-4-pro",
         "query": query,
@@ -883,7 +892,7 @@ def rerank(query: str, candidates: list[str], top_n: int = 5) -> list[dict]:
     r = requests.post(
         "https://openrouter.ai/api/v1/rerank",
         headers={
-            "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+            "Authorization": f"Bearer {env['OPENROUTER_API_KEY']}",
             "Content-Type": "application/json",
         },
         json=payload,
