@@ -39,54 +39,66 @@ Three sources for v1. Pull a small page from each, extract candidate URLs, build
 
 **Critical: all discovery and processing fetches MUST go through Firecrawl with `proxy: "stealth"`.** Direct Web Fetch on these source URLs returns 403 from Anthropic egress IPs (Awwwards, Dribbble, WP.org showcase all block cloud-egress IPs). Do NOT fall back to Web Fetch or WebSearch when Firecrawl fails — that silently degrades data quality (WebSearch returns search-ranked results instead of the curated Honorable Mentions listing). If Firecrawl itself fails on a URL, treat it as a transient error per §6 and retry. After 3 retries with backoff, log to `state.errors`, mark the URL outcome `errored`, and continue to the next candidate. Never substitute the mechanism.
 
+**Mechanism: bash + curl.** The Routine environment has only `Bash`, `Read`, `Write`, `Edit`, `Glob`, `Grep` tools available — no `WebFetch`, no MCP servers. Use shell heredoc + `curl` for all Firecrawl POSTs as shown below. Do NOT search for an MCP server (none configured). Do NOT attempt `WebFetch` (not in `allowed_tools` — the call will fail). The shell `curl` invocation is the only sanctioned mechanism for talking to `api.firecrawl.dev`.
+
 ### 2a. Awwwards Honorable Mentions
 - Source URL: `https://www.awwwards.com/websites/?award=honorable_mentions&sort=date_desc`
-- Strategy: Firecrawl scrape (NOT direct Web Fetch — Awwwards blocks cloud egress IPs):
+- Strategy: Firecrawl scrape via bash + curl (NOT direct Web Fetch — Awwwards blocks cloud egress IPs; `WebFetch` is not in `allowed_tools` for this Routine):
+
+```bash
+response=$(curl -sS --max-time 60 -X POST "https://api.firecrawl.dev/v1/scrape" \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://www.awwwards.com/websites/?award=honorable_mentions&sort=date_desc",
+    "formats": ["markdown", "links"],
+    "onlyMainContent": false,
+    "proxy": "stealth"
+  }')
 ```
-POST https://api.firecrawl.dev/v1/scrape
-Authorization: Bearer $FIRECRAWL_API_KEY
-{
-  "url": "https://www.awwwards.com/websites/?award=honorable_mentions&sort=date_desc",
-  "formats": ["markdown", "links"],
-  "onlyMainContent": false,
-  "proxy": "stealth"
-}
-```
-  Extract site URLs from `data.links` — pattern is anchor tags pointing to `/sites/<slug>` on awwwards.com. Each of those resolves to a page where the **target site URL** is the actual reference (Awwwards is itself a directory, not the reference).
+
+  Parse `response` JSON for `data.links` — pattern is anchor tags pointing to `/sites/<slug>` on awwwards.com. Each of those resolves to a page where the **target site URL** is the actual reference (Awwwards is itself a directory, not the reference).
 - Take up to 6 candidates from this run's listing.
 - Vertical inference: heuristic from page copy / category tags. Default `general`.
 
 ### 2b. Dribbble — beauty/wellness/spa
 - Source URLs: `https://dribbble.com/tags/beauty-salon` (primary) and `https://dribbble.com/tags/spa` (fallback)
-- Strategy: Firecrawl scrape with stealth proxy:
+- Strategy: Firecrawl scrape with stealth proxy via bash + curl. Substitute `<source URL above>` with each Dribbble tag URL in turn:
+
+```bash
+DRIBBBLE_URL="https://dribbble.com/tags/beauty-salon"   # or .../tags/spa for fallback pass
+response=$(curl -sS --max-time 60 -X POST "https://api.firecrawl.dev/v1/scrape" \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"url\": \"$DRIBBBLE_URL\",
+    \"formats\": [\"markdown\", \"links\"],
+    \"onlyMainContent\": false,
+    \"proxy\": \"stealth\"
+  }")
 ```
-POST https://api.firecrawl.dev/v1/scrape
-Authorization: Bearer $FIRECRAWL_API_KEY
-{
-  "url": "<source URL above>",
-  "formats": ["markdown", "links"],
-  "onlyMainContent": false,
-  "proxy": "stealth"
-}
-```
-  Extract shot URLs (`/shots/<id>-<slug>`). Each shot's page is the reference.
+
+  Parse `response` JSON for `data.links` and extract shot URLs (`/shots/<id>-<slug>`). Each shot's page is the reference.
 - Take up to 4 candidates total across the two tag pages.
 - Vertical: `beauty`.
 
 ### 2c. Made-with-WordPress showcase
 - Source URL: `https://wordpress.org/showcase/` (filter to recent additions)
-- Strategy: Firecrawl scrape with stealth proxy:
+- Strategy: Firecrawl scrape with stealth proxy via bash + curl:
+
+```bash
+response=$(curl -sS --max-time 60 -X POST "https://api.firecrawl.dev/v1/scrape" \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://wordpress.org/showcase/",
+    "formats": ["markdown", "links"],
+    "onlyMainContent": false,
+    "proxy": "stealth"
+  }')
 ```
-POST https://api.firecrawl.dev/v1/scrape
-Authorization: Bearer $FIRECRAWL_API_KEY
-{
-  "url": "https://wordpress.org/showcase/",
-  "formats": ["markdown", "links"],
-  "onlyMainContent": false,
-  "proxy": "stealth"
-}
-```
-  Extract showcase entry URLs.
+
+  Parse `response` JSON for `data.links` and extract showcase entry URLs.
 - Take up to 4 candidates.
 - Vertical: heuristic, default `general`.
 
@@ -122,20 +134,24 @@ The hard cap is non-negotiable. If you find yourself reasoning "well, this 6th c
 For each of the (≤5) candidates, in series, with 30s cooldown between Firecrawl calls:
 
 ### 3a. Firecrawl scrape
+
+```bash
+CANDIDATE_URL="<candidate>"
+response=$(curl -sS --max-time 90 -X POST "https://api.firecrawl.dev/v1/scrape" \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"url\": \"$CANDIDATE_URL\",
+    \"formats\": [\"markdown\", \"screenshot\"],
+    \"onlyMainContent\": true,
+    \"screenshot\": { \"fullPage\": false },
+    \"proxy\": \"stealth\"
+  }")
 ```
-POST https://api.firecrawl.dev/v1/scrape
-Authorization: Bearer $FIRECRAWL_API_KEY
-{
-  "url": "<candidate>",
-  "formats": ["markdown", "screenshot"],
-  "onlyMainContent": true,
-  "screenshot": { "fullPage": false },
-  "proxy": "stealth"
-}
-```
+
 The `proxy: "stealth"` parameter routes through Firecrawl's residential IP pool, which has substantially higher success rate against anti-bot systems than the default `auto` mode.
 
-Returns `data.markdown` (the content) and `data.screenshot`. **The screenshot field's format varies by Firecrawl plan and version** — handle both shapes defensively:
+Parse the `response` JSON to extract `data.markdown` (the content) and `data.screenshot`. **The screenshot field's format varies by Firecrawl plan and version** — handle both shapes defensively (the snippet below is illustrative pseudocode; in this Routine environment `web_fetch` is unavailable, so signed-URL retrieval must also use `curl -sS -o screenshot.png "$signed_url"`):
 
 ```
 screenshot = data["screenshot"]
@@ -324,7 +340,7 @@ If the daemon's Telegram delivery fails for any reason, the digest file remains 
 
 ## 6. Error handling
 
-- **Firecrawl 5xx / timeout**: exponential backoff (5s, 15s, 45s), max 3 attempts with `proxy: "stealth"`. If all fail, log to `state.errors`, mark URL outcome `errored`, continue with next candidate. **Do NOT fall back to Web Fetch or WebSearch** — those tools cannot reach Awwwards/Dribbble/WP.org from Anthropic egress IPs (403 blocked) and substituting the mechanism corrupts the data quality contract. Firecrawl with stealth proxy is the only sanctioned discovery path.
+- **Firecrawl 5xx / timeout**: bash retry with exponential backoff (5s, 15s, 45s) using `for attempt in 1 2 3; do ...; sleep ...; done` pattern. Max 3 attempts, each via `curl` with `proxy: "stealth"`. If all 3 fail: log to `state.errors`, mark URL outcome `errored`, continue with next candidate. Do NOT fall back to `WebFetch` (not in `allowed_tools` — the call will fail), do NOT search for an MCP server (none configured for this Routine), do NOT use `WebSearch` (forbidden by playbook intent and not in `allowed_tools`). Firecrawl-via-`curl` with stealth proxy is the only sanctioned discovery path.
 - **Firecrawl rate limit (429)**: wait `Retry-After` seconds (default 60), then continue. If hit twice in a run, abort the discover/process loop and close out cleanly with `last_run_status: partial`.
 - **GitHub commit conflict**: pull, rebase, retry. Max 3 attempts.
 - **Token budget within 5K of cap**: stop processing new candidates, close out, mark `last_run_status: budget_exhausted`.
