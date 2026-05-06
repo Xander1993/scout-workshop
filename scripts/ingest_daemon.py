@@ -209,33 +209,31 @@ def run_once(dry_run: bool = False) -> dict:
             except Exception:
                 log.exception("telegram send failed")
 
-    if not pending:
-        return summary
-
-    for path in pending:
-        try:
-            ok, pid, mode = process_one(path, dry_run=dry_run)
-            if ok:
-                summary["succeeded"] += 1
-                if pid:
-                    summary["ids"].append(pid)
-                if mode in ("multimodal", "multimodal-fallback", "text"):
-                    summary["modes"][mode] += 1
-            else:
+    if pending:
+        for path in pending:
+            try:
+                ok, pid, mode = process_one(path, dry_run=dry_run)
+                if ok:
+                    summary["succeeded"] += 1
+                    if pid:
+                        summary["ids"].append(pid)
+                    if mode in ("multimodal", "multimodal-fallback", "text"):
+                        summary["modes"][mode] += 1
+                else:
+                    summary["failed"] += 1
+            except Exception:
+                log.exception("failed to ingest %s", path)
                 summary["failed"] += 1
-        except Exception:
-            log.exception("failed to ingest %s", path)
-            summary["failed"] += 1
 
-    if not dry_run and summary["succeeded"] > 0:
-        # commit all the frontmatter updates in one shot
-        sha = vault_commit(
-            f"ingest: embed {summary['succeeded']} reference(s)",
-            list(VAULT_DIR.rglob("note.md")),
-        )
-        if sha:
-            vault_push()
-            log.info("vault commit pushed: %s", sha)
+        if not dry_run and summary["succeeded"] > 0:
+            # commit all the frontmatter updates in one shot
+            sha = vault_commit(
+                f"ingest: embed {summary['succeeded']} reference(s)",
+                list(VAULT_DIR.rglob("note.md")),
+            )
+            if sha:
+                vault_push()
+                log.info("vault commit pushed: %s", sha)
 
     if not dry_run:
         try:
