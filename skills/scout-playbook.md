@@ -191,6 +191,8 @@ vertical: <vertical>, reference_type: <reference_type>
 ```
 Commit `note.md` and `screenshot.png` together.
 
+**Critical: target branch is `main`, not a feature branch.** Before the first commit of any run, ensure you are on main: `git checkout main && git pull origin main`. The Routine has been granted "unrestricted git push" permission specifically to enable direct-to-main commits. **Do NOT create a feature branch (`claude/<random>-<id>` or otherwise). Do NOT open a pull request.** The VPS daemon polls `origin/main` for new commits — anything pushed to a feature branch is invisible to the ingestion pipeline and stays unembedded forever. After all per-reference commits are made and the close-out commit (§4) is made, push directly: `git push origin main`. If the push fails due to remote drift, pull-rebase per the protocol below and retry — do not switch to a feature branch as a fallback.
+
 ## 4. Close out
 
 After processing the batch (or hitting an error), update state files. There are now **three** state files in play, with distinct roles — don't conflate them:
@@ -245,7 +247,17 @@ Single commit covering all three files:
 scout: state update <date> — <N> refs, <M> errors, <K> overflow
 ```
 
-Push vault.
+**Push vault to main with retry-on-conflict protocol:**
+```bash
+for attempt in 1 2 3; do
+  git pull --rebase --autostash origin main && \
+  git push origin main && \
+  break
+  echo "push attempt $attempt failed, retrying in $((attempt * 5))s..."
+  sleep $((attempt * 5))
+done
+```
+If all 3 attempts fail (real merge conflict, not transient), abort the run with `last_run_status: error` and write the failed state to `state/scout-last-run.json` with diagnostic. Do NOT switch to a feature branch as a workaround. The next run's Bootstrap will retry from the queue.
 
 ## 5. Telegram digest
 

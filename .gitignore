@@ -7,3 +7,6 @@ __pycache__/
 vault/
 day-2-bootstrap.md
 logs/ingest-daemon.log
+logs/*-act.log
+day-2-v1-1-patches.md
+state/*-failures.json
