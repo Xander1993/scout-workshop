@@ -19,7 +19,6 @@ import argparse
 import hashlib
 import json
 import logging
-import os
 import sys
 import time
 from pathlib import Path
@@ -261,8 +260,6 @@ def deliver_pending_digest(summary: dict) -> None:
     next tick may resend. Window is sub-second; not addressing in v1.1.
     """
     digest_path = VAULT_DIR / "state" / "scout-digest-latest.md"
-    log.info("deliver_pending_digest entry: digest_path=%s exists=%s cwd=%s VAULT_DIR=%s",
-             digest_path, digest_path.exists(), os.getcwd(), VAULT_DIR)
     if not digest_path.exists():
         return
 
