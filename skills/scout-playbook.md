@@ -4,7 +4,7 @@ version: 1.0.0
 phase: day-2-v1
 last_updated: 2026-05-05
 operator: alex-buzi
-budget_tokens_per_run: 50000
+budget_tokens_per_run: 100000
 max_references_per_run: 5
 firecrawl_cooldown_seconds: 30
 ---
@@ -27,7 +27,7 @@ Fetch from the vault repo:
 - `state/seen-urls.json`
 - `state/scout-overflow.txt` (may not exist on first run — that's fine, treat absence as empty)
 
-If `tokens_used_today` in `scout-last-run.json` ≥ `50000`, **exit immediately** with a Telegram message:
+If `tokens_used_today` in `scout-last-run.json` ≥ `100000`, **exit immediately** with a Telegram message:
 > 🚫 Scout: budget exhausted for today. Resuming tomorrow.
 
 If `last_run_status == "error"` and `last_run_iso` is within the last 24h, do a single retry attempt of the failed batch (URLs in `state.queue`) before discovering new ones.
@@ -219,7 +219,7 @@ Overwrite:
   "last_run_iso": "<ISO 8601 UTC>",
   "last_run_status": "success" | "partial" | "error" | "budget_exhausted",
   "tokens_used_today": <int>,
-  "tokens_budget": 50000,
+  "tokens_budget": 100000,
   "references_added_this_run": <int>,
   "references_added_today": <int>,
   "references_total": <int>,
@@ -264,7 +264,7 @@ Format (markdown_v2 NOT enabled — use plain text + emoji to keep it simple):
 ⏭  Skipped: <M> (already seen)
 ⚠  Errors: <K>
 
-Tokens today: <used>/50000
+Tokens today: <used>/100000
 Vault: https://github.com/Xander1993/scout-workshop-vault/commits/main
 ```
 
