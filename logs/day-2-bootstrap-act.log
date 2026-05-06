@@ -48,3 +48,35 @@ Wed 2026-05-06 06:30:00 UTC  16h -                                 - scout-budge
 active
 active
 === Parent repo commit ===
+M  .gitignore
+M  Makefile
+A  logs/day-2-bootstrap-act.log
+A  scripts/ingest_daemon.py
+A  scripts/reset_daily_budget.py
+M  scripts/scout_lib.py
+A  scripts/scout_smoketest.py
+A  skills/extract_design_wisdom.md
+A  skills/scout-playbook.md
+
+[main 00193ae] day-2: Scout playbook + ingest daemon + lib extensions
+ 9 files changed, 1244 insertions(+), 46 deletions(-)
+ create mode 100644 logs/day-2-bootstrap-act.log
+ create mode 100644 scripts/ingest_daemon.py
+ create mode 100644 scripts/reset_daily_budget.py
+ create mode 100644 scripts/scout_smoketest.py
+ create mode 100644 skills/extract_design_wisdom.md
+ create mode 100644 skills/scout-playbook.md
+
+--- Push with retry protocol ---
+From github.com:Xander1993/scout-workshop
+ * branch            main       -> FETCH_HEAD
+=== Commit + push the env-load fix ===
+ M logs/day-2-bootstrap-act.log
+M  scripts/scout_lib.py
+?? logs/day-2-bootstrap-report.md
+[main 8d1ac9d] fix: rerank() and send_telegram() now load .env from disk for shell-invoked callers
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+--- Push with retry protocol ---
+From github.com:Xander1993/scout-workshop
+ * branch            main       -> FETCH_HEAD
