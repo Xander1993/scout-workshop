@@ -27,8 +27,7 @@ Fetch from the vault repo:
 - `state/seen-urls.json`
 - `state/scout-overflow.txt` (may not exist on first run — that's fine, treat absence as empty)
 
-If `tokens_used_today` in `scout-last-run.json` ≥ `100000`, **exit immediately** with a Telegram message:
-> 🚫 Scout: budget exhausted for today. Resuming tomorrow.
+If `tokens_used_today` in `scout-last-run.json` ≥ `100000`, **exit immediately**. Write status text to `vault/state/scout-digest-latest.md`: '🚫 Scout: budget exhausted for today. Resuming tomorrow.' Commit + push. Exit cleanly. The VPS daemon will deliver to Telegram on its next 10-minute tick.
 
 If `last_run_status == "error"` and `last_run_iso` is within the last 24h, do a single retry attempt of the failed batch (URLs in `state.queue`) before discovering new ones.
 
@@ -38,28 +37,62 @@ Carry over any URLs from `scout-overflow.txt` — they jump the queue ahead of n
 
 Three sources for v1. Pull a small page from each, extract candidate URLs, build a candidate list. Cooldown 30s between Firecrawl calls.
 
+**Critical: all discovery and processing fetches MUST go through Firecrawl with `proxy: "stealth"`.** Direct Web Fetch on these source URLs returns 403 from Anthropic egress IPs (Awwwards, Dribbble, WP.org showcase all block cloud-egress IPs). Do NOT fall back to Web Fetch or WebSearch when Firecrawl fails — that silently degrades data quality (WebSearch returns search-ranked results instead of the curated Honorable Mentions listing). If Firecrawl itself fails on a URL, treat it as a transient error per §6 and retry. After 3 retries with backoff, log to `state.errors`, mark the URL outcome `errored`, and continue to the next candidate. Never substitute the mechanism.
+
 ### 2a. Awwwards Honorable Mentions
 - Source URL: `https://www.awwwards.com/websites/?award=honorable_mentions&sort=date_desc`
-- Strategy: Firecrawl scrape with `formats: ["markdown", "links"]`. Extract site URLs from the listing — pattern is anchor tags pointing to `/sites/<slug>` on awwwards.com. Each of those resolves to a page where the **target site URL** is the actual reference (Awwwards is itself a directory, not the reference).
+- Strategy: Firecrawl scrape (NOT direct Web Fetch — Awwwards blocks cloud egress IPs):
+```
+POST https://api.firecrawl.dev/v1/scrape
+Authorization: Bearer $FIRECRAWL_API_KEY
+{
+  "url": "https://www.awwwards.com/websites/?award=honorable_mentions&sort=date_desc",
+  "formats": ["markdown", "links"],
+  "onlyMainContent": false,
+  "proxy": "stealth"
+}
+```
+  Extract site URLs from `data.links` — pattern is anchor tags pointing to `/sites/<slug>` on awwwards.com. Each of those resolves to a page where the **target site URL** is the actual reference (Awwwards is itself a directory, not the reference).
 - Take up to 6 candidates from this run's listing.
 - Vertical inference: heuristic from page copy / category tags. Default `general`.
 
 ### 2b. Dribbble — beauty/wellness/spa
-- Source URL: `https://dribbble.com/tags/beauty-salon` and as fallback `https://dribbble.com/tags/spa`
-- Strategy: Firecrawl scrape with `formats: ["markdown", "links"]`. Extract shot URLs (`/shots/<id>-<slug>`). Each shot's page is the reference (we want shot screenshots, not external sites).
+- Source URLs: `https://dribbble.com/tags/beauty-salon` (primary) and `https://dribbble.com/tags/spa` (fallback)
+- Strategy: Firecrawl scrape with stealth proxy:
+```
+POST https://api.firecrawl.dev/v1/scrape
+Authorization: Bearer $FIRECRAWL_API_KEY
+{
+  "url": "<source URL above>",
+  "formats": ["markdown", "links"],
+  "onlyMainContent": false,
+  "proxy": "stealth"
+}
+```
+  Extract shot URLs (`/shots/<id>-<slug>`). Each shot's page is the reference.
 - Take up to 4 candidates total across the two tag pages.
 - Vertical: `beauty`.
 
 ### 2c. Made-with-WordPress showcase
 - Source URL: `https://wordpress.org/showcase/` (filter to recent additions)
-- Strategy: Firecrawl scrape with `formats: ["markdown", "links"]`. Extract showcase entry URLs.
+- Strategy: Firecrawl scrape with stealth proxy:
+```
+POST https://api.firecrawl.dev/v1/scrape
+Authorization: Bearer $FIRECRAWL_API_KEY
+{
+  "url": "https://wordpress.org/showcase/",
+  "formats": ["markdown", "links"],
+  "onlyMainContent": false,
+  "proxy": "stealth"
+}
+```
+  Extract showcase entry URLs.
 - Take up to 4 candidates.
 - Vertical: heuristic, default `general`.
 
 ### Dedup
 
-Combine all candidates, drop any URL whose stable hash (`sha256(url)[:16]`) is already in `seen-urls.json`. If after dedup you have fewer than 1 candidate, send a Telegram message and exit cleanly:
-> ℹ️ Scout: no new candidates this run. Source feeds returned all-known URLs.
+Combine all candidates, drop any URL whose stable hash (`sha256(url)[:16]`) is already in `seen-urls.json`. If after dedup you have fewer than 1 candidate, write status to `vault/state/scout-digest-latest.md`: 'ℹ️ Scout: no new candidates this run. Source feeds returned all-known URLs.' Commit + push. Exit cleanly.
 
 ### Hard cap — exactly 5 per run, no exceptions
 
@@ -96,9 +129,12 @@ Authorization: Bearer $FIRECRAWL_API_KEY
   "url": "<candidate>",
   "formats": ["markdown", "screenshot"],
   "onlyMainContent": true,
-  "screenshot": { "fullPage": false }
+  "screenshot": { "fullPage": false },
+  "proxy": "stealth"
 }
 ```
+The `proxy: "stealth"` parameter routes through Firecrawl's residential IP pool, which has substantially higher success rate against anti-bot systems than the default `auto` mode.
+
 Returns `data.markdown` (the content) and `data.screenshot`. **The screenshot field's format varies by Firecrawl plan and version** — handle both shapes defensively:
 
 ```
@@ -259,11 +295,11 @@ done
 ```
 If all 3 attempts fail (real merge conflict, not transient), abort the run with `last_run_status: error` and write the failed state to `state/scout-last-run.json` with diagnostic. Do NOT switch to a feature branch as a workaround. The next run's Bootstrap will retry from the queue.
 
-## 5. Telegram digest
+## 5. Digest hand-off
 
-Bot: existing. Endpoint: `https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage`. Chat: `969126485`.
+The Routine cannot deliver Telegram digests directly — `api.telegram.org` is not on Anthropic's network allowlist for Routine environments. Instead, write the digest content to a vault file and let the VPS daemon deliver it.
 
-Format (markdown_v2 NOT enabled — use plain text + emoji to keep it simple):
+Format the digest as plain text (markdown_v2 NOT enabled) and write to `vault/state/scout-digest-latest.md`:
 
 ```
 🛰  Scout — <date> <time UTC>
@@ -282,13 +318,17 @@ Vault: https://github.com/Xander1993/scout-workshop-vault/commits/main
 
 If `K > 0`, list the errors below the digest, one per line, truncated to 200 chars each.
 
+Commit this file as part of the close-out commit (§4). The VPS daemon's `scout-ingest.timer` will pick it up on its next polling tick (within 10 minutes), augment with ingestion stats (point IDs successfully embedded, mode distribution, vault total count), POST to Telegram chat 969126485, and delete the file. The user receives a digest that includes both Scout's discovery work AND the daemon's ingestion outcome — strictly more information than Scout alone could provide.
+
+If the daemon's Telegram delivery fails for any reason, the digest file remains in vault for inspection. The next daemon tick will retry. After 3 consecutive failures, daemon logs the error and stops retrying that particular digest (to avoid Telegram spam during outages).
+
 ## 6. Error handling
 
-- **Firecrawl 5xx / timeout**: exponential backoff (5s, 15s, 45s), max 3 attempts. If all fail, log to `state.errors`, mark URL outcome `errored`, continue with next candidate.
+- **Firecrawl 5xx / timeout**: exponential backoff (5s, 15s, 45s), max 3 attempts with `proxy: "stealth"`. If all fail, log to `state.errors`, mark URL outcome `errored`, continue with next candidate. **Do NOT fall back to Web Fetch or WebSearch** — those tools cannot reach Awwwards/Dribbble/WP.org from Anthropic egress IPs (403 blocked) and substituting the mechanism corrupts the data quality contract. Firecrawl with stealth proxy is the only sanctioned discovery path.
 - **Firecrawl rate limit (429)**: wait `Retry-After` seconds (default 60), then continue. If hit twice in a run, abort the discover/process loop and close out cleanly with `last_run_status: partial`.
 - **GitHub commit conflict**: pull, rebase, retry. Max 3 attempts.
 - **Token budget within 5K of cap**: stop processing new candidates, close out, mark `last_run_status: budget_exhausted`.
-- **Any unhandled exception**: catch at top level, log to `state.errors`, send Telegram with the traceback (truncated 1500 chars), exit non-zero.
+- **Any unhandled exception**: catch at top level, log to `state.errors`, write traceback (truncated 1500 chars) to `vault/state/scout-digest-latest.md` with prefix `❌ Scout: unhandled exception\n\n<traceback>`. Best-effort commit + push (if commit/push fails inside exception handler, log to stderr, exit non-zero anyway).
 
 ## 7. What this playbook does NOT do (intentionally)
 

@@ -16,6 +16,8 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import logging
 import sys
 import time
@@ -76,7 +78,7 @@ def resolve_screenshot_path(note_path: Path, fm: dict) -> Path | None:
     return img_path if img_path.exists() else None
 
 
-def process_one(note_path: Path, dry_run: bool) -> tuple[bool, str | None]:
+def process_one(note_path: Path, dry_run: bool) -> tuple[bool, str | None, str | None]:
     """Returns (success, point_id).
 
     Idempotency contract: this function NEVER re-embeds an existing point.
@@ -95,7 +97,7 @@ def process_one(note_path: Path, dry_run: bool) -> tuple[bool, str | None]:
     point_id = fm.get("id")
     if not point_id:
         log.error("note %s missing id in frontmatter", note_path)
-        return False, None
+        return False, None, None
 
     # Qdrant is the source of truth on existence. Cheap call (~10ms localhost).
     existing = qdrant_client().retrieve(
@@ -127,7 +129,7 @@ def process_one(note_path: Path, dry_run: bool) -> tuple[bool, str | None]:
             fm["qdrant_point_id"] = point_id
             fm["embedded_at"] = fm.get("embedded_at") or iso_now()
             write_note(note_path, fm, body)
-        return True, point_id
+        return True, point_id, "skipped-already-indexed"
 
     # Branch C: new point. Full embed + upsert path.
     text = build_embedding_text(fm, body)
@@ -135,7 +137,7 @@ def process_one(note_path: Path, dry_run: bool) -> tuple[bool, str | None]:
 
     if dry_run:
         log.info("DRY: would embed %s (multimodal=%s)", point_id, img_path is not None)
-        return True, point_id
+        return True, point_id, None
 
     # embed_with_mode() returns (vector, mode) — mode is "text",
     # "multimodal", or "multimodal-fallback" (the last meaning we asked for
@@ -159,12 +161,16 @@ def process_one(note_path: Path, dry_run: bool) -> tuple[bool, str | None]:
     fm["embedded_at"] = iso_now()
     write_note(note_path, fm, body)
 
-    log.info("embedded %s · %s", point_id, fm.get("title", ""))
-    return True, point_id
+    log.info("embedded %s · %s (mode=%s)", point_id, fm.get("title", ""), mode)
+    return True, point_id, mode
 
 
 def run_once(dry_run: bool = False) -> dict:
-    summary = {"pulled": False, "found": 0, "succeeded": 0, "failed": 0, "ids": [], "refused": False}
+    summary = {
+        "pulled": False, "found": 0, "succeeded": 0, "failed": 0,
+        "ids": [], "refused": False,
+        "modes": {"multimodal": 0, "multimodal-fallback": 0, "text": 0},
+    }
 
     if not dry_run:
         summary["pulled"] = vault_pull()
@@ -207,11 +213,13 @@ def run_once(dry_run: bool = False) -> dict:
 
     for path in pending:
         try:
-            ok, pid = process_one(path, dry_run=dry_run)
+            ok, pid, mode = process_one(path, dry_run=dry_run)
             if ok:
                 summary["succeeded"] += 1
                 if pid:
                     summary["ids"].append(pid)
+                if mode in ("multimodal", "multimodal-fallback", "text"):
+                    summary["modes"][mode] += 1
             else:
                 summary["failed"] += 1
         except Exception:
@@ -228,7 +236,123 @@ def run_once(dry_run: bool = False) -> dict:
             vault_push()
             log.info("vault commit pushed: %s", sha)
 
+    if not dry_run:
+        try:
+            deliver_pending_digest(summary)
+        except Exception:
+            log.exception("deliver_pending_digest failed")
+
     return summary
+
+
+def deliver_pending_digest(summary: dict) -> None:
+    """Deliver Scout's pending digest file to Telegram, augmented with ingest stats.
+
+    Idempotency: file is deleted from vault after successful Telegram POST.
+    Re-runs of the daemon within the same window find no file and no-op.
+
+    On failure: file is left in place; daemon-local failure counter at
+    /opt/scout-workshop/state/digest-delivery-failures.json (gitignored)
+    increments. After 3 consecutive failures on the same content (keyed
+    by sha256), daemon stops retrying that digest to avoid Telegram spam
+    during outages. A new digest (different content) resets the counter.
+
+    Acknowledged v1.1 risk: if Telegram POST succeeds but the daemon
+    crashes before deleting the file or pushing the marker commit, the
+    next tick may resend. Window is sub-second; not addressing in v1.1.
+    """
+    digest_path = VAULT_DIR / "state" / "scout-digest-latest.md"
+    if not digest_path.exists():
+        return
+
+    try:
+        body = digest_path.read_text(encoding="utf-8").strip()
+    except Exception:
+        log.exception("could not read digest file %s", digest_path)
+        return
+
+    if not body:
+        log.info("digest file empty, removing without sending")
+        digest_path.unlink(missing_ok=True)
+        return
+
+    failures_path = Path("/opt/scout-workshop/state/digest-delivery-failures.json")
+    content_sha = hashlib.sha256(body.encode("utf-8")).hexdigest()
+    failures: dict = {}
+    if failures_path.exists():
+        try:
+            failures = json.loads(failures_path.read_text())
+        except Exception:
+            failures = {}
+    if failures.get("sha256") == content_sha and failures.get("count", 0) >= 3:
+        log.warning(
+            "skipping digest delivery: %d consecutive failures on this content "
+            "(sha=%s). Manual intervention needed.",
+            failures["count"], content_sha[:12],
+        )
+        return
+
+    modes = summary.get("modes", {}) or {}
+    try:
+        vault_total = qdrant_client().count(COLLECTION_NAME, exact=True).count
+    except Exception:
+        log.exception("could not count qdrant points; omitting from digest")
+        vault_total = None
+
+    aug_lines = [
+        "",
+        "─── Ingest (this pass) ───",
+        f"Embedded: {summary.get('succeeded', 0)} reference(s)",
+    ]
+    mode_parts = [
+        f"{m}={modes.get(m, 0)}"
+        for m in ("multimodal", "multimodal-fallback", "text")
+        if modes.get(m, 0)
+    ]
+    if mode_parts:
+        aug_lines.append("Modes: " + ", ".join(mode_parts))
+    if vault_total is not None:
+        aug_lines.append(f"Vault total: {vault_total} points")
+
+    augmented = body + "\n" + "\n".join(aug_lines)
+
+    try:
+        send_telegram(augmented)
+    except Exception:
+        log.exception("telegram send failed for digest")
+        new_count = (
+            failures.get("count", 0) + 1
+            if failures.get("sha256") == content_sha
+            else 1
+        )
+        failures_path.parent.mkdir(parents=True, exist_ok=True)
+        failures_path.write_text(json.dumps({
+            "sha256": content_sha,
+            "count": new_count,
+            "last_failure_iso": iso_now(),
+        }, indent=2))
+        return
+
+    if failures_path.exists():
+        try:
+            failures_path.unlink()
+        except Exception:
+            pass
+
+    digest_path.unlink(missing_ok=True)
+    sha = vault_commit(
+        f"ingest: telegram digest delivered {iso_now()}",
+        [digest_path],
+    )
+    if sha:
+        try:
+            vault_push(max_attempts=3)
+            log.info("digest delivered + vault marker pushed: %s", sha)
+        except Exception:
+            log.exception(
+                "digest delivered to Telegram but vault push failed — "
+                "next tick may resend if local main can't reach origin"
+            )
 
 
 def main() -> int:
