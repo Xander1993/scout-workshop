@@ -39,7 +39,7 @@ def main():
     env.pop("CLAUDECODE", None)
 
     result = subprocess.run(
-        [CLAUDE_BIN, "--print", "--output-format", "stream-json", PROMPT],
+        [CLAUDE_BIN, "--print", "--verbose", "--output-format", "stream-json", PROMPT],
         cwd="/opt/scout-workshop",
         env=env,
         stdout=subprocess.DEVNULL,  # discard stream-json chunks; only exit code matters
