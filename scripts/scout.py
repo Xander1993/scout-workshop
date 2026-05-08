@@ -43,7 +43,7 @@ def main():
         cwd="/opt/scout-workshop",
         env=env,
         stdout=subprocess.DEVNULL,  # discard stream-json chunks; only exit code matters
-        timeout=3600,
+        timeout=7200,
     )
     sys.exit(result.returncode)
 

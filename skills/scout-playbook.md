@@ -18,7 +18,8 @@ You are the Scout. Each run, you scrape design references from the web, write st
 1. **Bootstrap** — pull state, check budget, decide whether to run.
 2. **Discover** — collect candidate URLs from sources, dedup against `seen-urls.json`.
 3. **Process** — for each candidate (max 5), scrape via Firecrawl, analyze, write a note + screenshot to vault, commit individually.
-4. **Close out** — update state, push vault, send Telegram digest.
+4. **Digest hand-off** — write digest, single-file commit + push.
+5. **Close out** — update state files, single commit + push.
 
 ## 1. Bootstrap
 
@@ -243,7 +244,46 @@ vertical: <vertical>, reference_type: <reference_type>
 ```
 Commit `note.md` and `screenshot.png` together.
 
-**Critical: target branch is `main`, not a feature branch.** Before the first commit of any run, ensure you are on main: `git checkout main && git pull origin main`. The Routine has been granted "unrestricted git push" permission specifically to enable direct-to-main commits. **Do NOT create a feature branch (`claude/<random>-<id>` or otherwise). Do NOT open a pull request.** The VPS daemon polls `origin/main` for new commits — anything pushed to a feature branch is invisible to the ingestion pipeline and stays unembedded forever. After all per-reference commits are made and the close-out commit (§4) is made, push directly: `git push origin main`. If the push fails due to remote drift, pull-rebase per the protocol below and retry — do not switch to a feature branch as a fallback.
+**Critical: target branch is `main`, not a feature branch.** Before the first commit of any run, ensure you are on main: `git checkout main && git pull origin main`. The Routine has been granted "unrestricted git push" permission specifically to enable direct-to-main commits. **Do NOT create a feature branch (`claude/<random>-<id>` or otherwise). Do NOT open a pull request.** The VPS daemon polls `origin/main` for new commits — anything pushed to a feature branch is invisible to the ingestion pipeline and stays unembedded forever. After all per-reference commits, the digest commit (§5), and the close-out commit (§4) are made, push directly: `git push origin main`. If the push fails due to remote drift, pull-rebase per the protocol below and retry — do not switch to a feature branch as a fallback.
+
+## 5. Digest hand-off
+
+The Routine cannot deliver Telegram digests directly — `api.telegram.org` is not on Anthropic's network allowlist for Routine environments. Instead, write the digest content to a vault file and let the VPS daemon deliver it.
+
+Format the digest as plain text (markdown_v2 NOT enabled) and write to `vault/state/scout-digest-latest.md`:
+
+```
+🛰  Scout — <date> <time UTC>
+
+✅ Added: <N>
+   • <source> · <title>
+   • <source> · <title>
+   ...
+
+⏭  Skipped: <M> (already seen)
+⚠  Errors: <K>
+
+Tokens today: <used>/100000
+Vault: https://github.com/Xander1993/scout-workshop-vault/commits/main
+```
+
+If `K > 0`, list the errors below the digest, one per line, truncated to 200 chars each.
+
+Commit this file as a single-file commit with message `scout: digest <date>`. Push to main using the retry-on-conflict protocol below. The close-out commit (§4) follows separately. The VPS daemon's `scout-ingest.timer` will pick it up on its next polling tick (within 10 minutes), augment with ingestion stats (point IDs successfully embedded, mode distribution, vault total count), POST to Telegram chat 969126485, and delete the file. The user receives a digest that includes both Scout's discovery work AND the daemon's ingestion outcome — strictly more information than Scout alone could provide.
+
+If the daemon's Telegram delivery fails for any reason, the digest file remains in vault for inspection. The next daemon tick will retry. After 3 consecutive failures, daemon logs the error and stops retrying that particular digest (to avoid Telegram spam during outages).
+
+**Push vault to main with retry-on-conflict protocol:**
+```bash
+for attempt in 1 2 3; do
+  git pull --rebase --autostash origin main && \
+  git push origin main && \
+  break
+  echo "push attempt $attempt failed, retrying in $((attempt * 5))s..."
+  sleep $((attempt * 5))
+done
+```
+If all 3 attempts fail (real merge conflict, not transient), abort the run with `last_run_status: error` and write the failed state to `state/scout-last-run.json` with diagnostic. Do NOT switch to a feature branch as a workaround. The next run's Bootstrap will retry from the queue.
 
 ## 4. Close out
 
@@ -294,49 +334,12 @@ Next run's Bootstrap reads this file before doing new discovery, prepends these 
 
 `tokens_used_today` rolls over to 0 at 06:30 UTC via the VPS-side `scout-budget-reset.timer` (systemd). Don't try to compute that yourself — just keep adding to it on each run.
 
-Single commit covering all three files:
+Single commit covering all three state files (digest is already committed and pushed via §5):
 ```
 scout: state update <date> — <N> refs, <M> errors, <K> overflow
 ```
 
-**Push vault to main with retry-on-conflict protocol:**
-```bash
-for attempt in 1 2 3; do
-  git pull --rebase --autostash origin main && \
-  git push origin main && \
-  break
-  echo "push attempt $attempt failed, retrying in $((attempt * 5))s..."
-  sleep $((attempt * 5))
-done
-```
-If all 3 attempts fail (real merge conflict, not transient), abort the run with `last_run_status: error` and write the failed state to `state/scout-last-run.json` with diagnostic. Do NOT switch to a feature branch as a workaround. The next run's Bootstrap will retry from the queue.
-
-## 5. Digest hand-off
-
-The Routine cannot deliver Telegram digests directly — `api.telegram.org` is not on Anthropic's network allowlist for Routine environments. Instead, write the digest content to a vault file and let the VPS daemon deliver it.
-
-Format the digest as plain text (markdown_v2 NOT enabled) and write to `vault/state/scout-digest-latest.md`:
-
-```
-🛰  Scout — <date> <time UTC>
-
-✅ Added: <N>
-   • <source> · <title>
-   • <source> · <title>
-   ...
-
-⏭  Skipped: <M> (already seen)
-⚠  Errors: <K>
-
-Tokens today: <used>/100000
-Vault: https://github.com/Xander1993/scout-workshop-vault/commits/main
-```
-
-If `K > 0`, list the errors below the digest, one per line, truncated to 200 chars each.
-
-Commit this file as part of the close-out commit (§4). The VPS daemon's `scout-ingest.timer` will pick it up on its next polling tick (within 10 minutes), augment with ingestion stats (point IDs successfully embedded, mode distribution, vault total count), POST to Telegram chat 969126485, and delete the file. The user receives a digest that includes both Scout's discovery work AND the daemon's ingestion outcome — strictly more information than Scout alone could provide.
-
-If the daemon's Telegram delivery fails for any reason, the digest file remains in vault for inspection. The next daemon tick will retry. After 3 consecutive failures, daemon logs the error and stops retrying that particular digest (to avoid Telegram spam during outages).
+Use the same retry-on-conflict push protocol defined in §5.
 
 ## 6. Error handling
 
