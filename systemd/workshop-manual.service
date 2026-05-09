@@ -1,0 +1,20 @@
+[Unit]
+Description=Workshop — manual ad-hoc trigger (no timer)
+Documentation=file:///opt/scout-workshop/skills/workshop-playbook.md
+After=network-online.target hermes-qdrant-vps.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=deployer
+Group=deployer
+WorkingDirectory=/opt/scout-workshop
+EnvironmentFile=/opt/scout-workshop/.env
+ExecStart=/opt/scout-workshop/venv/bin/python /opt/scout-workshop/scripts/workshop.py
+StandardOutput=journal
+StandardError=journal
+MemoryMax=4G
+TimeoutStartSec=7500
+
+# Intentionally NO [Install] section — this unit is `systemctl start`-ed
+# ad-hoc, never `enable`-d. Workshop.timer is the scheduled trigger.

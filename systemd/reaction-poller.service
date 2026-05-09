@@ -1,0 +1,19 @@
+[Unit]
+Description=Reaction poller — Telegram getUpdates → reactions.json
+Documentation=file:///opt/scout-workshop/scripts/reaction_poller.py
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=deployer
+Group=deployer
+WorkingDirectory=/opt/scout-workshop
+EnvironmentFile=/opt/scout-workshop/.env
+ExecStart=/opt/scout-workshop/venv/bin/python /opt/scout-workshop/scripts/reaction_poller.py
+StandardOutput=journal
+StandardError=journal
+Nice=10
+TimeoutStartSec=120
+# No MemoryMax — reaction_poller is a single short HTTP call + JSON edit;
+# capping it would only add OOM risk at the timer's pace (every 5 min).

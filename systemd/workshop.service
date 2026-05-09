@@ -1,0 +1,27 @@
+[Unit]
+Description=Workshop — generate one static-HTML kit per invocation (v1.0)
+Documentation=file:///opt/scout-workshop/skills/workshop-playbook.md
+Documentation=file:///opt/scout-workshop/docs/architecture-decisions.md
+After=network-online.target hermes-qdrant-vps.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=deployer
+Group=deployer
+WorkingDirectory=/opt/scout-workshop
+EnvironmentFile=/opt/scout-workshop/.env
+ExecStart=/opt/scout-workshop/venv/bin/python /opt/scout-workshop/scripts/workshop.py
+StandardOutput=journal
+StandardError=journal
+# Per ADR-4: cap memory so an OOM fails loud rather than thrashing the
+# 0-swap host. 4 GB is comfortably above the expected claude+chromium+http
+# working set; tighten only if real runs prove it.
+MemoryMax=4G
+# A run can take up to ~25 min: 8-ref brief synthesis + kit generation +
+# audit + 6 screenshots + git push. 7500s = 2h 5m gives margin for retries
+# without blocking forever.
+TimeoutStartSec=7500
+
+[Install]
+WantedBy=multi-user.target

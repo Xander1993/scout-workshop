@@ -1,0 +1,15 @@
+{
+  "mode": "anchor",
+  "anchor": {
+    "vertical": "beauty",
+    "target_kits": 4,
+    "completed": 0,
+    "aesthetic_directions_remaining": [
+      "restrained-luxury-warm",
+      "editorial-feminine",
+      "natural-organic",
+      "modern-minimal"
+    ]
+  },
+  "exploration": {"skip_verticals": [], "boost_verticals": []}
+}

@@ -1,0 +1,15 @@
+[Unit]
+Description=Reaction poller every 5 minutes
+
+[Timer]
+# OnBootSec runs the first poll 2 minutes after boot (catches missed updates
+# from any reboot window). After that, OnUnitActiveSec=5min schedules the
+# next run 5 minutes after the previous run finishes. Persistent=true catches
+# up after suspend/downtime.
+OnBootSec=2min
+OnUnitActiveSec=5min
+Persistent=true
+AccuracySec=15s
+
+[Install]
+WantedBy=timers.target

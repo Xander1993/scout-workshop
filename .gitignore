@@ -1,6 +1,12 @@
 .env
 .env.local
-state/
+/state/
+workshop/runs/
+workshop/state/queue.json
+workshop/state/reactions.json
+workshop/state/pending_pushes.txt
+workshop/state/sent_messages.json
+.kits-mirror/
 venv/
 __pycache__/
 *.pyc
