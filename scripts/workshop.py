@@ -1224,7 +1224,7 @@ def main() -> int:
     try:
         from generate_kit_images import (
             generate_kit_images as _generate_images,
-            strip_picsum_lighthouse_concerns as _strip_picsum_concerns,
+            strip_picsum_audit_concerns as _strip_picsum_concerns,
             ImageGenError,
         )
         images_status = _generate_images(kit_dir, run_dir, aesthetic_direction=aesthetic)
@@ -1240,7 +1240,7 @@ def main() -> int:
         if succ > 0:
             stripped = _strip_picsum_concerns(run_dir / "audit.md")
             if stripped:
-                log.info("audit.md: stripped %d picsum-related lighthouse concerns", stripped)
+                log.info("audit.md: stripped %d picsum-related audit concerns", stripped)
     except ImageGenError as e:
         log.error("image generation aborted (hard config failure): %s", e)
         _workshop_send(f"⚠️ image generation aborted: {e}\nkit ships with picsum URLs intact.")

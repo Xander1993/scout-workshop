@@ -446,26 +446,32 @@ def _count_remaining_picsum(kit_dir: Path) -> int:
 # Audit post-processing
 # ─────────────────────────────────────────────────────────────────────
 
-def strip_picsum_lighthouse_concerns(audit_md_path: Path) -> int:
-    """Remove lines mentioning picsum.photos under '## Lighthouse concerns'.
-    Conservative: leave file unchanged on any anomaly. Returns count removed."""
+def strip_picsum_audit_concerns(audit_md_path: Path) -> int:
+    """Remove lines mentioning picsum.photos under '## Lighthouse concerns'
+    AND under '## Warnings'. Both sections may carry stale picsum complaints
+    that the auditor wrote against the pre-replacement HTML; once image-gen
+    has run successfully, those complaints no longer reflect reality.
+
+    Conservative: leave file unchanged on any anomaly. Returns total count
+    removed across both sections."""
     if not audit_md_path.exists():
         return 0
+    STRIP_SECTIONS = ("## Lighthouse concerns", "## Warnings")
     try:
         text = audit_md_path.read_text(encoding="utf-8")
         lines = text.split("\n")
         out: list[str] = []
-        in_lh = False
+        in_strip_section = False
         removed = 0
         for line in lines:
             stripped = line.lstrip()
-            if stripped.startswith("## Lighthouse concerns"):
-                in_lh = True
+            if any(stripped.startswith(h) for h in STRIP_SECTIONS):
+                in_strip_section = True
                 out.append(line)
                 continue
-            if in_lh and stripped.startswith("## "):
-                in_lh = False
-            if in_lh and "picsum.photos" in line:
+            if in_strip_section and stripped.startswith("## "):
+                in_strip_section = False
+            if in_strip_section and "picsum.photos" in line:
                 removed += 1
                 continue
             out.append(line)

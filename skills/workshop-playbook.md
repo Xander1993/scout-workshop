@@ -1,8 +1,8 @@
 ---
 name: workshop-playbook
-version: 1.2.0
+version: 1.2.1
 phase: day-3-v1
-last_updated: 2026-05-08
+last_updated: 2026-05-10
 operator: alex-buzi
 model: claude-opus-4-7
 output_format: static-html-kit
@@ -200,11 +200,11 @@ Use Read on each of these. The images are real screenshots — use them for visu
 
 # Conversion requirements (these are audited as boolean checks)
 Every page MUST have:
-1. **Primary CTA above fold.** A visually prominent `<a class="cta">` element rendered before the user has to scroll on a 1440×900 desktop viewport AND a 390×844 mobile viewport. The CTA links to `contacts.html` or to `tel:` directly.
-2. **Click-to-call in mobile header.** A `<a href="tel:{{PHONE_E164}}">` element inside the site header. On viewports ≤ 600px wide, this link is visible (e.g., the nav collapses but the phone link stays in the header bar). Use a real-format placeholder like `tel:+15551234567` and a display string like `(555) 123-4567`.
+1. **Primary CTA above fold.** A visually prominent `<a class="cta">` element rendered before the user has to scroll on a 1440×900 desktop viewport AND a 390×844 mobile viewport. The CTA links to `contacts.html` or to `tel:` directly. The HEADER CTA `href` and label text MUST be identical across all 3 pages (index.html, services.html, contacts.html) — uniform header navigation across pages. Page-internal anchors (e.g. `#book` on contacts.html) belong in a hero CTA or a service-row CTA, NOT in the header bar.
+2. **Click-to-call in mobile header.** A `<a href="tel:{{PHONE_E164}}">` element inside the site header. On viewports ≤ 600px wide, this link is visible (e.g., the nav collapses but the phone link stays in the header bar). Use a real-format placeholder like `tel:+15551234567` and a display string like `(555) 123-4567`. The click-to-call link MUST display the FULL phone number visually at all viewport widths. Do NOT truncate to last-N-digits (e.g., do not show only `4567` on mobile) — full-number visibility is more standard and preserves perceived legitimacy.
 3. **Semantic HTML5.** `<header>`, `<nav>`, `<main>`, `<section>`, `<footer>`. Each page has exactly one `<h1>`. Headings are nested correctly (no `<h3>` without an `<h2>` ancestor).
 4. **Mobile-first responsive CSS.** Default styles target small screens; use `@media (min-width: ...)` to add layout for larger viewports. Do NOT write `@media (max-width: ...)` as the primary mechanism.
-5. **Telemetry placeholders in `<head>` of every page.** Add these two snippets verbatim, in this order, immediately after the `<title>` tag:
+5. **Telemetry placeholders in `<head>` of every page.** Order in `<head>` MUST be: charset → viewport → title → preconnect/preload → stylesheet (`<link rel="stylesheet">`) → GA4 snippet → Clarity snippet. The GA4 + Clarity snippets MUST appear AFTER the main stylesheet `<link>`, not before — placing them before delays CSSOM construction. Add these two snippets verbatim, in this order, immediately after the main `<link rel="stylesheet">` reference:
    ```html
    <!-- GA4 placeholder — replace G-XXXXXXXXXX before deploy -->
    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -223,7 +223,7 @@ Every page MUST have:
      })(window, document, "clarity", "script", "XXXXXXXXXX");
    </script>
    ```
-6. **Images, aspect ratios, and seed-as-id.** Any `<img>` below the fold has `loading="lazy"` and a `width`/`height` attribute pair to prevent layout shift; hero images are eager.
+6. **Images, aspect ratios, and seed-as-id.** Any `<img>` below the fold has `loading="lazy"` and a `width`/`height` attribute pair to prevent layout shift. The hero `<img>` MUST have `fetchpriority="high"` and `loading="eager"` (or omit `loading` to use the default eager behavior) so the LCP element is discovered and prioritized immediately. Below-fold images keep `loading="lazy"`.
    - **Use placeholder `src` of the form `https://picsum.photos/seed/{image-id}/{w}/{h}`** where `{image-id}` is the kebab-case identifier you also list as the key in `image-prompts.json` (see "Image generation manifest" below). The seed value MUST be exactly equal to the image-id — a downstream phase replaces these URLs by image-id matching, not by URL substring or seed-name fuzzy match.
    - **Allowed aspect ratios for `<img>` width:height pairs are exactly:** `1:1`, `4:3`, `3:4`, `16:9`, `9:16`. **Do NOT use 4:5, 5:4, 2:3, 3:2, golden ratio (1:1.618), or any other ratio** — the eventual image-generation backend supports only the five listed. Concrete pixel-pair examples per ratio: 1:1 → 480×480 or 96×96; 4:3 → 640×480 or 800×600; 3:4 → 600×800 or 720×960; 16:9 → 1280×720; 9:16 → 720×1280. Use CSS `aspect-ratio` + `object-fit: cover` on the image's container so any minor source/slot mismatch resolves visually.
    - **Image-id naming convention:** kebab-case, descriptive, derived from section + role + (optional) numeric index when there are siblings. Examples: `hero`, `about`, `service-1-signature-facial`, `service-2-clarity-treatment`, `mood-1`, `mood-2`, `gallery-before-after-1`. Stable, predictable, no random suffixes — the same kit re-generated should yield the same image-ids.
@@ -387,6 +387,16 @@ Output **exactly one** JSON object to stdout. No prose before or after. No code 
     // Free-text list of specific complaints — one item per concrete issue.
     // Examples: "services.html h1 missing", "tel: link uses display number",
     // "render-blocking Google Fonts link in head".
+    //
+    // Buyer-replace token whitelist — DO NOT flag any of these as warnings:
+    //   - {{BRAND}}     (literal brand-name placeholder; buyer find-replaces)
+    //   - {{PHONE_E164}} (literal phone-number token; buyer find-replaces)
+    //   - +15551234567   (intentional E.164 placeholder digit string)
+    // These tokens are intentionally preserved verbatim so the buyer can
+    // find-replace them at deploy time. They are NOT a defect; they are the
+    // contract. This whitelist applies ONLY to those exact tokens — all other
+    // warning categories (LCP issues, CTA inconsistency, missing alt text,
+    // render-blocking resources, etc.) MUST still be flagged when present.
 }
 ```
 
