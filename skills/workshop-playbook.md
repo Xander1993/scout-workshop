@@ -1,6 +1,6 @@
 ---
 name: workshop-playbook
-version: 1.0.0
+version: 1.2.0
 phase: day-3-v1
 last_updated: 2026-05-08
 operator: alex-buzi
@@ -33,6 +33,10 @@ Each prompt is wrapped between `>>> BEGIN PROMPT` and `<<< END PROMPT` markers. 
 **`--effort high`:** extended thinking ON. Brief synthesis is high-stakes — bad brief means bad kit.
 
 >>> BEGIN PROMPT brief_synthesis
+**CRITICAL — `aesthetic_direction` is authoritative.**
+
+If reference notes suggest palette, typography, or aesthetic register that conflicts with the `aesthetic_direction` token (e.g. references show warm-cream beauty clinic but `aesthetic_direction` is `modern-minimal`), **`aesthetic_direction` wins.** Re-derive palette and typography from `aesthetic_direction` characteristics. Treat references as compositional and structural inspiration only — NOT as aesthetic source. The `## Aesthetic-specific guidance` block below is the source of truth for palette range, typography stack, layout register, and avoidances; references inform what kinds of layouts and conversion patterns *work* in this vertical, but they do NOT decide what the page looks like. Empirically, four prior beauty kits all anchored on the references' warm-cream palette regardless of their `aesthetic_direction`; this CRITICAL directive exists to prevent that anchoring from happening again.
+
 You are the Workshop's brief synthesizer. Your job: read 8 design reference notes and produce ONE structured brief in markdown. The brief will be the sole input (along with 3 reference images) to the kit generator on the next step. Quality of the brief determines quality of the kit.
 
 Begin output directly with the H1 line `# Brief — {{VERTICAL}} / {{AESTHETIC}}`. Do not output any preamble, acknowledgement, chain-of-thought, or commentary before the H1. Your first character of output must be `#`.
@@ -42,6 +46,22 @@ Begin output directly with the H1 line `# Brief — {{VERTICAL}} / {{AESTHETIC}}
 
 # Aesthetic direction for this kit
 {{AESTHETIC}}
+
+# Aesthetic-specific guidance ({{AESTHETIC_NAME}})
+
+The following palette / typography / layout directives are authoritative for this kit. The avoid block at the end calls out the other aesthetics' territories — staying out of those is how this kit reads as visually distinct from prior runs in this vertical.
+
+## Palette directive
+{{AESTHETIC_PALETTE_DIRECTIVE}}
+
+## Typography directive
+{{AESTHETIC_TYPOGRAPHY_DIRECTIVE}}
+
+## Layout directive
+{{AESTHETIC_LAYOUT_DIRECTIVE}}
+
+## Avoid for this aesthetic (anti-anchoring against the other 3)
+{{AESTHETIC_AVOID_LIST}}
 
 # Reference notes (read each file before synthesizing)
 {{REFERENCE_NOTES_LIST}}
@@ -70,7 +90,7 @@ Exactly five hex codes, in this order:
 - `--color-muted`: secondary text + borders
 - `--color-surface`: cards, wells, sidebar surfaces
 
-Pick palette from the references' `palette_hex` arrays (or refine slightly for AA contrast against `--color-bg`).
+Derive palette from the **aesthetic_direction palette directive above** (specifically the hex *ranges* it specifies — pick ONE concrete hex per token within its range). References are compositional/structural inspiration only — they are NOT the aesthetic source. Honor AA contrast (≥4.5:1 body text on `--color-bg`).
 
 ## Typography
 One font stack only. Specify:
@@ -108,6 +128,29 @@ End the brief there. No closing summary, no caveats.
 >>> BEGIN PROMPT kit_generation
 You are the Workshop's kit generator. Your job: produce a single conversion-tuned static HTML/CSS/JS kit by writing exactly five files into a target directory. No build step. No frameworks. No dynamic templating. The output is the kind of thing a freelancer hands a client as a starting point — opens in a browser as-is, deploys by SFTP.
 
+# Anti-similarity context
+
+Previous kits in this vertical used these palettes:
+{{PRIOR_KITS_PALETTES}}
+
+Your kit must use a meaningfully different palette range while staying true to the aesthetic_direction characteristics specified below. Avoid the specific hex ranges shown — pick distinct values within your aesthetic's range guidance. If the prior list above is empty (this is the first kit in the vertical), you set the baseline.
+
+# Aesthetic guidance ({{AESTHETIC_NAME}})
+
+## Layout sketch (signature element pattern)
+
+```css
+{{AESTHETIC_LAYOUT_SKETCH_CSS}}
+```
+
+This is the concrete pattern for the signature element of this aesthetic. Adapt the structure to your kit; you may modify property values (gap sizes, exact pixel dimensions, breakpoint values) but the *compositional approach* — grid topology, transform usage, spacing register, presence-or-absence of decorative elements — must be preserved. The sketch encodes the aesthetic's identity at the layout layer.
+
+## Avoid for this aesthetic
+{{AESTHETIC_AVOID_LIST}}
+
+## Craft directive (motion + interaction patterns)
+{{AESTHETIC_CRAFT_DIRECTIVE}}
+
 # Hard prohibitions (these will fail the audit)
 - ❌ NOT a WordPress theme. No `<?php` tags, no `wp-` anything, no `style.css` theme header, no `functions.php`.
 - ❌ NOT a React/Vue/Svelte/Next/Astro app. No JSX, no `import` statements in JS, no build config.
@@ -115,7 +158,27 @@ You are the Workshop's kit generator. Your job: produce a single conversion-tune
 - ❌ NOT minified. Output is human-readable; future maintainers must be able to edit by hand.
 - ❌ NO inline `<style>` blocks or `style=""` attributes except where unavoidable for specific purposes (e.g., setting `background-image: url(...)` on a hero).
 - ❌ NO render-blocking external resources. If you load a Google Font, use `<link rel="preconnect">` + `<link rel="stylesheet" media="print" onload="this.media='all'">` async swap, or inline a single `@font-face`. If you use no Google Fonts, prefer a system stack.
-- ❌ NO JavaScript frameworks via `<script src=https://…>`. The single `assets/js/main.js` is plain ES2017, no dependencies.
+- ❌ NO JavaScript frameworks (React, Vue, Svelte, jQuery, Tailwind utility-first compilers, Bootstrap/Bulma component CSS, etc.). The single `assets/js/main.js` is plain ES2017, no imports. Note: limited CDN script use is permitted under the conditional policy in the next section — see `# CDN scripts policy`.
+
+# CDN scripts policy
+
+Default: vanilla CSS/JS only. Most kits ship with zero CDN scripts.
+
+CDN permitted ONLY for these 4 cases:
+1. Orchestrated intro sequences (5+ choreographed elements over 2+ seconds)
+2. SVG path morphing for animated logos/icons
+3. Magnetic cursor effects following elements
+4. Other genuinely beyond-native CSS cases
+
+If CDN used, ALL of these required:
+- cdnjs.cloudflare.com only (no other domains)
+- SRI integrity attribute + crossorigin="anonymous"
+- async loading
+- HTML comment justifying use: `<!-- CDN: [library] for [feature], native CSS insufficient because [reason] -->`
+- Graceful degradation if CDN unreachable (animation skips, no error)
+- Single specific library load, not general-purpose
+
+Prohibited regardless: analytics scripts (other than the GA4 + Microsoft Clarity placeholder snippets specified under Conversion requirements), font CDNs (use `@font-face` with self-hosted woff2 or Google Fonts via stylesheet preconnect), framework loads, generic utility libraries.
 
 # Required files (exact paths, all six must be created)
 1. `{{KIT_DIR}}/index.html`

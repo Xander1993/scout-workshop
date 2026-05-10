@@ -498,21 +498,21 @@ _MODERN_MINIMAL = {
         NO terracotta, NO sage, NO blush.
 
         - --color-bg: cool white or near-white, range #FAFAFB — #FFFFFF.
-          Pick ONE. The slight cool tint distinguishes from warm-cream.
+          Pick ONE. NOT warm-cream.
         - --color-fg: near-black with neutral or cool undertone, range
           #0F0F10 — #1F1F23. NOT a warm-charcoal.
-        - --color-accent: pick ONE bold saturated value from this set:
-          (a) deep black #050505 — #0A0A0A as graphic-design-style accent;
+        - --color-accent: pick ONE from:
+          (a) deep black #050505 — #0A0A0A;
           (b) electric blue #2563EB — #1D4ED8;
           (c) saturated red #DC2626 — #B91C1C;
-          (d) pure yellow #FACC15 — #EAB308 (use sparingly as a single dot/pill).
-          The accent is graphic-design-poster bold, used for ONE element type
-          (CTA button + active link state). Everything else is greyscale.
+          (d) pure yellow #FACC15 — #EAB308 (sparingly, single dot/pill).
+          Used for ONE element type (CTA + active link). Everything else
+          is greyscale.
         - --color-muted: cool grey, range #D4D4D8 — #E4E4E7. Borders only.
-        - --color-surface: pure white #FFFFFF or one shade darker than bg
-          (#F4F4F5). Cards lift via thin 1px borders, not shadows.
+        - --color-surface: pure white #FFFFFF or one shade darker (#F4F4F5).
+          Cards lift via 1px borders, not shadows.
 
-        Greyscale dominance: 95% of the page is bg/fg/muted; 5% is accent.
+        Greyscale dominance: 95% bg/fg/muted, 5% accent.
     """),
 
     "typography_directive": _d("""
@@ -566,31 +566,21 @@ _MODERN_MINIMAL = {
           align-items: end;
         }
         .hero__meta {
-          grid-column: 1 / 4;
-          grid-row: 1;
-          align-self: start;
-          font-size: 0.72rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          font-weight: 500;
+          grid-column: 1 / 4; grid-row: 1; align-self: start;
+          font-size: 0.72rem; letter-spacing: 0.18em;
+          text-transform: uppercase; font-weight: 500;
         }
         .hero__headline {
-          grid-column: 1 / 8;
-          grid-row: 1;
-          align-self: end;
+          grid-column: 1 / 8; grid-row: 1; align-self: end;
           font-size: clamp(2.5rem, 7vw, 6rem);
-          font-weight: 800;
-          letter-spacing: -0.02em;
-          line-height: 0.92;
+          font-weight: 800; letter-spacing: -0.02em; line-height: 0.92;
           font-variation-settings: "wght" var(--h1-w, 800);
         }
         .hero__visual {
-          grid-column: 8 / 13;
-          grid-row: 1;
-          aspect-ratio: 3 / 4;          /* one of the 5 allowed by kit_generation */
+          grid-column: 8 / 13; grid-row: 1;
+          aspect-ratio: 3 / 4;
           background: var(--color-muted);
-          object-fit: cover;
-          border-radius: 0;
+          object-fit: cover; border-radius: 0;
         }
         @media (max-width: 760px) {
           .hero { grid-template-columns: 1fr; }
@@ -599,20 +589,15 @@ _MODERN_MINIMAL = {
 
         /* Geometric clip-path section divider */
         .divider-clip {
-          height: 4rem;
-          background: var(--color-fg);
+          height: 4rem; background: var(--color-fg);
           clip-path: polygon(0 0, 100% 30%, 100% 100%, 0 70%);
         }
 
         /* Container query on card grid */
         .cards-host { container-type: inline-size; }
         .cards { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-        @container (min-width: 600px) {
-          .cards { grid-template-columns: repeat(2, 1fr); }
-        }
-        @container (min-width: 900px) {
-          .cards { grid-template-columns: repeat(3, 1fr); }
-        }
+        @container (min-width: 600px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+        @container (min-width: 900px) { .cards { grid-template-columns: repeat(3, 1fr); } }
     """),
 
     "image_prefix": _d("""
@@ -639,9 +624,7 @@ _MODERN_MINIMAL = {
 
     "craft_directive": _d("""
         Modern-minimal must demonstrate at least THREE native CSS scroll-driven
-        animation effects. This aesthetic is the v1.2 canary for native-CSS
-        capability — ZERO CDN scripts. If achievable here, native approach is
-        validated for the rest of the patch.
+        animation effects. The kit must ship with ZERO CDN scripts.
 
         Required craft moves (3+ of these MUST appear in the kit):
         1. animation-timeline: scroll(root) on the hero h1 —
@@ -655,14 +638,9 @@ _MODERN_MINIMAL = {
            the entry range.
         4. container queries on the services grid so cards adapt to component
            context, not just viewport.
-        5. Optional: View Transitions API for index↔services↔contacts page
-           transitions (same-document if SPA-like, cross-document via
-           @view-transition rule for static).
 
         Vanilla JS in main.js permitted (≤80 lines, no imports) for any
-        IntersectionObserver fallback if a craft move requires it. NO CDN
-        scripts. The kit must ship with zero <script src="https://...">
-        references — that's the canary success criterion.
+        IntersectionObserver fallback if a craft move requires it.
     """),
 }
 
