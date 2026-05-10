@@ -781,6 +781,394 @@ _validate_configs()
 
 
 # ─────────────────────────────────────────────────────────────────────
+# v1.3 awwwards-tier configs (parallel registry; structured schema)
+#
+# The four v1.2 CONFIGS above target the conversion register
+# (homepage-services-contacts trios with the 999.md conversion playbook).
+# v1.3 adds a second register for EU agency white-label kits — different
+# yardstick, different data shape. Two registers coexist: every queue
+# item carries an aesthetic_direction flag, Workshop picks the matching
+# registry by direction.
+#
+# Schema differs from v1.2:
+#   - palette is a structured dict with pinned hexes (bg/fg/accents/
+#     supporting), not a directive range. Per Mechanism 1: config palette
+#     is the GROUND TRUTH; refs serve as structural inspiration only,
+#     never palette extraction.
+#   - typography pins hero h1 clamp() per Phase 2 word-length rule.
+#   - motion_vocabulary catalogues GSAP/SplitType/Lenis/Three.js moves
+#     directly as a list, not embedded in a directive string.
+#   - anchor_reference_ids names vault slugs that must be present in
+#     vault for Mechanism 2 vault-gating to allow rotation. Empty list
+#     plus vault_pending: True declares deferred state (gate intentionally
+#     fails until vault accumulates anchors).
+#   - register_family groups sub-aesthetics by structural shape. Refs can
+#     be shared across sub-aesthetics WITHIN a family (e.g., probe-5
+#     anchors serve all three restrained-monumental sub-aesthetics), but
+#     NEVER across families.
+# ─────────────────────────────────────────────────────────────────────
+
+_SUN_BAKED = {
+    "name": "Sun-baked",
+    "register_family": "restrained-monumental",
+    "palette": {
+        # Inherited empirically from probe-5 (commit 4ce81c3 on
+        # experimental/awwwards-probe-2026-05-10 in camelotflows-kits).
+        # Hex values match probe-5's shipped CSS variables verbatim.
+        "bg":         "#E7DCC4",
+        "fg":         "#1A1814",
+        "accents":    ["#B8462C", "#6B7A47"],
+        "supporting": ["#DDD0B4", "#9C8E73"],
+    },
+    "typography": {
+        "primary":              "display-grotesque",
+        "primary_alternatives": [],
+        "secondary":            "humanist-sans",
+        "hero_h1_clamp":        "clamp(3.5rem, 16vw, 12rem)",
+    },
+    "photography_prefix": _d("""
+        Sun-baked editorial photography — late-afternoon warm key light,
+        sand-tone ambient, target mean luminance 140-180 against pale sand
+        page background. Restrained palette, no neon, no fluorescent, no
+        clinical cool light. Matte film finish, subtle organic grain.
+        Composition prioritizes architectural negative space over subject
+        prominence. No text, no logos, no watermarks.
+    """).replace("\n", " ").strip(),
+    "motion_vocabulary": [
+        "GSAP scrollTrigger pinning on hero wordmark",
+        "SplitType character stagger reveal on h1",
+        "magnetic CTA on hover (single primary CTA)",
+        "Lenis smooth scroll",
+        "subtle scroll-linked parallax on hero canvas",
+    ],
+    "avoid": [
+        "1:1 copy of probe-5 layout — distill structure, not content",
+        "high-saturation neon or fluorescent accents",
+        "multiple competing CTAs above the fold",
+        "rounded-pill bootstrap CTAs",
+    ],
+    "anchor_reference_ids": [
+        "989723a6-studio-namma",
+        "5c7e1313-marvell-tile-stone",
+        "4b70b0db-astrodither",
+        "ed982688-obys",
+    ],
+    "min_exemplar_count": 2,
+    "vault_pending": False,
+    "ref_kit_template_variant": "awwwards",
+}
+
+
+_WARM_EARTH = {
+    "name": "Warm-earth",
+    "register_family": "restrained-monumental",
+    "palette": {
+        "bg":         "#F0E9D6",
+        "fg":         "#2D241A",
+        "accents":    ["#B25C3C"],
+        "supporting": ["#9C8E73", "#E8D9C3"],
+    },
+    "typography": {
+        "primary":              "display-grotesque",
+        "primary_alternatives": [],
+        "secondary":            "humanist-sans",
+        "hero_h1_clamp":        "clamp(3.5rem, 16vw, 12rem)",
+    },
+    "photography_prefix": _d("""
+        Warm-earth editorial photography — natural daylight, terracotta and
+        cream ambient, target mean luminance 150-190 against paper-cream
+        page background. Earthy textures (clay, linen, stone). No neon, no
+        fluorescent. Matte film finish with subtle warm grain. Architectural
+        composition. No text, no logos, no watermarks.
+    """).replace("\n", " ").strip(),
+    "motion_vocabulary": [
+        "GSAP scrollTrigger pinning on hero wordmark",
+        "SplitType character stagger reveal on h1",
+        "magnetic CTA on hover (single primary CTA)",
+        "Lenis smooth scroll",
+        "tactile material panel transition (subtle parallax on textured tiles)",
+    ],
+    "avoid": [
+        "1:1 copy of Marvell or Where Worlds Take Shape — distill, not duplicate",
+        "second saturated accent (terracotta does ALL the chromatic work)",
+        "blue, green, or rose accents",
+        "rounded-pill bootstrap CTAs",
+    ],
+    "anchor_reference_ids": [
+        "5c7e1313-marvell-tile-stone",
+        "580cb37d-where-worlds-take-shape",
+    ],
+    "min_exemplar_count": 2,
+    "vault_pending": False,
+    "ref_kit_template_variant": "awwwards",
+}
+
+
+_EDITORIAL_MID_CENTURY = {
+    "name": "Editorial mid-century",
+    "register_family": "restrained-monumental",
+    "palette": {
+        "bg":         "#E8E1D0",
+        "fg":         "#1A1611",
+        "accents":    ["#8B2E2A"],
+        "supporting": ["#7A6E5F", "#D9D2BF"],
+    },
+    "typography": {
+        # Loose framing per Phase 1 ruling: serif preferred, grotesque allowed
+        # when the LAYOUT register is editorial (grid-heavy, type-stack
+        # hierarchy). kit_generation picks per brief; config biases serif via
+        # `primary`, lists fallbacks in `primary_alternatives`.
+        "primary":              "editorial-serif",
+        "primary_alternatives": ["display-grotesque"],
+        "secondary":            "humanist-sans",
+        "hero_h1_clamp":        "clamp(3.5rem, 16vw, 12rem)",
+    },
+    "photography_prefix": _d("""
+        Mid-century editorial photography — print-magazine register, parchment
+        ambient, target mean luminance 140-180. Restrained chromatic palette
+        (muted brick or charcoal accents only). Hierarchical composition with
+        deliberate negative space. No neon, no fluorescent, no contemporary
+        digital-camera sharpness — emulate offset-print softness. Matte film
+        finish. No text, no logos, no watermarks.
+    """).replace("\n", " ").strip(),
+    "motion_vocabulary": [
+        "GSAP scrollTrigger pinning on hero wordmark",
+        "SplitType character stagger reveal on h1",
+        "magnetic CTA on hover (single primary CTA)",
+        "Lenis smooth scroll",
+        "type-stack reveal on scroll (hierarchical fade-up)",
+    ],
+    "avoid": [
+        "1:1 copy of Astrodither or Obys",
+        "second saturated accent",
+        "WebGPU/audio-reactive shaders (mid-century editorial is print-quiet, not motion-loud)",
+        "rounded-pill bootstrap CTAs",
+    ],
+    "anchor_reference_ids": [
+        "4b70b0db-astrodither",
+        "ed982688-obys",
+    ],
+    "min_exemplar_count": 2,
+    "vault_pending": False,
+    "ref_kit_template_variant": "awwwards",
+}
+
+
+_ACID_TECH = {
+    "name": "Acid-tech",
+    "register_family": "kinetic-aggressive",
+    "palette": {
+        "bg":         "#0A0A0A",
+        "fg":         "#F2F2F2",
+        "accents":    ["#00FFAA", "#FF006E"],
+        "supporting": ["#1A1A1A", "#888888"],
+    },
+    "typography": {
+        "primary":              "display-grotesque",
+        "primary_alternatives": [],
+        "secondary":            "monospace",
+        "hero_h1_clamp":        "clamp(3.5rem, 16vw, 12rem)",
+    },
+    "photography_prefix": _d("""
+        Acid-tech photography — high-key fluorescent register, target mean
+        luminance 180-220, sharp neon highlights, glossy reflections, hard
+        light. Cyberpunk-adjacent ambient with deliberate digital sharpness.
+        Must contrast strongly against near-black page background. No matte
+        film finish — embrace high-contrast clarity. No text, no logos,
+        no watermarks.
+    """).replace("\n", " ").strip(),
+    "motion_vocabulary": [
+        "GSAP scrollTrigger pinning on hero",
+        "SplitType character stagger reveal with neon glow on entry",
+        "magnetic CTA on hover (single primary CTA, neon outline)",
+        "Lenis smooth scroll",
+        "WebGL/shader hooks for hero canvas (audio-reactive optional)",
+        "scroll-velocity-tracked element distortion",
+    ],
+    "avoid": [
+        "warm cream, sand, terracotta — kinetic-aggressive is the antithesis of restrained-monumental",
+        "matte film photography",
+        "single muted accent (kinetic-aggressive uses multi-accent neon)",
+    ],
+    # Deferred to v1.3.1: no vault anchors yet. Mechanism 2 gate will skip
+    # this sub-aesthetic in rotation until vault accumulates ≥2 refs and
+    # vault_pending is flipped to False.
+    "anchor_reference_ids": [],
+    "min_exemplar_count": 2,
+    "vault_pending": True,
+    "ref_kit_template_variant": "awwwards",
+}
+
+
+_COOL_JEWEL = {
+    "name": "Cool-jewel",
+    "register_family": "kinetic-aggressive",
+    "palette": {
+        "bg":         "#0E1830",
+        "fg":         "#F2EFE7",
+        "accents":    ["#1B7A5F", "#B43A4B", "#D9AE3A"],
+        "supporting": ["#283958", "#0A1124"],
+    },
+    "typography": {
+        "primary":              "display-grotesque",
+        "primary_alternatives": [],
+        "secondary":            "humanist-sans",
+        "hero_h1_clamp":        "clamp(3.5rem, 16vw, 12rem)",
+    },
+    "photography_prefix": _d("""
+        Cool-jewel photography — saturated jewel-tone register, target mean
+        luminance 160-200 against deep navy page background. Emerald, ruby,
+        amber highlights as glints in dark composition. Glossy textures,
+        controlled light, editorial-luxury ambient. No fluorescent, no neon —
+        saturation is jewel-tone, not signage. Matte film finish OK. No
+        text, no logos, no watermarks.
+    """).replace("\n", " ").strip(),
+    "motion_vocabulary": [
+        "GSAP scrollTrigger pinning on hero",
+        "SplitType character stagger reveal on h1",
+        "magnetic CTA on hover (single primary CTA, amber accent)",
+        "Lenis smooth scroll",
+        "color-shift hover transitions on jewel-accent surfaces",
+    ],
+    "avoid": [
+        "warm cream or sand backgrounds (cool-jewel is dark-saturated, not warm-restrained)",
+        "single accent (cool-jewel uses 3 jewel tones)",
+        "neon/fluorescent palette (different from acid-tech)",
+    ],
+    # Deferred to v1.3.1: vault-pending, see _ACID_TECH note above.
+    "anchor_reference_ids": [],
+    "min_exemplar_count": 2,
+    "vault_pending": True,
+    "ref_kit_template_variant": "awwwards",
+}
+
+
+AWWWARDS_CONFIGS: dict[str, dict[str, Any]] = {
+    "sun-baked":             _SUN_BAKED,
+    "warm-earth":            _WARM_EARTH,
+    "editorial-mid-century": _EDITORIAL_MID_CENTURY,
+    "acid-tech":             _ACID_TECH,
+    "cool-jewel":            _COOL_JEWEL,
+}
+
+
+_AWWWARDS_REQUIRED_FIELDS = (
+    "name",
+    "register_family",
+    "palette",
+    "typography",
+    "photography_prefix",
+    "motion_vocabulary",
+    "avoid",
+    "anchor_reference_ids",
+    "min_exemplar_count",
+    "vault_pending",
+    "ref_kit_template_variant",
+)
+
+_AWWWARDS_PALETTE_REQUIRED = ("bg", "fg", "accents", "supporting")
+_AWWWARDS_TYPOGRAPHY_REQUIRED = ("primary", "primary_alternatives", "secondary", "hero_h1_clamp")
+_AWWWARDS_REGISTER_FAMILIES = frozenset({"restrained-monumental", "kinetic-aggressive"})
+
+
+def _validate_awwwards_configs() -> None:
+    """Schema check at import time. Catches drift before workshop.py runs.
+
+    Strict rule: an empty anchor_reference_ids list REQUIRES vault_pending: True.
+    This forces explicit declaration of deferred state and catches accidental
+    empty-anchor shipments before runtime. Mechanism 2's check_vault_gates can
+    then short-circuit on vault_pending: True without re-counting anchors.
+    """
+    for key, cfg in AWWWARDS_CONFIGS.items():
+        for field in _AWWWARDS_REQUIRED_FIELDS:
+            if field not in cfg:
+                raise RuntimeError(
+                    f"AWWWARDS_CONFIGS: {key!r} missing required field {field!r}"
+                )
+        if cfg["register_family"] not in _AWWWARDS_REGISTER_FAMILIES:
+            raise RuntimeError(
+                f"AWWWARDS_CONFIGS: {key!r} register_family must be one of "
+                f"{sorted(_AWWWARDS_REGISTER_FAMILIES)}; "
+                f"got {cfg['register_family']!r}"
+            )
+        if not isinstance(cfg["palette"], dict):
+            raise RuntimeError(
+                f"AWWWARDS_CONFIGS: {key!r} palette must be a dict"
+            )
+        for pkey in _AWWWARDS_PALETTE_REQUIRED:
+            if pkey not in cfg["palette"]:
+                raise RuntimeError(
+                    f"AWWWARDS_CONFIGS: {key!r} palette missing {pkey!r}"
+                )
+        if not isinstance(cfg["typography"], dict):
+            raise RuntimeError(
+                f"AWWWARDS_CONFIGS: {key!r} typography must be a dict"
+            )
+        for tkey in _AWWWARDS_TYPOGRAPHY_REQUIRED:
+            if tkey not in cfg["typography"]:
+                raise RuntimeError(
+                    f"AWWWARDS_CONFIGS: {key!r} typography missing {tkey!r}"
+                )
+        if not isinstance(cfg["typography"]["primary_alternatives"], list):
+            raise RuntimeError(
+                f"AWWWARDS_CONFIGS: {key!r} typography.primary_alternatives must be a list"
+            )
+        if not isinstance(cfg["motion_vocabulary"], list):
+            raise RuntimeError(
+                f"AWWWARDS_CONFIGS: {key!r} motion_vocabulary must be a list"
+            )
+        if not isinstance(cfg["anchor_reference_ids"], list):
+            raise RuntimeError(
+                f"AWWWARDS_CONFIGS: {key!r} anchor_reference_ids must be a list"
+            )
+        if not isinstance(cfg["vault_pending"], bool):
+            raise RuntimeError(
+                f"AWWWARDS_CONFIGS: {key!r} vault_pending must be a bool"
+            )
+        if not isinstance(cfg["min_exemplar_count"], int) or cfg["min_exemplar_count"] < 1:
+            raise RuntimeError(
+                f"AWWWARDS_CONFIGS: {key!r} min_exemplar_count must be an int >= 1"
+            )
+        if not cfg["anchor_reference_ids"] and not cfg["vault_pending"]:
+            raise RuntimeError(
+                f"AWWWARDS_CONFIGS: {key!r} has empty anchor_reference_ids but "
+                f"vault_pending is not True; explicit deferred-state declaration "
+                f"required (set vault_pending: True or add anchor IDs)"
+            )
+
+
+_validate_awwwards_configs()
+
+
+def get_awwwards_config(sub_aesthetic: str) -> dict[str, Any]:
+    """Return the awwwards-tier config for a sub_aesthetic.
+
+    Raises KeyError on unknown — unlike v1.2 get_config which falls back to
+    DEFAULT_CONFIG. For awwwards, fail-loud is correct: an unknown
+    sub_aesthetic must never silently route to a conversion default.
+    """
+    if sub_aesthetic not in AWWWARDS_CONFIGS:
+        raise KeyError(
+            f"Unknown awwwards sub_aesthetic: {sub_aesthetic!r}; "
+            f"known: {sorted(AWWWARDS_CONFIGS)}"
+        )
+    return AWWWARDS_CONFIGS[sub_aesthetic]
+
+
+def known_awwwards_sub_aesthetics(active_only: bool = False) -> list[str]:
+    """Sorted list of awwwards sub-aesthetic names.
+
+    active_only=True excludes vault_pending sub-aesthetics (those deferred
+    pending vault accumulation). Useful for status displays and rotation
+    planning at queue-evaluation time.
+    """
+    items = AWWWARDS_CONFIGS.items()
+    if active_only:
+        items = ((k, v) for k, v in items if not v["vault_pending"])
+    return sorted(k for k, _ in items)
+
+
+# ─────────────────────────────────────────────────────────────────────
 # CLI for debugging — prints config for a given aesthetic
 # ─────────────────────────────────────────────────────────────────────
 
