@@ -66,6 +66,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import scout_lib as sl  # noqa: E402  (path injected above)
+from aesthetic_configs import get_config as get_aesthetic_config  # noqa: E402
 
 # ─────────────────────────────────────────────────────────────────────
 # Constants — tuned for v1.0; change deliberately, not casually
@@ -420,6 +421,121 @@ def run_claude(
 
 
 # ─────────────────────────────────────────────────────────────────────
+# Aesthetic config substitutions + anti-similarity context (v1.2)
+#
+# These helpers feed prompt-template tokens that Patch 1c adds to
+# brief_synthesis and kit_generation. Until Patch 1c lands, the
+# substitutions are inert (the templates don't contain the placeholders
+# yet, so .replace() is a no-op). Keeping the wiring in this commit
+# means Patch 1c is a single-file edit of skills/workshop-playbook.md.
+# ─────────────────────────────────────────────────────────────────────
+
+# Match `--color-bg: #F5EDE2;` etc. in the first :root block of style.css.
+_CSS_PALETTE_TOKEN_RE = re.compile(
+    r"--color-([a-z][\w-]*)\s*:\s*(#[0-9A-Fa-f]{6,8})"
+)
+# Match the H1 of brief.md: `# Brief — beauty / restrained-luxury-warm`
+# Tolerates em-dash / en-dash / hyphen between Brief and the slug pair.
+_BRIEF_H1_RE = re.compile(
+    r"^#\s*Brief\s*[—–-]\s*([\w-]+)\s*/\s*([\w-]+)", re.MULTILINE
+)
+
+
+def _extract_palette_from_css(css_path: Path) -> dict[str, str]:
+    """Parse a kit's style.css for `--color-{name}: #XXXXXX` tokens.
+
+    Returns dict keyed by the suffix after `--color-` (e.g. "bg", "fg",
+    "accent", "muted", "surface"). Empty dict on missing file or no matches —
+    caller should treat empty as "skip this kit."
+    """
+    if not css_path.exists():
+        return {}
+    try:
+        text = css_path.read_text(encoding="utf-8")
+    except Exception:
+        return {}
+    # Limit scan to the first ~4 KB — palette tokens live in the :root block
+    # at the top of every kit's style.css. Saves a regex sweep on long files.
+    return {
+        m.group(1).lower(): m.group(2).upper()
+        for m in _CSS_PALETTE_TOKEN_RE.finditer(text[:4096])
+    }
+
+
+def _read_brief_vertical(brief_path: Path) -> Optional[str]:
+    """Parse the vertical name from brief.md's H1 line. Returns None if
+    brief is missing or H1 is unparseable — caller skips the run."""
+    if not brief_path.exists():
+        return None
+    try:
+        text = brief_path.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        return None
+    m = _BRIEF_H1_RE.search(text[:1024])
+    return m.group(1) if m else None
+
+
+def _extract_prior_kits_palettes(vertical: str, exclude_run_dir: Path) -> str:
+    """Anti-similarity context: walk RUNS_DIR for kits in the same vertical,
+    extract their palette tokens, and return formatted markdown for prompt
+    injection.
+
+    Excludes `exclude_run_dir` (the current in-progress run) so the model
+    never sees its own prior placeholder palette as a "prior kit". Always
+    returns non-empty text — empty-state goes to a descriptive line so the
+    substituted token in the prompt always renders something readable.
+    """
+    if not RUNS_DIR.exists():
+        return f"(no prior {vertical!r}-vertical kits — this kit sets the baseline)"
+    items: list[str] = []
+    for run in sorted(RUNS_DIR.iterdir()):
+        if not run.is_dir() or run.resolve() == exclude_run_dir.resolve():
+            continue
+        if _read_brief_vertical(run / "brief.md") != vertical:
+            continue
+        css = run / "kit" / "assets" / "css" / "style.css"
+        palette = _extract_palette_from_css(css)
+        if not palette:
+            continue
+        bg = palette.get("bg", "?")
+        fg = palette.get("fg", "?")
+        accent = palette.get("accent", "?")
+        items.append(f"- `{run.name}`: bg={bg}, fg={fg}, accent={accent}")
+    if not items:
+        return f"(no prior {vertical!r}-vertical kits — this kit sets the baseline)"
+    return "\n".join(items)
+
+
+def _format_avoid_list(items: list[str]) -> str:
+    """Render an aesthetic_configs `avoid` list as a markdown bullet list."""
+    if not items:
+        return "(no explicit avoidances for this aesthetic)"
+    return "\n".join(f"- {it}" for it in items)
+
+
+def _aesthetic_substitutions(aesthetic: str) -> dict[str, str]:
+    """Build the prompt-substitution map for aesthetic_configs fields.
+
+    Keys are the placeholder tokens that Patch 1c will introduce in
+    brief_synthesis and kit_generation. Until Patch 1c lands, none of these
+    tokens appear in the templates, so .replace() is a no-op. After Patch 1c
+    lands, the same call site automatically picks up the new placeholders —
+    no further wiring needed.
+    """
+    cfg = get_aesthetic_config(aesthetic)
+    return {
+        "{{AESTHETIC_NAME}}":                 cfg["name"],
+        "{{AESTHETIC_PALETTE_DIRECTIVE}}":    cfg["palette_directive"],
+        "{{AESTHETIC_TYPOGRAPHY_DIRECTIVE}}": cfg["typography_directive"],
+        "{{AESTHETIC_LAYOUT_DIRECTIVE}}":     cfg["layout_directive"],
+        "{{AESTHETIC_LAYOUT_SKETCH_CSS}}":    cfg["layout_sketch_css"],
+        "{{AESTHETIC_AVOID_LIST}}":           _format_avoid_list(cfg["avoid"]),
+        "{{AESTHETIC_CRAFT_DIRECTIVE}}":      cfg["craft_directive"],
+        "{{AESTHETIC_IMAGE_PREFIX}}":         cfg["image_prefix"],
+    }
+
+
+# ─────────────────────────────────────────────────────────────────────
 # Phase 3: synthesize_brief
 # ─────────────────────────────────────────────────────────────────────
 
@@ -435,12 +551,18 @@ def synthesize_brief(
     """
     template = load_prompt_template("brief_synthesis")
     refs_list = "\n".join(f"- {r['note_path']}" for r in references)
-    prompt = (
-        template
-        .replace("{{VERTICAL}}", vertical)
-        .replace("{{AESTHETIC}}", aesthetic)
-        .replace("{{REFERENCE_NOTES_LIST}}", refs_list)
-    )
+    # Aesthetic config tokens are substituted whether or not the template
+    # currently contains them — Patch 1c adds the placeholders to the
+    # template, and this wiring lets that be a single-file edit.
+    subs = {
+        "{{VERTICAL}}": vertical,
+        "{{AESTHETIC}}": aesthetic,
+        "{{REFERENCE_NOTES_LIST}}": refs_list,
+        **_aesthetic_substitutions(aesthetic),
+    }
+    prompt = template
+    for k, v in subs.items():
+        prompt = prompt.replace(k, v)
     out = run_claude(
         prompt, effort="high",
         add_dirs=[VAULT_DIR, run_dir],
@@ -470,12 +592,20 @@ def generate_kit(
     brief_path: Path,
     references: list[dict[str, Any]],
     run_dir: Path,
+    vertical: str,
+    aesthetic: str,
 ) -> Path:
     """Run the kit-generation prompt; verify all 5 files were written.
 
     Raises RuntimeError if any required file is missing or empty after
     the call. The raw stdout is always saved to run_dir/raw_kit_output.txt
     so a failed run is debuggable without rerunning.
+
+    `vertical` + `aesthetic` (v1.2) drive two new prompt substitutions:
+    aesthetic_configs fields (palette directive, layout sketch, avoid list,
+    craft directive) and prior-kits-palette anti-similarity context. Both
+    sets of placeholders are populated whether or not the template currently
+    references them — Patch 1c adds them to the template body.
     """
     kit_dir = run_dir / "kit"
     (kit_dir / "assets/css").mkdir(parents=True, exist_ok=True)
@@ -488,10 +618,18 @@ def generate_kit(
         # pad by repeating the last available image; the prompt still gets 3 paths
         top_imgs.append(top_imgs[-1])
 
+    prior_palettes = _extract_prior_kits_palettes(vertical, run_dir)
+    log.info("prior kits palette context: %d-line summary",
+             prior_palettes.count("\n") + 1)
+
     template = load_prompt_template("kit_generation")
     subs = {
         "{{KIT_DIR}}": str(kit_dir),
         "{{RUN_DIR}}": str(run_dir),
+        "{{VERTICAL}}": vertical,
+        "{{AESTHETIC}}": aesthetic,
+        "{{PRIOR_KITS_PALETTES}}": prior_palettes,
+        **_aesthetic_substitutions(aesthetic),
     }
     for i, r in enumerate(top_imgs, 1):
         subs[f"{{{{REF_IMAGE_{i}}}}}"] = str(r["image_path"])
@@ -1068,7 +1206,10 @@ def main() -> int:
     # 3-5. Claude phases (each retries once on timeout/error then aborts the run)
     try:
         synthesize_brief(vertical, aesthetic, references, run_dir)
-        kit_dir = generate_kit(run_dir / "brief.md", references, run_dir)
+        kit_dir = generate_kit(
+            run_dir / "brief.md", references, run_dir,
+            vertical=vertical, aesthetic=aesthetic,
+        )
         audit = self_audit(kit_dir, run_dir)
     except (RuntimeError, subprocess.TimeoutExpired, subprocess.CalledProcessError) as e:
         log.error("pipeline aborted: %s", e)
@@ -1086,7 +1227,7 @@ def main() -> int:
             strip_picsum_lighthouse_concerns as _strip_picsum_concerns,
             ImageGenError,
         )
-        images_status = _generate_images(kit_dir, run_dir)
+        images_status = _generate_images(kit_dir, run_dir, aesthetic_direction=aesthetic)
         total_imgs = len(images_status)
         succ = sum(1 for v in images_status.values() if v.get("status") == "success")
         fb = sum(1 for v in images_status.values() if v.get("status") == "fallback")

@@ -68,6 +68,39 @@ GENERATION_PROMPT_PREFIX = (
     "Consistent matte film finish, subtle organic grain. No text, no logos, "
     "no watermarks."
 )
+# v1.1 prefix above is preserved as the safe default for callers that don't
+# pass aesthetic_direction (CLI debug entry, future scripts). v1.2 routes
+# the prefix through _resolve_image_prefix() so each aesthetic gets a
+# matching photographic register; see scripts/aesthetic_configs.py.
+
+
+def _resolve_image_prefix(aesthetic_direction: str | None) -> str:
+    """Look up the per-aesthetic image_prefix from aesthetic_configs; fall
+    back to GENERATION_PROMPT_PREFIX (v1.1 behavior) when no aesthetic is
+    provided OR when aesthetic_configs cannot be imported (defensive — e.g.
+    if this module is invoked from a context where scripts/ isn't on
+    sys.path yet).
+    """
+    if not aesthetic_direction:
+        return GENERATION_PROMPT_PREFIX
+    try:
+        scripts_dir = Path("/opt/scout-workshop/scripts")
+        if str(scripts_dir) not in sys.path:
+            sys.path.insert(0, str(scripts_dir))
+        from aesthetic_configs import get_config  # noqa: WPS433
+    except Exception as e:
+        log.warning(
+            "could not import aesthetic_configs (%r); falling back to v1.1 prefix",
+            e,
+        )
+        return GENERATION_PROMPT_PREFIX
+    cfg = get_config(aesthetic_direction)
+    prefix = cfg.get("image_prefix") or GENERATION_PROMPT_PREFIX
+    log.info(
+        "image_prefix resolved for aesthetic %r → %r (%d chars)",
+        aesthetic_direction, cfg.get("name", "?"), len(prefix),
+    )
+    return prefix
 
 # Pixel dimensions per aspect ratio. Used for SVG placeholder canvas sizing.
 # Values approximate Gemini's actual outputs (probe data) so SVG fallbacks
@@ -450,9 +483,15 @@ def strip_picsum_lighthouse_concerns(audit_md_path: Path) -> int:
 
 def generate_kit_images(
     kit_dir: Path, run_dir: Path,
+    aesthetic_direction: str | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Generate or fall-back-placehold every image referenced by the kit's
     image-prompts.json. Rewrites picsum URLs in HTML to local paths.
+
+    `aesthetic_direction` (v1.2) selects the per-aesthetic image prefix from
+    scripts/aesthetic_configs.py — replaces the v1.1 hardcoded warm-cream
+    GENERATION_PROMPT_PREFIX. When None (e.g. from the CLI debug entry), falls
+    back to GENERATION_PROMPT_PREFIX so legacy invocations keep working.
 
     Returns {image_id: {"status": "success"|"fallback"|"failed",
                          "path": "...", "error": "..."}}.
@@ -484,6 +523,11 @@ def generate_kit_images(
 
     api_key = _load_api_key()  # raises if missing
 
+    # Resolve per-aesthetic prefix once for this kit. All images in the kit
+    # share the same photographic register; the per-image differentiation is
+    # in the manifest's generation_prompt field.
+    image_prefix = _resolve_image_prefix(aesthetic_direction)
+
     images_dir = kit_dir / "assets" / "images"
     images_dir.mkdir(parents=True, exist_ok=True)
     palette = _parse_palette_from_brief(run_dir / "brief.md")
@@ -504,7 +548,7 @@ def generate_kit_images(
         out_jpg = images_dir / f"{image_id}.jpg"
         out_svg = images_dir / f"{image_id}.svg"
         aspect = entry.get("aspect_ratio", "4:3")
-        full_prompt = GENERATION_PROMPT_PREFIX + " " + entry["generation_prompt"]
+        full_prompt = image_prefix + " " + entry["generation_prompt"]
 
         # short-circuit: no API → straight to SVG
         if not api_ok or daily_quota_exceeded:
@@ -633,7 +677,14 @@ if __name__ == "__main__":  # pragma: no cover
     p = argparse.ArgumentParser()
     p.add_argument("--kit-dir", required=True, type=Path)
     p.add_argument("--run-dir", required=True, type=Path)
+    p.add_argument(
+        "--aesthetic", default=None,
+        help="aesthetic_direction (e.g. modern-minimal, modern-minimal-v2). "
+             "Selects the per-aesthetic image prefix from aesthetic_configs.py. "
+             "Omit to fall back to the v1.1 hardcoded prefix.",
+    )
     args = p.parse_args()
-    out = generate_kit_images(args.kit_dir, args.run_dir)
+    out = generate_kit_images(args.kit_dir, args.run_dir,
+                              aesthetic_direction=args.aesthetic)
     print(json.dumps({k: {kk: vv for kk, vv in v.items() if kk != "path"}
                       for k, v in out.items()}, indent=2))
