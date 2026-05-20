@@ -1,0 +1,25 @@
+[Unit]
+Description=Scout-Workshop Floor — tailnet dashboard (FastAPI)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=deployer
+Group=deployer
+WorkingDirectory=/opt/scout-workshop
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/scout-workshop/venv/bin/uvicorn dashboard.app:app --host 100.110.49.44 --port 8211 --workers 1 --log-level info
+Restart=on-failure
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadOnlyPaths=/opt/scout-workshop
+ReadWritePaths=/opt/scout-workshop/logs
+
+[Install]
+WantedBy=multi-user.target

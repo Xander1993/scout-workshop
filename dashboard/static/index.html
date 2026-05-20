@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>WORKSHOP_FLOOR // tailnet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=JetBrains+Mono:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="loading">
+
+<!-- top header -->
+<header class="hd">
+  <a class="hd-brand" href="/" aria-label="Workshop Floor home">
+    <span class="hd-brand-pre">WORKSHOP</span><span class="hd-brand-slash">//</span><em class="hd-brand-em">floor</em>
+  </a>
+  <nav class="hd-nav">
+    <a href="#runs">RUNS</a>
+    <a href="#stats">STATS</a>
+    <a href="#aesthetics">AESTHETICS</a>
+  </nav>
+  <div class="hd-status">
+    <span class="hd-pulse" aria-hidden="true"></span>
+    <span class="hd-status-text">LIVE · TAILNET</span>
+  </div>
+</header>
+
+<main>
+
+<!-- HERO: editorial -->
+<section class="hero" id="hero">
+  <div class="hero-eyebrow">EST. 2026 · SUNDAY CRON · WAITLIST OF ONE</div>
+  <h1 class="hero-h1">
+    <span>The</span><br>
+    <em>floor</em> <span>where</span><br>
+    every kit
+    <span>lands.</span>
+  </h1>
+  <div class="hero-meta">
+    <div class="hero-meta-col">
+      <div class="hero-meta-label">RUNS OBSERVED</div>
+      <div class="hero-meta-val" data-stat="total_runs">—</div>
+    </div>
+    <div class="hero-meta-col">
+      <div class="hero-meta-label">SHIP RATE</div>
+      <div class="hero-meta-val"><span data-stat="ship_rate_pct">—</span><span class="unit">%</span></div>
+    </div>
+    <div class="hero-meta-col">
+      <div class="hero-meta-label">AVG WARNINGS</div>
+      <div class="hero-meta-val" data-stat="avg_warnings_per_run">—</div>
+    </div>
+    <div class="hero-meta-col">
+      <div class="hero-meta-label">IMAGES MADE</div>
+      <div class="hero-meta-val" data-stat="total_images_generated">—</div>
+    </div>
+  </div>
+  <div class="hero-latest" id="hero-latest" hidden>
+    <div class="hero-latest-image">
+      <img id="hero-latest-img" alt="">
+    </div>
+    <div class="hero-latest-body">
+      <div class="hero-latest-eyebrow">LATEST · <span id="hero-latest-ts">—</span></div>
+      <h2 class="hero-latest-title" id="hero-latest-slug">—</h2>
+      <p class="hero-latest-excerpt" id="hero-latest-excerpt">—</p>
+      <div class="hero-latest-chips" id="hero-latest-chips"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<section class="mq" aria-hidden="true">
+  <div class="mq-track" id="mq-track">
+    <!-- duplicated content for seamless scroll -->
+  </div>
+</section>
+
+<!-- DENSITY STRIP -->
+<section class="density" id="density">
+  <div class="density-row">
+    <h3 class="section-eyebrow">DENSITY DISTRIBUTION</h3>
+  </div>
+  <div class="density-bars" id="density-bars"></div>
+</section>
+
+<!-- RUNS GRID + FILTER RAIL -->
+<section class="grid" id="runs">
+  <div class="grid-head">
+    <h2 class="grid-title">All runs</h2>
+    <div class="grid-count"><span id="visible-count">—</span> visible</div>
+  </div>
+
+  <div class="grid-layout">
+    <aside class="rail">
+      <div class="rail-group">
+        <div class="rail-label">REGISTER</div>
+        <div class="rail-chips" id="filter-register"></div>
+      </div>
+      <div class="rail-group">
+        <div class="rail-label">AESTHETIC</div>
+        <div class="rail-chips" id="filter-aesthetic"></div>
+      </div>
+      <div class="rail-group">
+        <div class="rail-label">VERDICT</div>
+        <div class="rail-chips" id="filter-status"></div>
+      </div>
+      <button class="rail-clear" id="rail-clear">CLEAR FILTERS</button>
+    </aside>
+
+    <div class="runs" id="runs-grid">
+      <!-- cards injected by JS -->
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- showpiece footer wordmark -->
+<footer class="ft">
+  <div class="ft-wordmark">SCOUT_<em>WORKSHOP</em><sup>®</sup></div>
+  <div class="ft-meta">
+    <div>TAILNET · 100.110.49.44:8211</div>
+    <div>SRV1420550 · HOSTINGER VPS</div>
+    <div>v1.4.0-pre · DASHBOARD</div>
+  </div>
+</footer>
+
+<!-- modal -->
+<div class="modal" id="modal" hidden aria-hidden="true">
+  <div class="modal-bg" data-close></div>
+  <div class="modal-frame">
+    <button class="modal-close" data-close aria-label="Close">×</button>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- libs from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<script src="/static/main.js" defer></script>
+
+</body>
+</html>
