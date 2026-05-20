@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact — {{BRAND}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap"
+    media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <!-- GA4 placeholder — replace G-XXXXXXXXXX before deploy -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <!-- Microsoft Clarity placeholder — replace XXXXXXXXXX before deploy -->
+  <script>
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "XXXXXXXXXX");
+  </script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="index.html" class="brand" aria-label="{{BRAND}} home">
+      {{BRAND}}<sup>®</sup>
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Studio</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="contacts.html" aria-current="page">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <a href="tel:+15551234567" class="tel-pill" aria-label="Call {{BRAND}} at (555) 123-4567">
+        <svg class="tel-pill__icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.72 2.78a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.11-.45c.88.36 1.82.6 2.78.72A2 2 0 0 1 22 16.92z"></path></svg>
+        <span>(555) 123-4567</span>
+      </a>
+      <a href="contacts.html" class="cta">Start a project</a>
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" data-nav-toggle>
+        <span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-nav" data-mobile-nav>
+    <ul>
+      <li><a href="index.html">Studio</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contacts.html" aria-current="page">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Contact</span>
+      <h1>Send a <em class="headline-em">brief</em>.</h1>
+      <p style="max-width: 54ch; margin-top: 1rem;">
+        The shortest path is the form below — four fields, no more. If you prefer voice or mail, all three channels are
+        below. We reply within one business day.
+      </p>
+      <p style="margin-top: 1.5rem;">
+        <a href="#book" class="cta">Write a brief</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+
+      <div class="contact-cards">
+        <article class="contact-card">
+          <span class="eyebrow">By phone</span>
+          <h3>Call the studio</h3>
+          <p style="font-size: 1.125rem;">
+            <a href="tel:+15551234567">(555) 123-4567</a>
+          </p>
+          <p style="font-size: 0.9rem; color: var(--color-muted);">
+            Mon — Fri, 9:00 – 17:00 local.
+          </p>
+        </article>
+
+        <article class="contact-card">
+          <span class="eyebrow">By email</span>
+          <h3>Write us a note</h3>
+          <p style="font-size: 1.125rem;">
+            <a href="mailto:hello@example.com">hello@example.com</a>
+          </p>
+          <p style="font-size: 0.9rem; color: var(--color-muted);">
+            Anything you would say on a call, in writing.
+          </p>
+        </article>
+
+        <article class="contact-card">
+          <span class="eyebrow">By post</span>
+          <h3>Visit the studio</h3>
+          <p style="font-size: 1.125rem;">
+            123 Main St,<br />City, ST 00000
+          </p>
+          <p style="font-size: 0.9rem; color: var(--color-muted);">
+            By appointment only.
+          </p>
+        </article>
+      </div>
+
+      <span class="eyebrow" id="book">Brief form</span>
+      <h2>Tell us about the project.</h2>
+      <p style="max-width: 56ch;">
+        Four fields, then we take it from there. We will reply with a written estimate within five business days.
+      </p>
+
+      <form class="contact-form" action="mailto:hello@example.com" method="post" enctype="text/plain" data-contact-form>
+        <div>
+          <label for="cf-name">Name</label>
+          <input id="cf-name" name="name" type="text" autocomplete="name" required />
+        </div>
+        <div>
+          <label for="cf-company">Company</label>
+          <input id="cf-company" name="company" type="text" autocomplete="organization" />
+        </div>
+        <div>
+          <label for="cf-budget">Budget range</label>
+          <select id="cf-budget" name="budget" required>
+            <option value="">Select a range</option>
+            <option>Under $20k</option>
+            <option>$20k — $50k</option>
+            <option>$50k — $120k</option>
+            <option>$120k+</option>
+          </select>
+        </div>
+        <div>
+          <label for="cf-message">Project description</label>
+          <textarea id="cf-message" name="message" required></textarea>
+        </div>
+        <div>
+          <button type="submit" class="cta">Send brief</button>
+        </div>
+        <p data-form-status hidden style="color: var(--color-accent); margin: 0;"></p>
+      </form>
+
+      <div class="map-placeholder" aria-label="Studio location map placeholder">
+        Map — 123 Main St
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div>
+        <span class="site-footer__brand">{{BRAND}}<sup>®</sup></span>
+        <p style="margin-top: 0.75rem; max-width: 36ch;">
+          An independent studio for identity, editorial, and considered digital work.
+        </p>
+      </div>
+      <div>
+        <span class="eyebrow">Visit</span>
+        <p>123 Main St,<br />City, ST 00000</p>
+      </div>
+      <div>
+        <span class="eyebrow">Contact</span>
+        <p>
+          <a href="tel:+15551234567">(555) 123-4567</a><br />
+          <a href="mailto:hello@example.com">hello@example.com</a>
+        </p>
+      </div>
+      <div>
+        <span class="eyebrow">Pages</span>
+        <p>
+          <a href="index.html">Studio</a><br />
+          <a href="services.html">Services</a><br />
+          <a href="contacts.html">Contact</a>
+        </p>
+      </div>
+    </div>
+    <p class="site-footer__legal">© 2026 {{BRAND}}. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>

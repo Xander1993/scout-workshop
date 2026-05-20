@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Services — {{BRAND}}</title>
+  <meta name="description" content="Five services from {{BRAND}}: Consult, Resurface, Restore, Renew, Tend.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- GA4 placeholder — replace G-XXXXXXXXXX before deploy -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <!-- Microsoft Clarity placeholder — replace XXXXXXXXXX before deploy -->
+  <script>
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "XXXXXXXXXX");
+  </script>
+  <!-- CDN: GSAP + ScrollTrigger + SplitType + Lenis for rich motion vocabulary. Native CSS insufficient for SplitType char-split, ScrollTrigger viewport-trigger logic, magnetic cursor, custom-cursor mix-blend-mode, and smooth-scroll inertia integration. -->
+  <script defer
+          src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+          integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script defer
+          src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+          integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js"
+          integrity="sha512-bIWtt3DvcIoDFZGGhjHSpZNVEjKvmg0sE1C2iX/Cih3FQrWGmCewvvnXkPPLJIJg8TkeWAO829K13G1r6+7Heg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"
+          integrity="sha512-BovI6sFxI6ifdcphZUKEnBk9BD/BAURZ7qILD2Nu17d2vpeXmVGRIox1c5s49OBxmBjiD4XEkYZtf196ayZWMQ=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script defer src="assets/js/main.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="site-header__brand" href="index.html">{{BRAND}}<span class="reg" aria-hidden="true">®</span></a>
+  <nav class="site-nav" aria-label="Primary">
+    <a href="index.html">Index</a>
+    <a href="services.html" aria-current="page">Services</a>
+    <a href="contacts.html">Contact</a>
+  </nav>
+  <a class="cta" href="contacts.html">Enquire</a>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+    <span class="nav-toggle__bar" aria-hidden="true"></span>
+    Menu
+  </button>
+</header>
+
+<main>
+
+  <section class="hero" aria-labelledby="hero-h1">
+    <div class="hero__top">
+      <div class="hero__wordmark">
+        <span class="supertext">Index — 005 services</span>
+        <span class="supertext">All by site visit</span>
+      </div>
+      <span class="supertext">No.&nbsp;002 / 003</span>
+    </div>
+    <div class="hero__body">
+      <h1 id="hero-h1" class="hero__h1">Five moves.</h1>
+      <div class="hero__meta">
+        <p class="subhead">A short, fixed list. Each service is one session, one room, one practitioner. No upsell, no booking widget, no second tier.</p>
+        <div class="hero__cta-row">
+          <a class="cta" href="contacts.html">Enquire</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="detail-h2">
+    <div class="container">
+      <span class="supertext">The list — by ordinary order</span>
+      <h2 id="detail-h2" class="section__h2" style="margin-top: 0.6rem;">In order.</h2>
+    </div>
+
+    <div class="services-detail">
+      <article class="services-detail__row">
+        <h2>Consult</h2>
+        <p>A first visit, ninety minutes, in the studio. We look, we ask, we plan. Nothing is sold; nothing is begun. If a second visit follows, it will be booked from this room.</p>
+        <span class="meta">90 min — by referral</span>
+      </article>
+
+      <article class="services-detail__row">
+        <h2>Resurface</h2>
+        <p>A focused session on the upper layer. Lactic, mandelic, a single retinoid in turn. Skin is read first, then worked. The session ends when the skin asks it to.</p>
+        <span class="meta">75 min — single visit</span>
+      </article>
+
+      <article class="services-detail__row">
+        <h2>Restore</h2>
+        <p>After resurface, or after the season has been hard. A slow protocol of barrier, lipid, and pause. Often paired in advance with a Consult.</p>
+        <span class="meta">60 min — paired visit</span>
+      </article>
+
+      <article class="services-detail__row">
+        <h2>Renew</h2>
+        <p>A standing quarterly visit for the studio regulars. Read, refine, record. A short report follows by email.</p>
+        <span class="meta">90 min — quarterly</span>
+      </article>
+
+      <article class="services-detail__row">
+        <h2>Tend</h2>
+        <p>A short, between-visits maintenance call. Forty minutes. For the standing list only, by prior arrangement.</p>
+        <span class="meta">40 min — standing list</span>
+      </article>
+    </div>
+  </section>
+
+  <div class="divider-clip" aria-hidden="true"></div>
+
+  <section class="cta-strip" aria-labelledby="services-cta-h2">
+    <span class="cta-strip__caption">To begin with a Consult</span>
+    <h2 id="services-cta-h2" class="section__h2" style="font-size: clamp(2rem, 6vw, 5rem); margin-block: 1rem;">Quietly.</h2>
+    <a class="cta" href="contacts.html">Enquire</a>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__wordmark">
+    {{BRAND}}<span class="reg" aria-hidden="true">®</span>
+  </div>
+  <div class="site-footer__meta">
+    <span>{{BRAND}}, 2026 — 123 Main St, City, ST 00000 — hello@example.com</span>
+  </div>
+</footer>
+
+</body>
+</html>

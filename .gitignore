@@ -9,6 +9,7 @@ workshop/state/sent_messages.json
 .kits-mirror/
 venv/
 __pycache__/
+.pytest_cache/
 *.pyc
 vault/
 day-2-bootstrap.md

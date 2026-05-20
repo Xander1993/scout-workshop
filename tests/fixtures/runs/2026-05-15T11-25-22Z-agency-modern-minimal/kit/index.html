@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{BRAND}} — A studio for considered work</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap"></noscript>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- GA4 placeholder — replace G-XXXXXXXXXX before deploy -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <!-- Microsoft Clarity placeholder — replace XXXXXXXXXX before deploy -->
+  <script>
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "XXXXXXXXXX");
+  </script>
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <a class="brand" href="index.html">
+      <span class="brand__mark">{{BRAND}}</span><sup class="brand__reg" aria-hidden="true">®</sup>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" aria-current="page">Index</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="contacts.html">Studio</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="tel-chip" href="tel:+15551234567" aria-label="Call the studio">
+        <span class="tel-chip__dot" aria-hidden="true"></span>
+        <span class="tel-chip__num">(555) 123-4567</span>
+      </a>
+      <a class="cta cta--header" href="contacts.html">Start a project</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="wordmark-fold" aria-labelledby="wordmark-title">
+      <p class="fold-meta"><span>Site of the Day</span><span>Independent · Est. 2018</span></p>
+      <h1 class="wordmark" id="wordmark-title">
+        <span class="wordmark__line">A studio for</span>
+        <span class="wordmark__line">considered work<sup class="wordmark__reg" aria-hidden="true">®</sup></span>
+      </h1>
+      <p class="fold-sub">Brand systems, sites, and identities for founders who want restraint to do the heavy lifting.</p>
+      <ul class="founder-chips" aria-label="Founders">
+        <li><span class="chip-dot" aria-hidden="true"></span>{{BRAND}} —</li>
+        <li><span class="chip-mark" aria-hidden="true">▣</span>A. Quint</li>
+        <li><span class="chip-mark" aria-hidden="true">◇</span>R. Halberd</li>
+        <li><span class="chip-mark" aria-hidden="true">⌬</span>S. Mori</li>
+      </ul>
+    </section>
+
+    <section class="canvas-slab" aria-label="Featured reel">
+      <img class="canvas-slab__visual"
+           src="assets/images/hero.jpg"
+           width="1280" height="720"
+           alt="A wide editorial still of the studio's latest brand reel, dark canvas with soft directional light."
+           fetchpriority="high">
+      <div class="canvas-slab__overlay">
+        <span class="canvas-slab__id">REEL · 026 / 2026</span>
+        <a class="cta cta--pill" href="contacts.html">
+          <span>Start a project</span>
+          <span class="cta__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+      <nav class="sub-nav" aria-label="Sections">
+        <a href="#work">Work</a>
+        <a href="services.html">Studio</a>
+        <a href="#process">Process</a>
+        <a href="contacts.html">Contact</a>
+      </nav>
+    </section>
+
+    <section class="trust" aria-label="Studio at a glance">
+      <ol class="trust__row">
+        <li><span class="trust__num">120</span><span class="trust__label">Projects</span></li>
+        <li><span class="trust__num">14</span><span class="trust__label">Awards</span></li>
+        <li><span class="trust__num">2018</span><span class="trust__label">Established</span></li>
+        <li><span class="trust__num">9</span><span class="trust__label">Sectors</span></li>
+      </ol>
+    </section>
+
+    <div class="divider-clip" aria-hidden="true"></div>
+
+    <section class="services-preview cards-host" id="process">
+      <header class="section-head">
+        <p class="section-eyebrow">01 — Practice</p>
+        <h2 class="section-title">Three disciplines, one studio.</h2>
+      </header>
+      <div class="cards">
+        <article class="card" style="--card-i:0">
+          <p class="card__num">/01</p>
+          <h3 class="card__title">Brand systems</h3>
+          <p class="card__body">Identity, typography, and a working set of components — built to outlast a launch cycle.</p>
+          <a class="card__link" href="services.html#brand">Open discipline →</a>
+        </article>
+        <article class="card" style="--card-i:1">
+          <p class="card__num">/02</p>
+          <h3 class="card__title">Editorial sites</h3>
+          <p class="card__body">Considered, content-first builds. Plain HTML/CSS, fast first paint, no framework tax.</p>
+          <a class="card__link" href="services.html#sites">Open discipline →</a>
+        </article>
+        <article class="card" style="--card-i:2">
+          <p class="card__num">/03</p>
+          <h3 class="card__title">Art direction</h3>
+          <p class="card__body">Image-making, campaign frames, and the visual register that holds a brand together.</p>
+          <a class="card__link" href="services.html#art">Open discipline →</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="cases" id="work" aria-label="Selected work">
+      <header class="section-head">
+        <p class="section-eyebrow">02 — Selected work</p>
+        <h2 class="section-title">A small, deliberate catalogue.</h2>
+      </header>
+
+      <article class="case">
+        <div class="case__meta">
+          <p class="case__num">01 — 2025</p>
+          <h3 class="case__title">Halberd &amp; Quint</h3>
+          <p class="case__sector">Identity · Editorial site · Print</p>
+        </div>
+        <a class="case__visual" href="services.html">
+          <img src="assets/images/case-study-1.jpg"
+               width="1280" height="720" loading="lazy"
+               alt="Wide editorial photograph of the Halberd & Quint stationery system on a cool-white surface.">
+        </a>
+      </article>
+
+      <article class="case case--mirror">
+        <div class="case__meta">
+          <p class="case__num">02 — 2024</p>
+          <h3 class="case__title">North Atlas</h3>
+          <p class="case__sector">Brand system · Wayfinding</p>
+        </div>
+        <a class="case__visual" href="services.html">
+          <img src="assets/images/case-study-2.jpg"
+               width="1280" height="720" loading="lazy"
+               alt="Wide image of the North Atlas wayfinding signage installed against a concrete wall.">
+        </a>
+      </article>
+
+      <article class="case">
+        <div class="case__meta">
+          <p class="case__num">03 — 2024</p>
+          <h3 class="case__title">Mori Editions</h3>
+          <p class="case__sector">Publishing · Type design</p>
+        </div>
+        <a class="case__visual" href="services.html">
+          <img src="assets/images/case-study-3.jpg"
+               width="1280" height="720" loading="lazy"
+               alt="Wide editorial spread of the Mori Editions typeface specimen book under raking light.">
+        </a>
+      </article>
+    </section>
+
+    <section class="about-strip">
+      <p class="about-eyebrow">A note from the studio</p>
+      <p class="about-body">We work in small numbers — twelve engagements a year, no more. Each project gets a single point of contact, a working brief in the first week, and a finish deadline that holds. The work is calmer for it.</p>
+      <ul class="award-chips" aria-label="Recognition">
+        <li>Awwwards · SOTD 2025</li>
+        <li>Brand New · Noted 2024</li>
+        <li>FWA · Featured 2024</li>
+        <li>TDC · Merit 2023</li>
+      </ul>
+    </section>
+  </main>
+
+  <aside class="sticky-bar" aria-label="Persistent contact bar">
+    <span class="sticky-bar__label">Available · Q3</span>
+    <a class="sticky-bar__tel" href="tel:+15551234567">(555) 123-4567</a>
+    <a class="cta cta--pill cta--dark" href="contacts.html">Start a project →</a>
+  </aside>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__row">
+      <p class="site-footer__brand">{{BRAND}}<sup aria-hidden="true">®</sup></p>
+      <address class="site-footer__addr">
+        123 Main St, City, ST 00000<br>
+        <a href="tel:+15551234567">(555) 123-4567</a> ·
+        <a href="mailto:hello@example.com">hello@example.com</a>
+      </address>
+    </div>
+    <p class="site-footer__legal">© {{BRAND}} · A studio for considered work.</p>
+  </footer>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

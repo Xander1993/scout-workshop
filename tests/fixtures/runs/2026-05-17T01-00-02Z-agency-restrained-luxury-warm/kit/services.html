@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Services — {{BRAND}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap"
+    media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <!-- GA4 placeholder — replace G-XXXXXXXXXX before deploy -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <!-- Microsoft Clarity placeholder — replace XXXXXXXXXX before deploy -->
+  <script>
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "XXXXXXXXXX");
+  </script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="index.html" class="brand" aria-label="{{BRAND}} home">
+      {{BRAND}}<sup>®</sup>
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Studio</a></li>
+        <li><a href="services.html" aria-current="page">Services</a></li>
+        <li><a href="contacts.html">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <a href="tel:+15551234567" class="tel-pill" aria-label="Call {{BRAND}} at (555) 123-4567">
+        <svg class="tel-pill__icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.72 2.78a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.11-.45c.88.36 1.82.6 2.78.72A2 2 0 0 1 22 16.92z"></path></svg>
+        <span>(555) 123-4567</span>
+      </a>
+      <a href="contacts.html" class="cta">Start a project</a>
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" data-nav-toggle>
+        <span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-nav" data-mobile-nav>
+    <ul>
+      <li><a href="index.html">Studio</a></li>
+      <li><a href="services.html" aria-current="page">Services</a></li>
+      <li><a href="contacts.html">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Services</span>
+      <h1>Work we take, and work we <em class="headline-em">decline</em>.</h1>
+      <p style="max-width: 56ch; margin-top: 1rem;">
+        Three practices, each priced and scoped from a written brief. We accept three to five engagements per year,
+        and decline projects we cannot stand behind for a decade.
+      </p>
+      <p style="margin-top: 1.5rem;">
+        <a href="contacts.html" class="cta">Start a project</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="services-layout">
+        <div>
+
+          <article class="service-block" id="identity">
+            <span class="eyebrow">01 — Identity</span>
+            <h2>Identity systems</h2>
+            <p style="margin-top: 1rem;">
+              Wordmarks, custom letterforms, and the type systems that tie them together. We build identities the way a
+              press operator sets a chase — slowly, with margin, in a single voice. Deliverables include the wordmark,
+              the secondary system, typographic and color rules, and a written archive that travels with the brand.
+            </p>
+            <div class="service-row__media" style="aspect-ratio: 4 / 3; margin-top: 1.5rem;">
+              <img src="assets/images/services-identity-full.jpg"
+                   alt="A wordmark proof in warm earth ink on cream paper, with type specimens fanned out."
+                   width="800" height="600" loading="lazy" />
+            </div>
+            <p class="service-block__cta">
+              <a href="contacts.html" class="cta cta--ghost">Brief us on an identity</a>
+            </p>
+          </article>
+
+          <article class="service-block" id="editorial">
+            <span class="eyebrow">02 — Editorial</span>
+            <h2>Editorial sites</h2>
+            <p style="margin-top: 1rem;">
+              Slow-built websites for studios, publishers, and houses with a long view. Typography-led, accessibility-first,
+              quietly engineered. We design and build the whole surface, from the hero to the colophon, with no theme.
+            </p>
+            <div class="service-row__media" style="aspect-ratio: 4 / 3; margin-top: 1.5rem;">
+              <img src="assets/images/services-editorial-full.jpg"
+                   alt="An editorial page layout printed at scale, taped to a warm cream studio wall."
+                   width="800" height="600" loading="lazy" />
+            </div>
+            <p class="service-block__cta">
+              <a href="contacts.html" class="cta cta--ghost">Brief us on a site</a>
+            </p>
+          </article>
+
+          <article class="service-block" id="digital">
+            <span class="eyebrow">03 — Digital</span>
+            <h2>Considered digital</h2>
+            <p style="margin-top: 1rem;">
+              Product surfaces and digital tools that respect attention. Component systems, marketing surfaces, and the
+              long-tail polish work that takes a thing from launched to lived-in. Restrained motion. Honest performance.
+            </p>
+            <div class="service-row__media" style="aspect-ratio: 4 / 3; margin-top: 1.5rem;">
+              <img src="assets/images/services-digital-full.jpg"
+                   alt="A laptop and notebook on a warm-toned desk, displaying a quiet, well-spaced interface."
+                   width="800" height="600" loading="lazy" />
+            </div>
+            <p class="service-block__cta">
+              <a href="contacts.html" class="cta cta--ghost">Brief us on a product</a>
+            </p>
+          </article>
+
+        </div>
+
+        <aside class="booking-rail" aria-label="Engagement summary">
+          <span class="eyebrow">Engagement</span>
+          <h3>What a brief becomes</h3>
+          <p>
+            A written estimate within five business days. A first call within ten. A fixed scope, a fixed price, and a
+            calendar both parties keep.
+          </p>
+          <p style="font-size: 0.9rem; color: var(--color-muted);">
+            Typical range: $18k — $120k.<br />
+            Lead time: 6 — 14 weeks.
+          </p>
+          <a href="contacts.html" class="cta" style="width: 100%; justify-content: center;">Start a project</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div>
+        <span class="site-footer__brand">{{BRAND}}<sup>®</sup></span>
+        <p style="margin-top: 0.75rem; max-width: 36ch;">
+          An independent studio for identity, editorial, and considered digital work.
+        </p>
+      </div>
+      <div>
+        <span class="eyebrow">Visit</span>
+        <p>123 Main St,<br />City, ST 00000</p>
+      </div>
+      <div>
+        <span class="eyebrow">Contact</span>
+        <p>
+          <a href="tel:+15551234567">(555) 123-4567</a><br />
+          <a href="mailto:hello@example.com">hello@example.com</a>
+        </p>
+      </div>
+      <div>
+        <span class="eyebrow">Pages</span>
+        <p>
+          <a href="index.html">Studio</a><br />
+          <a href="services.html">Services</a><br />
+          <a href="contacts.html">Contact</a>
+        </p>
+      </div>
+    </div>
+    <p class="site-footer__legal">© 2026 {{BRAND}}. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>

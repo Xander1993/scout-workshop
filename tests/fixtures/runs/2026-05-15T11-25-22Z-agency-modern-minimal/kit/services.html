@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Services — {{BRAND}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap"></noscript>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- GA4 placeholder — replace G-XXXXXXXXXX before deploy -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <!-- Microsoft Clarity placeholder — replace XXXXXXXXXX before deploy -->
+  <script>
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "XXXXXXXXXX");
+  </script>
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <a class="brand" href="index.html">
+      <span class="brand__mark">{{BRAND}}</span><sup class="brand__reg" aria-hidden="true">®</sup>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Index</a></li>
+        <li><a href="services.html" aria-current="page">Services</a></li>
+        <li><a href="contacts.html">Studio</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="tel-chip" href="tel:+15551234567" aria-label="Call the studio">
+        <span class="tel-chip__dot" aria-hidden="true"></span>
+        <span class="tel-chip__num">(555) 123-4567</span>
+      </a>
+      <a class="cta cta--header" href="contacts.html">Start a project</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero">
+      <p class="fold-meta"><span>Services</span><span>Four disciplines</span></p>
+      <h1 class="page-title">Four disciplines we hold to.</h1>
+      <p class="page-lede">Each engagement is scoped against the same working brief: a clear problem, a finish date, and a single point of contact. The list below is everything we offer — there is nothing else hidden in a pitch deck.</p>
+      <a class="cta cta--pill cta--dark" href="contacts.html">Start a project →</a>
+    </section>
+
+    <div class="divider-clip" aria-hidden="true"></div>
+
+    <section class="service-rows" aria-label="Service catalogue">
+      <article class="service-row" id="brand">
+        <div class="service-row__meta">
+          <p class="service-row__num">/01</p>
+          <h2 class="service-row__title">Brand systems</h2>
+          <p class="service-row__body">Identity, typography, motion principles, and a working component set. We ship a defended system, not a logo pack.</p>
+          <ul class="service-row__list">
+            <li>Wordmark, monogram, signatures</li>
+            <li>Type pairing &amp; license sourcing</li>
+            <li>Brand book, 30–60pp</li>
+          </ul>
+          <a class="cta cta--pill" href="contacts.html">Enquire — 01 →</a>
+        </div>
+        <div class="service-row__visual">
+          <img src="assets/images/service-1-brand-systems.jpg"
+               width="800" height="600" loading="lazy"
+               alt="A printed brand book lying flat with hairline rules and a single red mark on the cover.">
+        </div>
+      </article>
+
+      <article class="service-row service-row--mirror" id="sites">
+        <div class="service-row__meta">
+          <p class="service-row__num">/02</p>
+          <h2 class="service-row__title">Editorial sites</h2>
+          <p class="service-row__body">Content-first builds in plain HTML/CSS. Fast first paint, accessible by default, no framework tax — they outlast the launch cycle.</p>
+          <ul class="service-row__list">
+            <li>Information architecture</li>
+            <li>Editorial templates &amp; CMS hand-off</li>
+            <li>Performance budget &amp; QA</li>
+          </ul>
+          <a class="cta cta--pill" href="contacts.html">Enquire — 02 →</a>
+        </div>
+        <div class="service-row__visual">
+          <img src="assets/images/service-2-editorial-sites.jpg"
+               width="800" height="600" loading="lazy"
+               alt="A laptop screen against a cool-white wall showing a minimal editorial homepage with a centered wordmark.">
+        </div>
+      </article>
+
+      <article class="service-row" id="art">
+        <div class="service-row__meta">
+          <p class="service-row__num">/03</p>
+          <h2 class="service-row__title">Art direction</h2>
+          <p class="service-row__body">Image-making, campaign frames, and the visual register that holds a brand together across photography, motion, and print.</p>
+          <ul class="service-row__list">
+            <li>Photography &amp; production</li>
+            <li>Campaign system &amp; rollout</li>
+            <li>Print &amp; pack supervision</li>
+          </ul>
+          <a class="cta cta--pill" href="contacts.html">Enquire — 03 →</a>
+        </div>
+        <div class="service-row__visual">
+          <img src="assets/images/service-3-art-direction.jpg"
+               width="800" height="600" loading="lazy"
+               alt="A wide editorial portrait used in a brand campaign, raking afternoon light across a model in cool-tone styling.">
+        </div>
+      </article>
+
+      <article class="service-row service-row--mirror" id="advisory">
+        <div class="service-row__meta">
+          <p class="service-row__num">/04</p>
+          <h2 class="service-row__title">Studio advisory</h2>
+          <p class="service-row__body">Retained sessions for founders mid-build — design reviews, hiring sketches, and a steady second opinion on the work as it ships.</p>
+          <ul class="service-row__list">
+            <li>Monthly working sessions</li>
+            <li>Design review on draft work</li>
+            <li>Brief writing &amp; vendor selection</li>
+          </ul>
+          <a class="cta cta--pill" href="contacts.html">Enquire — 04 →</a>
+        </div>
+        <div class="service-row__visual">
+          <img src="assets/images/service-4-advisory.jpg"
+               width="800" height="600" loading="lazy"
+               alt="A printed working brief laid across a studio desk under a desk lamp, marked up with notes.">
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <aside class="sticky-bar" aria-label="Persistent contact bar">
+    <span class="sticky-bar__label">Available · Q3</span>
+    <a class="sticky-bar__tel" href="tel:+15551234567">(555) 123-4567</a>
+    <a class="cta cta--pill cta--dark" href="contacts.html">Start a project →</a>
+  </aside>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__row">
+      <p class="site-footer__brand">{{BRAND}}<sup aria-hidden="true">®</sup></p>
+      <address class="site-footer__addr">
+        123 Main St, City, ST 00000<br>
+        <a href="tel:+15551234567">(555) 123-4567</a> ·
+        <a href="mailto:hello@example.com">hello@example.com</a>
+      </address>
+    </div>
+    <p class="site-footer__legal">© {{BRAND}} · A studio for considered work.</p>
+  </footer>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

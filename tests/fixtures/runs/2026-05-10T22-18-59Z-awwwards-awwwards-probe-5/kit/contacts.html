@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact — {{BRAND}}</title>
+  <meta name="description" content="Enquire with {{BRAND}}. A short note is enough to begin.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- GA4 placeholder — replace G-XXXXXXXXXX before deploy -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <!-- Microsoft Clarity placeholder — replace XXXXXXXXXX before deploy -->
+  <script>
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "XXXXXXXXXX");
+  </script>
+  <!-- CDN: GSAP + ScrollTrigger + SplitType + Lenis for rich motion vocabulary. Native CSS insufficient for SplitType char-split, ScrollTrigger viewport-trigger logic, magnetic cursor, custom-cursor mix-blend-mode, and smooth-scroll inertia integration. -->
+  <script defer
+          src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+          integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script defer
+          src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+          integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js"
+          integrity="sha512-bIWtt3DvcIoDFZGGhjHSpZNVEjKvmg0sE1C2iX/Cih3FQrWGmCewvvnXkPPLJIJg8TkeWAO829K13G1r6+7Heg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"
+          integrity="sha512-BovI6sFxI6ifdcphZUKEnBk9BD/BAURZ7qILD2Nu17d2vpeXmVGRIox1c5s49OBxmBjiD4XEkYZtf196ayZWMQ=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script defer src="assets/js/main.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="site-header__brand" href="index.html">{{BRAND}}<span class="reg" aria-hidden="true">®</span></a>
+  <nav class="site-nav" aria-label="Primary">
+    <a href="index.html">Index</a>
+    <a href="services.html">Services</a>
+    <a href="contacts.html" aria-current="page">Contact</a>
+  </nav>
+  <a class="cta" href="contacts.html">Enquire</a>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+    <span class="nav-toggle__bar" aria-hidden="true"></span>
+    Menu
+  </button>
+</header>
+
+<main>
+
+  <section class="hero" aria-labelledby="hero-h1">
+    <div class="hero__top">
+      <div class="hero__wordmark">
+        <span class="supertext">A short note is enough</span>
+        <span class="supertext">Reply within 48 hours</span>
+      </div>
+      <span class="supertext">No.&nbsp;003 / 003</span>
+    </div>
+    <div class="hero__body">
+      <h1 id="hero-h1" class="hero__h1">Write in.</h1>
+      <div class="hero__meta">
+        <p class="subhead">Tell us what you would like to begin. A line about your skin, and one about your week. We will write back.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="form-h2">
+    <div class="container" style="margin-bottom: 1.5rem;">
+      <span class="supertext">Enquiry</span>
+      <h2 id="form-h2" class="section__h2" style="margin-top: 0.6rem;">The note.</h2>
+    </div>
+
+    <form class="contact-form" action="#" method="post" novalidate>
+      <div class="contact-form__group">
+        <label for="f-name">Your name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required>
+      </div>
+      <div class="contact-form__group">
+        <label for="f-email">Email</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="contact-form__group">
+        <label for="f-note">A short note</label>
+        <textarea id="f-note" name="note" rows="4" required></textarea>
+      </div>
+      <div class="contact-form__actions">
+        <button type="submit" class="cta">Enquire</button>
+      </div>
+    </form>
+
+    <div class="contact-meta">
+      <span>hello@example.com</span>
+      <span>123 Main St, City, ST 00000</span>
+      <span>By site visit — Mon &amp; Thu</span>
+    </div>
+  </section>
+
+  <div class="divider-clip" aria-hidden="true"></div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__wordmark">
+    {{BRAND}}<span class="reg" aria-hidden="true">®</span>
+  </div>
+  <div class="site-footer__meta">
+    <span>{{BRAND}}, 2026 — 123 Main St, City, ST 00000 — hello@example.com</span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<!-- V5 distilled moves applied:
+     - Marvell: monumental & glyph as section anchor between portfolio and services (.ampersand)
+     - Marvell: two-line wordmark with tiny supertext (hero .hero__wordmark)
+     - Astrodither: color reservation — accents fire ONLY in interactive layer (CTA, hover, focus, form)
+     - Obys: registered-trademark micro-glyph beside wordmark (header brand + footer wordmark)
+     - Obys: horizontal credit-chip row with CSS-only avatars (.trust .team-chip + .avatar-stack)
+-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{BRAND}} — A studio, kept</title>
+  <meta name="description" content="{{BRAND}}. A single-room studio. Bookings by referral and quiet recommendation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- GA4 placeholder — replace G-XXXXXXXXXX before deploy -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <!-- Microsoft Clarity placeholder — replace XXXXXXXXXX before deploy -->
+  <script>
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "XXXXXXXXXX");
+  </script>
+  <!-- CDN: GSAP + ScrollTrigger + SplitType + Lenis for rich motion vocabulary. Native CSS insufficient for SplitType char-split, ScrollTrigger viewport-trigger logic, magnetic cursor, custom-cursor mix-blend-mode, and smooth-scroll inertia integration. -->
+  <script defer
+          src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+          integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script defer
+          src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+          integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js"
+          integrity="sha512-bIWtt3DvcIoDFZGGhjHSpZNVEjKvmg0sE1C2iX/Cih3FQrWGmCewvvnXkPPLJIJg8TkeWAO829K13G1r6+7Heg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"
+          integrity="sha512-BovI6sFxI6ifdcphZUKEnBk9BD/BAURZ7qILD2Nu17d2vpeXmVGRIox1c5s49OBxmBjiD4XEkYZtf196ayZWMQ=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script defer src="assets/js/main.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="site-header__brand" href="index.html">{{BRAND}}<span class="reg" aria-hidden="true">®</span></a>
+  <nav class="site-nav" aria-label="Primary">
+    <a href="index.html" aria-current="page">Index</a>
+    <a href="services.html">Services</a>
+    <a href="contacts.html">Contact</a>
+  </nav>
+  <a class="cta" href="contacts.html">Enquire</a>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+    <span class="nav-toggle__bar" aria-hidden="true"></span>
+    Menu
+  </button>
+</header>
+
+<main>
+
+  <section class="hero" aria-labelledby="hero-h1">
+    <div class="hero__top">
+      <div class="hero__wordmark">
+        <span class="supertext">Est. 2026 — Studio of one</span>
+        <span class="supertext">Site visit — Mon &amp; Thu</span>
+      </div>
+      <span class="supertext">No.&nbsp;001 / 005</span>
+    </div>
+
+    <div class="hero__body">
+      <h1 id="hero-h1" class="hero__h1">Skin, kept.</h1>
+      <div class="hero__meta">
+        <p class="subhead">A single-room studio. Five quiet services, one practitioner, and a waitlist longer than a week. Bookings by referral and considered recommendation.</p>
+        <div class="hero__cta-row">
+          <a class="cta" href="contacts.html">Enquire</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>Consult</span><span class="marquee__dot">·</span>
+      <span>Resurface</span><span class="marquee__dot">·</span>
+      <span>Restore</span><span class="marquee__dot">·</span>
+      <span>Renew</span><span class="marquee__dot">·</span>
+      <span>Tend</span><span class="marquee__dot">—</span>
+      <span>Consult</span><span class="marquee__dot">·</span>
+      <span>Resurface</span><span class="marquee__dot">·</span>
+      <span>Restore</span><span class="marquee__dot">·</span>
+      <span>Renew</span><span class="marquee__dot">·</span>
+      <span>Tend</span><span class="marquee__dot">—</span>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="work-h2">
+    <div class="container" style="margin-bottom: 2rem;">
+      <span class="supertext">Selected work — Studio archive</span>
+      <h2 id="work-h2" class="section__h2" style="margin-top: 0.6rem;">The room.</h2>
+    </div>
+    <div class="portfolio">
+      <article class="portfolio__cell">
+        <figure style="aspect-ratio: 4/3;">
+          <img src="assets/images/studio-room.jpg"
+               alt="The treatment room, raking side-light across linen and clay surfaces."
+               width="640" height="480"
+               fetchpriority="high" loading="eager">
+        </figure>
+        <figcaption><span>01 — The Room</span><span>—</span></figcaption>
+      </article>
+
+      <article class="portfolio__cell">
+        <figure style="aspect-ratio: 3/4;">
+          <img src="assets/images/hand-detail.jpg"
+               alt="Practitioner hand resting on a stoneware bowl, low-key window light."
+               width="600" height="800"
+               loading="lazy">
+        </figure>
+        <figcaption><span>02 — Tools</span><span>—</span></figcaption>
+      </article>
+
+      <article class="portfolio__cell">
+        <figure style="aspect-ratio: 1/1;">
+          <img src="assets/images/material-clay.jpg"
+               alt="Macro of fired clay tile, dusty surface with a single coral seam."
+               width="480" height="480"
+               loading="lazy">
+        </figure>
+        <figcaption><span>03 — Material</span><span>—</span></figcaption>
+      </article>
+
+      <article class="portfolio__cell">
+        <figure style="aspect-ratio: 16/9;">
+          <img src="assets/images/portrait-quiet.jpg"
+               alt="Editorial portrait, subject in profile under a north window, near-silhouette."
+               width="1280" height="720"
+               loading="lazy">
+        </figure>
+        <figcaption><span>04 — A Subject</span><span>—</span></figcaption>
+      </article>
+    </div>
+  </section>
+
+  <section class="ampersand" aria-hidden="true">
+    <span class="ampersand__glyph">&amp;</span>
+    <span class="ampersand__caption">A studio of process &amp; restraint.</span>
+  </section>
+
+  <section class="section" aria-labelledby="services-h2">
+    <div class="container">
+      <span class="supertext">Index of services — 005</span>
+      <h2 id="services-h2" class="section__h2" style="margin-top: 0.6rem;">The work.</h2>
+    </div>
+    <ul class="services-stack" role="list">
+      <li>Consult</li>
+      <li>Resurface</li>
+      <li>Restore</li>
+      <li>Renew</li>
+      <li>Tend</li>
+    </ul>
+  </section>
+
+  <section class="trust" aria-labelledby="trust-h2">
+    <h2 id="trust-h2" class="visually-hidden">The team.</h2>
+    <span class="supertext trust__supertext">Studio practitioners — by appointment</span>
+    <div class="trust__chips">
+      <div class="team-chip">
+        <div class="avatar-stack" aria-hidden="true">
+          <span class="avatar avatar--a">M</span>
+          <span class="avatar avatar--b">K</span>
+          <span class="avatar avatar--c">A</span>
+          <span class="avatar avatar--d">R</span>
+          <span class="avatar avatar--e">J</span>
+        </div>
+        <span>Five regulars, by referral.</span>
+      </div>
+      <div class="team-chip"><span>Est. 2026</span></div>
+      <div class="team-chip"><span>Mon &amp; Thu / by site visit</span></div>
+    </div>
+  </section>
+
+  <div class="divider-clip" aria-hidden="true"></div>
+
+  <section class="cta-strip" aria-labelledby="cta-strip-h2">
+    <span class="cta-strip__caption">For new visits and standing appointments</span>
+    <h2 id="cta-strip-h2" class="section__h2" style="font-size: clamp(2rem, 6vw, 5rem); margin-block: 1rem;">Quietly.</h2>
+    <a class="cta" href="contacts.html">Enquire</a>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__wordmark">
+    {{BRAND}}<span class="reg" aria-hidden="true">®</span>
+  </div>
+  <div class="site-footer__meta">
+    <span>{{BRAND}}, 2026 — 123 Main St, City, ST 00000 — hello@example.com</span>
+  </div>
+</footer>
+
+</body>
+</html>

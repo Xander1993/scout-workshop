@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Studio — {{BRAND}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap"></noscript>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- GA4 placeholder — replace G-XXXXXXXXXX before deploy -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <!-- Microsoft Clarity placeholder — replace XXXXXXXXXX before deploy -->
+  <script>
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "XXXXXXXXXX");
+  </script>
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <a class="brand" href="index.html">
+      <span class="brand__mark">{{BRAND}}</span><sup class="brand__reg" aria-hidden="true">®</sup>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Index</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="contacts.html" aria-current="page">Studio</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="tel-chip" href="tel:+15551234567" aria-label="Call the studio">
+        <span class="tel-chip__dot" aria-hidden="true"></span>
+        <span class="tel-chip__num">(555) 123-4567</span>
+      </a>
+      <a class="cta cta--header" href="contacts.html">Start a project</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero">
+      <p class="fold-meta"><span>Studio</span><span>Open · Mon–Thu</span></p>
+      <h1 class="page-title">Write us a working brief.</h1>
+      <p class="page-lede">Three fields. We read every message and reply within two business days. If your project is time-bound, call the line — that is the fastest path.</p>
+      <a class="cta cta--pill cta--dark" href="#book">Book a call →</a>
+    </section>
+
+    <div class="divider-clip" aria-hidden="true"></div>
+
+    <section class="contact-grid" aria-label="Contact">
+      <article class="contact-card">
+        <p class="contact-card__num">/01</p>
+        <h2 class="contact-card__title">Telephone</h2>
+        <p class="contact-card__body">For projects starting inside 60 days.</p>
+        <a class="contact-card__link" href="tel:+15551234567">(555) 123-4567</a>
+      </article>
+      <article class="contact-card">
+        <p class="contact-card__num">/02</p>
+        <h2 class="contact-card__title">Email</h2>
+        <p class="contact-card__body">Working briefs, decks, RFPs.</p>
+        <a class="contact-card__link" href="mailto:hello@example.com">hello@example.com</a>
+      </article>
+      <article class="contact-card">
+        <p class="contact-card__num">/03</p>
+        <h2 class="contact-card__title">Studio</h2>
+        <p class="contact-card__body">Visits by appointment only.</p>
+        <address class="contact-card__link" style="font-style:normal;">123 Main St,<br>City, ST 00000</address>
+      </article>
+    </section>
+
+    <section class="form-section" id="book">
+      <header class="section-head">
+        <p class="section-eyebrow">03 — Enquiry</p>
+        <h2 class="section-title">The working brief.</h2>
+      </header>
+      <form class="enquiry-form" action="#" method="post" novalidate>
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="project">Project type</label>
+          <select id="project" name="project" required>
+            <option value="">Select one —</option>
+            <option>Brand system</option>
+            <option>Editorial site</option>
+            <option>Art direction</option>
+            <option>Studio advisory</option>
+          </select>
+        </div>
+        <div class="field field--full">
+          <label for="message">A short message</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+        </div>
+        <button class="cta cta--pill cta--dark" type="submit">Submit brief →</button>
+      </form>
+    </section>
+
+    <section class="map-section" aria-label="Studio location">
+      <header class="section-head">
+        <p class="section-eyebrow">04 — Visit</p>
+        <h2 class="section-title">By appointment only.</h2>
+      </header>
+      <div class="map-placeholder" aria-hidden="true">
+        <span class="map-placeholder__pin">⌖</span>
+        <span class="map-placeholder__label">123 Main St · 38.9072° N · 77.0369° W</span>
+      </div>
+    </section>
+  </main>
+
+  <aside class="sticky-bar" aria-label="Persistent contact bar">
+    <span class="sticky-bar__label">Available · Q3</span>
+    <a class="sticky-bar__tel" href="tel:+15551234567">(555) 123-4567</a>
+    <a class="cta cta--pill cta--dark" href="#book">Book a call →</a>
+  </aside>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__row">
+      <p class="site-footer__brand">{{BRAND}}<sup aria-hidden="true">®</sup></p>
+      <address class="site-footer__addr">
+        123 Main St, City, ST 00000<br>
+        <a href="tel:+15551234567">(555) 123-4567</a> ·
+        <a href="mailto:hello@example.com">hello@example.com</a>
+      </address>
+    </div>
+    <p class="site-footer__legal">© {{BRAND}} · A studio for considered work.</p>
+  </footer>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

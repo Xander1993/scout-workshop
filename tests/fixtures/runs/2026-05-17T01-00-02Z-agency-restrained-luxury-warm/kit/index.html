@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{BRAND}} — Brands that carry weight</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap"
+    media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <!-- GA4 placeholder — replace G-XXXXXXXXXX before deploy -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <!-- Microsoft Clarity placeholder — replace XXXXXXXXXX before deploy -->
+  <script>
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "XXXXXXXXXX");
+  </script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="index.html" class="brand" aria-label="{{BRAND}} home">
+      {{BRAND}}<sup>®</sup>
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Studio</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="contacts.html">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <a href="tel:+15551234567" class="tel-pill" aria-label="Call {{BRAND}} at (555) 123-4567">
+        <svg class="tel-pill__icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.72 2.78a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.11-.45c.88.36 1.82.6 2.78.72A2 2 0 0 1 22 16.92z"></path></svg>
+        <span>(555) 123-4567</span>
+      </a>
+      <a href="contacts.html" class="cta">Start a project</a>
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" data-nav-toggle>
+        <span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-nav" data-mobile-nav>
+    <ul>
+      <li><a href="index.html">Studio</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contacts.html">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero__grid">
+        <div class="hero__text">
+          <span class="eyebrow hero__supertext">Est. 2014 · Independent Studio</span>
+          <h1>Brands that carry <em class="headline-em">weight</em>.</h1>
+          <p class="hero__sub">
+            An independent studio crafting identity systems, editorial sites,
+            and considered digital work for companies that take the long view.
+          </p>
+          <div class="hero__cta-row">
+            <a href="contacts.html" class="cta">Start a project</a>
+            <a href="services.html" class="cta cta--ghost">See services</a>
+          </div>
+        </div>
+        <div class="hero__media">
+          <img class="hero__portrait"
+               src="assets/images/hero.jpg"
+               alt="A studio table lit by late afternoon light, with type proofs and a terracotta clay mug."
+               width="720" height="960"
+               fetchpriority="high" />
+          <div class="hero__seal" aria-hidden="true">
+            Since<br />2014
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust" aria-labelledby="trust-heading">
+    <div class="container">
+      <span class="eyebrow eyebrow--center" id="trust-heading">Trusted since 2014</span>
+      <div class="avatar-stack" aria-hidden="true">
+        <span class="avatar-stack__dot">M</span>
+        <span class="avatar-stack__dot">A</span>
+        <span class="avatar-stack__dot">R</span>
+        <span class="avatar-stack__dot">S</span>
+        <span class="avatar-stack__dot">L</span>
+      </div>
+      <p class="trust__line">
+        Est. 2014 <span class="trust__sep">·</span>
+        60+ engagements <span class="trust__sep">·</span>
+        4.9 ★ across 38 reviews
+      </p>
+      <div class="founder-chips">
+        <span class="founder-chip"><span class="founder-chip__dot">M</span>Maren Holt, Founder</span>
+        <span class="founder-chip"><span class="founder-chip__dot">A</span>August Reyne, Design Director</span>
+        <span class="founder-chip"><span class="founder-chip__dot">S</span>Sora Vance, Strategy</span>
+      </div>
+      <div class="client-row" aria-label="Selected clients">
+        <span>Vellum &amp; Oak</span>
+        <span>Atelier Sumi</span>
+        <span>Northbound</span>
+        <span>Plain Pottery</span>
+        <span>Long Light</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="services-preview-heading">
+    <div class="container">
+      <span class="eyebrow eyebrow--center">What we make</span>
+      <h2 id="services-preview-heading" class="text-center" style="margin-bottom: 3rem;">
+        Three practices, one <em class="headline-em">register</em>.
+      </h2>
+
+      <article class="service-row">
+        <div class="service-row__media">
+          <img src="assets/images/service-1-identity.jpg"
+               alt="Pressed letterpress proofs of a wordmark stacked on a warm cream table."
+               width="640" height="480" loading="lazy" />
+        </div>
+        <div class="service-row__body">
+          <span class="service-row__index">01 — Identity</span>
+          <h3>Identity systems</h3>
+          <p>Wordmarks, type systems, and the editorial detail that lets a brand feel inevitable across letterhead, packaging, and screen.</p>
+          <a href="services.html#identity" class="cta cta--ghost">Read more</a>
+        </div>
+      </article>
+
+      <article class="service-row service-row--reverse">
+        <div class="service-row__media">
+          <img src="assets/images/service-2-editorial.jpg"
+               alt="An open editorial layout in soft natural light with terracotta accent."
+               width="640" height="480" loading="lazy" />
+        </div>
+        <div class="service-row__body">
+          <span class="service-row__index">02 — Editorial</span>
+          <h3>Editorial sites</h3>
+          <p>Slow-built websites for studios, publishers, and houses with a long view — typography-led, accessible, restrained.</p>
+          <a href="services.html#editorial" class="cta cta--ghost">Read more</a>
+        </div>
+      </article>
+
+      <article class="service-row">
+        <div class="service-row__media">
+          <img src="assets/images/service-3-digital.jpg"
+               alt="A laptop screen showing a quiet, considered product interface."
+               width="640" height="480" loading="lazy" />
+        </div>
+        <div class="service-row__body">
+          <span class="service-row__index">03 — Digital</span>
+          <h3>Considered digital</h3>
+          <p>Product surfaces and digital tools that respect attention — calmly designed, soberly engineered, built to age well.</p>
+          <a href="services.html#digital" class="cta cta--ghost">Read more</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="process-heading" style="background: var(--color-surface);">
+    <div class="container">
+      <span class="eyebrow eyebrow--center">How we work</span>
+      <h2 id="process-heading" class="text-center" style="margin-bottom: 2rem;">
+        Patient, on the <em class="headline-em">record</em>.
+      </h2>
+      <p style="margin-inline: auto; text-align: center; max-width: 56ch;">
+        Each engagement begins with a written brief and ends with a written archive. We take three to five projects a year,
+        work directly with founders and editors, and decline anything we cannot stand behind for a decade.
+      </p>
+      <p class="text-center" style="margin-top: 2.5rem;">
+        <a href="contacts.html" class="cta">Start a project</a>
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div>
+        <span class="site-footer__brand">{{BRAND}}<sup>®</sup></span>
+        <p style="margin-top: 0.75rem; max-width: 36ch;">
+          An independent studio for identity, editorial, and considered digital work.
+        </p>
+      </div>
+      <div>
+        <span class="eyebrow">Visit</span>
+        <p>123 Main St,<br />City, ST 00000</p>
+      </div>
+      <div>
+        <span class="eyebrow">Contact</span>
+        <p>
+          <a href="tel:+15551234567">(555) 123-4567</a><br />
+          <a href="mailto:hello@example.com">hello@example.com</a>
+        </p>
+      </div>
+      <div>
+        <span class="eyebrow">Pages</span>
+        <p>
+          <a href="index.html">Studio</a><br />
+          <a href="services.html">Services</a><br />
+          <a href="contacts.html">Contact</a>
+        </p>
+      </div>
+    </div>
+    <p class="site-footer__legal">© 2026 {{BRAND}}. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>
