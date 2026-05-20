@@ -20,7 +20,7 @@
 |---|---|
 | `scripts/quality_floor_config.py` | Tuning constants + register overrides. Single source of truth for thresholds. |
 | `scripts/manifest_validator.py` | Gate A — parse YAML frontmatter from brief.md, validate against schema, enforce minimum section counts. |
-| `scripts/density_audit.py` | Gate B.1 — five deterministic checks on rendered kit (substantial sections, vertical void, article density, hero h1 word cap, wordmark treatment). |
+| `scripts/density_audit.py` | Gate B.1 — four deterministic checks on rendered kit (substantial sections, vertical void, article density, hero h1 word cap). Wordmark measurement removed — no reliable selector without a fixed CSS contract. |
 | `scripts/brief_coverage.py` | Gate B.2 — invoke Claude via subprocess with `audit_brief_coverage.md` prompt, parse JSON verdict, return per-section grades. |
 | `scripts/telemetry_writer.py` | Atomic append to `state/quality_floor_telemetry.jsonl`. Single-writer assumption (cron is serial). |
 | `skills/audit_brief_coverage.md` | Claude prompt template loaded via existing `load_prompt_template()` mechanism. |
@@ -55,13 +55,13 @@
 - Create: `tests/conftest.py`
 - Modify: `.gitignore`
 
-- [ ] **Step 0.1: Install pytest + PyYAML in the venv**
+- [ ] **Step 0.1: Install pytest + PyYAML + Pillow in the venv**
 
 ```bash
-/opt/scout-workshop/venv/bin/pip install pytest==8.* pyyaml==6.*
+/opt/scout-workshop/venv/bin/pip install pytest==8.* pyyaml==6.* Pillow>=10
 ```
 
-Expected: `Successfully installed pytest-8.x.x pyyaml-6.x.x`
+Expected: `Successfully installed pytest-8.x.x pyyaml-6.x.x Pillow-10.x.x`
 
 - [ ] **Step 0.2: Write pytest.ini**
 
@@ -89,17 +89,16 @@ markers =
 ```python
 """Shared fixtures for v1.4 quality-floor tests.
 
-Uses real historical runs as fixtures because v1.4 enforcement was
-designed empirically from these runs.
+Uses committed fixture runs (tests/fixtures/runs/) rather than live run dirs
+so tests are reproducible on any machine without the full run history.
 """
 from __future__ import annotations
 
 from pathlib import Path
-import json
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-RUNS_DIR = REPO_ROOT / "workshop" / "runs"
+FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures" / "runs"
 
 # Known-good run: May 15 modern-minimal landed at probe-5 quality
 GOOD_RUN_SLUG = "2026-05-15T11-25-22Z-agency-modern-minimal"
@@ -111,24 +110,24 @@ PROBE5_SLUG = "2026-05-10T22-18-59Z-awwwards-awwwards-probe-5"
 
 @pytest.fixture
 def good_run_dir() -> Path:
-    """Path to May 15 modern-minimal run (passed quality bar)."""
-    p = RUNS_DIR / GOOD_RUN_SLUG
+    """Path to May 15 modern-minimal fixture (passed quality bar)."""
+    p = FIXTURES_DIR / GOOD_RUN_SLUG
     assert p.exists(), f"missing fixture: {p}"
     return p
 
 
 @pytest.fixture
 def bad_run_dir() -> Path:
-    """Path to May 17 restrained-luxury-warm run (failed quality bar)."""
-    p = RUNS_DIR / BAD_RUN_SLUG
+    """Path to May 17 restrained-luxury-warm fixture (failed quality bar)."""
+    p = FIXTURES_DIR / BAD_RUN_SLUG
     assert p.exists(), f"missing fixture: {p}"
     return p
 
 
 @pytest.fixture
 def probe5_run_dir() -> Path:
-    """Path to probe-5 awwwards run (validated reference)."""
-    p = RUNS_DIR / PROBE5_SLUG
+    """Path to probe-5 awwwards fixture (validated reference)."""
+    p = FIXTURES_DIR / PROBE5_SLUG
     assert p.exists(), f"missing fixture: {p}"
     return p
 
@@ -180,6 +179,50 @@ def tmp_run_dir(tmp_path) -> Path:
     return tmp_path
 ```
 
+- [ ] **Step 0.3b: Create committed fixture run dirs**
+
+Copy minimal artifacts (HTML only — no screenshots, no asset images) from real runs
+into `tests/fixtures/runs/`. Generate 1×1 placeholder PNGs via Pillow for any
+test that verifies file existence without reading content.
+
+```bash
+cd /opt/scout-workshop
+FIXTURES=tests/fixtures/runs
+RUNS=workshop/runs
+GOOD=2026-05-15T11-25-22Z-agency-modern-minimal
+BAD=2026-05-17T01-00-02Z-agency-restrained-luxury-warm
+PROBE=2026-05-10T22-18-59Z-awwwards-awwwards-probe-5
+
+for SLUG in $GOOD $BAD $PROBE; do
+  mkdir -p $FIXTURES/$SLUG/kit/screenshots
+  # brief.md (needed by brief_coverage fixtures)
+  cp $RUNS/$SLUG/brief.md $FIXTURES/$SLUG/brief.md 2>/dev/null \
+    || echo "# stub brief" > $FIXTURES/$SLUG/brief.md
+  # HTML pages
+  cp $RUNS/$SLUG/kit/index.html    $FIXTURES/$SLUG/kit/index.html
+  cp $RUNS/$SLUG/kit/services.html $FIXTURES/$SLUG/kit/services.html 2>/dev/null || true
+  cp $RUNS/$SLUG/kit/contacts.html $FIXTURES/$SLUG/kit/contacts.html 2>/dev/null || true
+done
+
+# 1×1 placeholder PNG for each fixture (commits as ~1 KB each)
+venv/bin/python - <<'PY'
+from PIL import Image
+from pathlib import Path
+img = Image.new("RGB", (1, 1), color="#888")
+for slug in [
+    "2026-05-15T11-25-22Z-agency-modern-minimal",
+    "2026-05-17T01-00-02Z-agency-restrained-luxury-warm",
+    "2026-05-10T22-18-59Z-awwwards-awwwards-probe-5",
+]:
+    p = Path("tests/fixtures/runs") / slug / "kit" / "screenshots" / "home-desktop.png"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    img.save(p)
+print("placeholder PNGs written")
+PY
+```
+
+Expected: `placeholder PNGs written` with no errors.
+
 - [ ] **Step 0.4: Update .gitignore**
 
 Append to `/opt/scout-workshop/.gitignore`:
@@ -188,6 +231,8 @@ __pycache__/
 .pytest_cache/
 *.pyc
 ```
+
+Do NOT add `tests/fixtures/` — fixture files including placeholder PNGs go into git.
 
 - [ ] **Step 0.5: Verify fixtures load**
 
@@ -201,8 +246,8 @@ Expected: `no tests ran` (no test files yet but fixtures parse OK)
 
 ```bash
 cd /opt/scout-workshop
-git add pytest.ini tests/__init__.py tests/conftest.py .gitignore
-git commit -m "test: bootstrap pytest infra + shared fixtures for v1.4 gates"
+git add pytest.ini tests/__init__.py tests/conftest.py tests/fixtures/ .gitignore
+git commit -m "test: bootstrap pytest infra + committed fixture runs for v1.4 gates"
 ```
 
 ---
@@ -277,7 +322,11 @@ whitespace tolerated) than conversion-tier kits (tighter).
 """
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+STATE_DIR = REPO_ROOT / "state"  # telemetry JSONL lives here
 
 QUALITY_FLOOR: dict[str, Any] = {
     "thresholds": {
@@ -669,7 +718,6 @@ from scripts.density_audit import (
     count_substantial_sections,
     check_article_density,
     check_hero_h1_word_cap,
-    check_wordmark_treatment,
     run_density_audit,
 )
 
@@ -701,25 +749,15 @@ def test_hero_h1_word_cap_enforces_ten_chars():
     ]
 
 
-def test_wordmark_treatment_returns_unknown_when_no_manifest_claim(bad_run_dir):
-    """If the manifest doesn't declare showpiece_wordmark, return inconclusive."""
-    result = check_wordmark_treatment(
-        bad_run_dir / "kit" / "index.html",
-        manifest_declares_showpiece=False,
-    )
-    assert result.status == "skipped"
-
-
 @pytest.mark.slow
 def test_full_audit_returns_dict_per_check(good_run_dir):
-    """Smoke test: full run returns a dict with all five check keys."""
+    """Smoke test: full run returns a dict with all four check keys."""
     report = run_density_audit(good_run_dir / "kit", register="conversion")
     assert set(report.keys()) >= {
         "substantial_sections",
         "vertical_void",
         "article_density",
         "hero_h1_word_cap",
-        "wordmark_treatment",
     }
 
 
@@ -882,30 +920,6 @@ def check_hero_h1_word_cap(index_html_path: Path) -> CheckResult:
     return CheckResult(status="pass", evidence="all hero h1 words within cap")
 
 
-def check_wordmark_treatment(
-    index_html_path: Path,
-    manifest_declares_showpiece: bool,
-) -> CheckResult:
-    """Verify showpiece wordmark is actually rendered large.
-
-    If manifest doesn't claim showpiece_wordmark, skip (not applicable).
-    If it does claim showpiece but we can't measure (no Playwright), skip
-    with note — the orchestrator treats skipped as soft.
-    """
-    if not manifest_declares_showpiece:
-        return CheckResult(
-            status="skipped",
-            evidence="manifest does not declare showpiece_wordmark",
-        )
-    # Playwright-based measurement happens in vertical_void via the
-    # same browser session; for now, return skipped — measured in
-    # full audit run below.
-    return CheckResult(
-        status="skipped",
-        evidence="wordmark size measurement requires Playwright session",
-    )
-
-
 def check_vertical_void(
     index_html_path: Path,
     register: str | None = None,
@@ -977,11 +991,12 @@ def check_vertical_void(
 def run_density_audit(
     kit_dir: Path,
     register: str | None = None,
-    manifest_declares_showpiece: bool = False,
 ) -> dict[str, dict[str, Any]]:
-    """Run all five checks; return dict keyed by check_id.
+    """Run all four checks; return dict keyed by check_id.
 
     Each value is the asdict-form of CheckResult.
+    Wordmark measurement omitted — no reliable selector without a fixed CSS
+    contract; add back in v1.6 if a class convention is established.
     """
     index = kit_dir / "index.html"
     results = {
@@ -989,9 +1004,6 @@ def run_density_audit(
         "vertical_void": check_vertical_void(index, register=register).asdict(),
         "article_density": check_article_density(index).asdict(),
         "hero_h1_word_cap": check_hero_h1_word_cap(index).asdict(),
-        "wordmark_treatment": check_wordmark_treatment(
-            index, manifest_declares_showpiece=manifest_declares_showpiece,
-        ).asdict(),
     }
     return results
 
@@ -1049,7 +1061,6 @@ Return ONLY valid JSON, no prose, in this exact shape:
 
 ```json
 {
-  "verdict": "pass" | "fail",
   "coverage_pct": 0-100,
   "sections": [
     {
@@ -1063,6 +1074,9 @@ Return ONLY valid JSON, no prose, in this exact shape:
 }
 ```
 
+Do NOT include a `verdict` field — the orchestrator calculates pass/fail from
+`coverage_pct` against a threshold that may vary by register.
+
 ## Grading rules
 
 - `present` — the section exists in the rendered HTML AND meets the `min_items` / `required_elements` declared in the manifest entry. For case_grid entries: must have at least min_items articles with required content.
@@ -1070,8 +1084,6 @@ Return ONLY valid JSON, no prose, in this exact shape:
 - `absent` — no matching element in the rendered HTML.
 
 `coverage_pct = (count of present) / (total sections in manifest) * 100`, rounded.
-
-`verdict = "pass"` if `coverage_pct >= 80`. Otherwise `"fail"`.
 
 ## Constraints
 
@@ -1106,7 +1118,6 @@ from scripts.brief_coverage import (
 
 def test_coverage_parses_valid_claude_output(tmp_run_dir):
     fake = json.dumps({
-        "verdict": "pass",
         "coverage_pct": 100,
         "sections": [
             {"section_id": "hero", "page": "index", "status": "present", "evidence_selector": "section.hero", "notes": ""},
@@ -1122,7 +1133,7 @@ def test_coverage_parses_valid_claude_output(tmp_run_dir):
 
 
 def test_coverage_fails_when_pct_below_threshold(tmp_run_dir):
-    fake = json.dumps({"verdict": "fail", "coverage_pct": 60, "sections": []})
+    fake = json.dumps({"coverage_pct": 60, "sections": []})
     (tmp_run_dir / "brief.md").write_text("# brief stub")
     (tmp_run_dir / "kit" / "index.html").write_text("<h1>x</h1>")
     with patch("scripts.brief_coverage._invoke_claude", return_value=fake):
@@ -1267,9 +1278,9 @@ def run_brief_coverage(run_dir: Path) -> CoverageResult | InconclusiveCoverage:
         logger.warning("brief_coverage json parse failed: %s; raw=%r", e, raw[:200])
         return InconclusiveCoverage(reason=f"json parse: {e}")
 
-    # Sanity-check schema
-    if not isinstance(data, dict) or "verdict" not in data or "coverage_pct" not in data:
-        return InconclusiveCoverage(reason="output missing verdict/coverage_pct")
+    # Sanity-check schema — orchestrator derives verdict from coverage_pct, no field needed
+    if not isinstance(data, dict) or "coverage_pct" not in data:
+        return InconclusiveCoverage(reason="output missing coverage_pct")
 
     # Enforce threshold from config (don't trust Claude's verdict if pct disagrees)
     pct = int(data.get("coverage_pct") or 0)
@@ -1505,6 +1516,25 @@ git commit -m "feat(qfloor): playbook requires section_manifest YAML frontmatter
 
 This task wires Gates A, B, and C into `main()`. The orchestrator is the **only** place that calls the new modules. All state mutation (run dir moves, JSONL appends, Telegram sends) lives here.
 
+- [ ] **Step 7.0: Bump systemd TimeoutStartSec**
+
+The retry loop adds up to ~40min worst-case (brief retry + kit regeneration + two gate
+runs). The current `7500s` (2h 5m) may expire before the second gate completes.
+
+```bash
+sed -i 's/TimeoutStartSec=7500/TimeoutStartSec=10800/' \
+    /opt/scout-workshop/systemd/workshop.service
+sudo cp /opt/scout-workshop/systemd/workshop.service \
+    /etc/systemd/system/workshop.service
+sudo systemctl daemon-reload
+```
+
+Verify:
+```bash
+grep TimeoutStartSec /etc/systemd/system/workshop.service
+```
+Expected: `TimeoutStartSec=10800`
+
 - [ ] **Step 7.1: Add new imports**
 
 Find the imports block near the top of `scripts/workshop.py` (lines 60-90). Add:
@@ -1554,30 +1584,28 @@ def gate_a_validate_brief(brief_path: Path, run_dir: Path) -> ManifestResult:
 Find `def self_audit(` at `scripts/workshop.py:672`. Immediately above it, insert:
 
 ```python
-def _manifest_declares_showpiece(manifest: dict | None) -> bool:
-    if not manifest or "section_manifest" not in manifest:
-        return False
-    for page_sections in manifest["section_manifest"].values():
-        if not isinstance(page_sections, list):
-            continue
-        for sec in page_sections:
-            if isinstance(sec, dict) and sec.get("type") == "showpiece_wordmark":
-                return True
-    return False
+def _kit_fingerprint(kit_dir: Path) -> str:
+    """MD5 of kit HTML files — detects identical retry output before wasting a Gate B run."""
+    import hashlib
+    h = hashlib.md5()
+    for name in sorted(["index.html", "services.html", "contacts.html"]):
+        p = kit_dir / name
+        if p.exists():
+            h.update(name.encode())
+            h.update(p.read_bytes())
+    return h.hexdigest()
 
 
 def run_quality_gate(
     run_dir: Path,
     kit_dir: Path,
-    manifest: dict | None,
     register: str,
 ) -> tuple[bool, dict[str, Any]]:
     """Gate B: density audit + brief-coverage audit. Returns (passed, report).
 
     Report contains both gate_b1 (deterministic) and gate_b2 (semantic) results.
     """
-    showpiece = _manifest_declares_showpiece(manifest)
-    b1 = run_density_audit(kit_dir, register=register, manifest_declares_showpiece=showpiece)
+    b1 = run_density_audit(kit_dir, register=register)
     b2 = run_brief_coverage(run_dir)
 
     b1_passed = audit_passed(b1)
@@ -1688,22 +1716,32 @@ manifest = gate_a.manifest
 
 # AFTER self_audit() succeeds:
 register = "awwwards" if vertical == "awwwards" else "conversion"
-gate_b_passed, gate_b_report = run_quality_gate(run_dir, kit_dir, manifest, register)
+gate_b_passed, gate_b_report = run_quality_gate(run_dir, kit_dir, register)
 
 if not gate_b_passed and qfc.retry_enabled():
     scout_lib.telegram_send(
         f"⚠ Gate B failed for {run_dir.name}, retrying once with diagnostic recap"
     )
-    # Snapshot attempt 1
+    # Snapshot attempt 1 BEFORE retry mutates kit_dir
     snapshot_attempt(run_dir, kit_dir, attempt=1)
     recap = format_retry_recap(gate_b_report)
     # Retry generate_kit with strict recap. Reuse images per config.
     new_kit_dir = generate_kit(brief_path, references, run_dir, strict_recap=recap)
     if not qfc.reuse_images_on_retry():
         generate_kit_images(new_kit_dir, run_dir)
+    # Identical-output guard: compare retry against snapshot, not the (possibly
+    # mutated) original kit_dir — snapshot_attempt() is the immutable baseline.
+    if _kit_fingerprint(run_dir / "attempt-1") == _kit_fingerprint(new_kit_dir):
+        logger.error("Retry produced identical kit output — halting without re-running Gate B")
+        halted_path = halt_with_telegram(run_dir, gate_b_report, gate_b_report, brief_path)
+        _record_telemetry(
+            halted_path, gate_a, gate_b_report, None, register,
+            retried=True, final_status="halted-identical-retry",
+        )
+        return EXIT_QUALITY_HALT
     # Re-audit
     gate_b_passed_retry, gate_b_report_retry = run_quality_gate(
-        run_dir, new_kit_dir, manifest, register,
+        run_dir, new_kit_dir, register,
     )
     if not gate_b_passed_retry:
         halted_path = halt_with_telegram(run_dir, gate_b_report, gate_b_report_retry, brief_path)
@@ -1747,7 +1785,8 @@ def _record_telemetry(
     final_status: str = "shipped",
 ) -> None:
     """Write one line to state/quality_floor_telemetry.jsonl."""
-    telemetry_path = run_dir.parent.parent.parent / "state" / "quality_floor_telemetry.jsonl"
+    from scripts.quality_floor_config import STATE_DIR
+    telemetry_path = STATE_DIR / "quality_floor_telemetry.jsonl"
     b1 = gate_b_report.get("gate_b1", {})
     b2 = gate_b_report.get("gate_b2", {})
     record = {
@@ -1792,8 +1831,8 @@ Expected: `imports ok`
 
 ```bash
 cd /opt/scout-workshop
-git add scripts/workshop.py
-git commit -m "feat(qfloor): wire Gate A + Gate B + Gate C retry into workshop.py main()"
+git add scripts/workshop.py systemd/workshop.service
+git commit -m "feat(qfloor): wire Gate A + Gate B + Gate C retry into workshop.py main(); bump TimeoutStartSec=10800"
 ```
 
 ---
@@ -1957,12 +1996,19 @@ Checked against `docs/workshop-v1.4-quality-floor-design.md`:
 | Spec requirement | Plan task |
 |---|---|
 | Gate A — Brief Manifest validation | Task 2 (`manifest_validator.py`) + Task 6 (`workshop-playbook.md`) |
-| Gate B.1 — 5 deterministic checks | Task 3 (`density_audit.py`) |
+| Gate B.1 — 4 deterministic checks | Task 3 (`density_audit.py`; wordmark check removed — no reliable selector) |
 | Gate B.2 — Claude semantic coverage | Task 4 (`brief_coverage.py` + `audit_brief_coverage.md`) |
 | Gate C — retry orchestration | Task 7 (workshop.py changes) |
-| `quality_floor_config.py` tuning knobs | Task 1 |
+| Identical-retry guard | Task 7 (`_kit_fingerprint()` + snapshot comparison) |
+| `quality_floor_config.py` tuning knobs + `STATE_DIR` | Task 1 |
 | Telemetry JSONL append | Task 5 (`telemetry_writer.py`) + Task 7 (orchestration wiring) |
 | Halted-runs directory | Task 7 (`halt_with_telegram()`) |
+| systemd `TimeoutStartSec` bump | Task 7 Step 7.0 |
 | Dashboard JSONL consumption | Task 9 |
+| Portable test fixtures | Task 0 Step 0.3b (`tests/fixtures/runs/`) |
 
-No placeholders. All file paths absolute. All test code shown inline. All function signatures consistent across tasks. Backward compatibility preserved via `qfc.retry_enabled()` config flag.
+No placeholders. All file paths absolute. All test code shown inline. All function
+signatures consistent across tasks. `wordmark_treatment` removed from Gate B.1 spec
+as the check was stub-only with no actual measurement. `verdict` removed from Claude
+output schema — orchestrator owns pass/fail logic. Fingerprint comparison targets
+`run_dir/attempt-1` (immutable snapshot), not the mutable `kit_dir`.
