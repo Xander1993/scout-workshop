@@ -59,7 +59,7 @@ response=$(curl -sS --max-time 60 -X POST "https://api.firecrawl.dev/v1/scrape" 
 ```
 
   Parse `response` JSON for `data.links` — pattern is anchor tags pointing to `/sites/<slug>` on awwwards.com.
-- **Dereference (REQUIRED — do NOT capture the awwwards.com listing page).** The `/sites/<slug>` links are awwwards.com directory pages, not the reference. For each chosen `/sites/<slug>` candidate, Firecrawl-scrape it with `formats:["links"]`, find the outbound **"Visit site"** URL (the off-awwwards.com link to the studio's own domain), and use THAT real URL as the §3 candidate. If no outbound URL is found, mark the candidate `errored` and skip — never fall back to capturing the awwwards listing frame.
+- **Dereference (REQUIRED — do NOT capture the awwwards.com listing page).** The `/sites/<slug>` links are awwwards.com directory pages, not the reference. For each chosen `/sites/<slug>` candidate, Firecrawl-scrape it with `formats:["links"]` — note this returns **bare URLs, not anchor text**, so you cannot match the literal "Visit site" label. Instead, from `data.links` select the outbound URL whose **host is NOT `awwwards.com`** and is not a social/CDN/asset domain (facebook/twitter/instagram/linkedin/youtube/cdn/fonts/gstatic/google) — that is the studio's own site, where the awwwards "Visit site" button points. Prefer a single dominant external host if several appear. Use THAT real URL as the §3 candidate. If no plausible external host is found, mark the candidate `errored` and skip — never fall back to capturing the awwwards listing frame.
 - Take up to 6 candidates from this run's listing.
 - Vertical inference: heuristic from page copy / category tags. Default `general`.
 
