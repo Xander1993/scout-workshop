@@ -16,7 +16,7 @@
 
 1. **The working tree `/opt/scout-workshop` IS the live deployment.** `scout.timer` (daily 06:00), `scout-ingest.timer` (`OnUnitActiveSec=10min`), and `workshop.timer` (Sun 01:00) run code directly from `scripts/*.py` in the working tree. Editing those files in-place changes live behavior on the next tick. → **Task 0 isolates implementation in a git worktree and masks the timers.**
 2. **The ingest daemon only ever processes *unembedded* notes.** `run_once` iterates `find_unembedded_notes()`, which selects notes where `not fm.get("qdrant_point_id")` (scout_lib.py:758). Already-embedded notes are never revisited, so editing their frontmatter does **NOT** update their Qdrant payload. Adding fields to `PAYLOAD_FIELDS` does **NOT** backfill existing points. (This corrects Rev 1's false "set_payload drift backfill" claim.)
-3. **`scout-ingest.service` is currently FAILING every tick.** A malformed `techniques:` item in `vault/references/madeinwordpress/72b63ecb-landia/note.md` (`- show-don't-tell: ...` — unquoted colon parses as a YAML dict) makes `build_embedding_text`'s `', '.join(...)` raise `TypeError`. Ingestion is dead until Task 3 lands. Re-harvest depends on this fix.
+3. **`scout-ingest.service` is currently FAILING every tick** because of ONE note: `vault/references/madeinwordpress/72b63ecb-landia/note.md` has a malformed `techniques:` item (`- show-don't-tell: ...` — unquoted colon parses as a YAML dict), so `build_embedding_text`'s `', '.join(...)` raises `TypeError` and aborts the whole pass. Task 3 (defensive `_join`) + Task 9.2 fix it. **Separately**, 4 dribbble notes (`2975bd3c-minigo`, `9ea26a95-cosmetics`, `255a9089-vonzy`, `c74fcd64-barber-and-salon`) have genuinely invalid YAML that `parse_note` itself rejects; `find_unembedded_notes` wraps parse in try/except and silently skips them, so they do NOT crash the pass — they just never embed. These are pre-existing, not awwwards, and out of Phase 0 scope (a later vault-hygiene pass); Task 9.7's readiness script must defend against them (it does).
 4. **Scout reads its playbook from GitHub `main`** (`raw.githubusercontent.com/.../main/skills/scout-playbook.md`). Playbook edits take effect only after merge to `main` (Task 9).
 5. **The vault is a separate repo** (`scout-workshop-vault` at `/opt/scout-workshop/vault`); the daemon pulls/commits/pushes it every tick. Migrations must not race it → Task 9 masks the ingest timer.
 6. **The daemon refuses >15 pending notes/pass** (`HARD_REFUSE_THRESHOLD`). Scout's 5-refs/run cap keeps re-harvest under it.
@@ -711,7 +711,10 @@ import pathlib, yaml, collections
 refs = pathlib.Path("vault/references")
 rows = []
 for n in refs.rglob("note.md"):
-    fm = yaml.safe_load(n.read_text().split("\n---\n",1)[0].lstrip("-\n"))
+    try:
+        fm = yaml.safe_load(n.read_text().split("\n---\n",1)[0].lstrip("-\n"))
+    except Exception:
+        print("  (skipping unparseable note:", n.parent.name, ")"); continue
     if not fm or fm.get("reference_type") == "listing_frame":
         continue
     rows.append((fm.get("color_mood","?"), fm.get("reference_type","?"), fm.get("hero_archetype","<none>")))
