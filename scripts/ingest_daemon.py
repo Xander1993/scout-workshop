@@ -36,6 +36,7 @@ from scout_lib import (  # type: ignore
     send_telegram, iso_now,
     qdrant_client, COLLECTION_NAME,
 )
+from structural_schema import validate_structural  # type: ignore
 
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(
@@ -49,6 +50,13 @@ logging.basicConfig(
 log = logging.getLogger("ingest")
 
 
+def _join(seq) -> str:
+    """Join a frontmatter list defensively — items may be malformed (e.g. a YAML
+    'a: b' parsed as a dict). str() every item so a single bad note can never
+    crash the whole ingest pass (the live landia bug)."""
+    return ", ".join(str(x) for x in (seq or []))
+
+
 def build_embedding_text(fm: dict, body: str) -> str:
     """The text we feed to the multimodal embedding alongside the screenshot."""
     parts = [
@@ -58,7 +66,11 @@ def build_embedding_text(fm: dict, body: str) -> str:
         f"Color mood: {fm.get('color_mood', '')}",
         f"Typography: {fm.get('typography_style', '')}",
         f"Layout: {fm.get('layout_pattern', '')}",
-        f"Techniques: {', '.join(fm.get('techniques', []) or [])}",
+        f"Hero archetype: {fm.get('hero_archetype', '')}",
+        f"Section topology: {_join(fm.get('section_topology'))}",
+        f"Motion signature: {_join(fm.get('motion_signature'))}",
+        f"Signature idea: {fm.get('signature_idea', '')}",
+        f"Techniques: {_join(fm.get('techniques'))}",
         "",
         body[:2000],  # cap body to keep embedding text under control
     ]
@@ -94,6 +106,9 @@ def process_one(note_path: Path, dry_run: bool) -> tuple[bool, str | None, str |
         C) Point does not exist                         → full embed + upsert
     """
     fm, body = parse_note(note_path)
+    struct_errs = validate_structural(fm)
+    if struct_errs:
+        log.warning("structural-schema issues in %s: %s", note_path, "; ".join(struct_errs))
     point_id = fm.get("id")
     if not point_id:
         log.error("note %s missing id in frontmatter", note_path)
