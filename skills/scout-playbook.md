@@ -58,7 +58,8 @@ response=$(curl -sS --max-time 60 -X POST "https://api.firecrawl.dev/v1/scrape" 
   }')
 ```
 
-  Parse `response` JSON for `data.links` — pattern is anchor tags pointing to `/sites/<slug>` on awwwards.com. Each of those resolves to a page where the **target site URL** is the actual reference (Awwwards is itself a directory, not the reference).
+  Parse `response` JSON for `data.links` — pattern is anchor tags pointing to `/sites/<slug>` on awwwards.com.
+- **Dereference (REQUIRED — do NOT capture the awwwards.com listing page).** The `/sites/<slug>` links are awwwards.com directory pages, not the reference. For each chosen `/sites/<slug>` candidate, Firecrawl-scrape it with `formats:["links"]`, find the outbound **"Visit site"** URL (the off-awwwards.com link to the studio's own domain), and use THAT real URL as the §3 candidate. If no outbound URL is found, mark the candidate `errored` and skip — never fall back to capturing the awwwards listing frame.
 - Take up to 6 candidates from this run's listing.
 - Vertical inference: heuristic from page copy / category tags. Default `general`.
 
@@ -103,6 +104,13 @@ response=$(curl -sS --max-time 60 -X POST "https://api.firecrawl.dev/v1/scrape" 
 - Take up to 4 candidates.
 - Vertical: heuristic, default `general`.
 
+### 2d. Diversified premium sources (v1.5)
+- **Godly** (`https://godly.website/`) — Firecrawl scrape (stealth), parse `data.links` for outbound site URLs; dereference as in §2a.
+- **Apple-style product pages** — an operator-seeded list in `state/scout-overflow.txt` (if absent, this source yields nothing — log it, do not fail). Process these `reference_type: product_marketing` candidates with priority; they are the only source of the `product_canvas_pinned` archetype the single-product kit-type needs. Seeds: apple.com/{iphone,airpods,watch}, nothing.tech, teenage.engineering, polestar.com, linear.app, arc.net.
+- **Archetype spread (REQUIRED):** when choosing this run's ≤5 candidates, prefer a set spanning **≥2 distinct hero archetypes** — never 5 of the same wordmark-masthead. If discovery surfaces only one archetype, take fewer and spill the rest.
+
+> **Deferred to a later phase (documented, not silently dropped):** per-plate screenshot crops (Phase 0 ships `fullPage:true` only); a dedicated brutalist-style directory source (Godly + Apple seeds suffice for the initial re-harvest).
+
 ### Dedup
 
 Combine all candidates, drop any URL whose stable hash (`sha256(url)[:16]`) is already in `seen-urls.json`. If after dedup you have fewer than 1 candidate, write status to `vault/state/scout-digest-latest.md`: 'ℹ️ Scout: no new candidates this run. Source feeds returned all-known URLs.' Commit + push. Exit cleanly.
@@ -145,10 +153,12 @@ response=$(curl -sS --max-time 90 -X POST "https://api.firecrawl.dev/v1/scrape" 
     \"url\": \"$CANDIDATE_URL\",
     \"formats\": [\"markdown\", \"screenshot\"],
     \"onlyMainContent\": true,
-    \"screenshot\": { \"fullPage\": false },
+    \"screenshot\": { \"fullPage\": true },
     \"proxy\": \"stealth\"
   }")
 ```
+
+**Capture-quality gate.** Before writing the note, sanity-check the screenshot: if it is near-blank, a cookie/consent wall, or a loader frame (PNG < 30KB, or markdown body < 400 chars), treat the candidate as `errored` and skip. A premium award site that fails to render is worse than no reference.
 
 The `proxy: "stealth"` parameter routes through Firecrawl's residential IP pool, which has substantially higher success rate against anti-bot systems than the default `auto` mode.
 
@@ -186,6 +196,10 @@ Look at the scraped markdown + screenshot. Produce a structured analysis with th
 | `layout_pattern` | string | Free-form, e.g. `hero-fold + alternating split + testimonial wall + footer CTA`. |
 | `palette_hex` | string[] | 3–6 dominant hex codes from the screenshot, eyeballed. |
 | `signals` | string[] | 5–10 bullet observations: what's good, what's interesting, what would translate to a WP block theme. |
+| `hero_archetype` | enum | `monumental_wordmark` \| `full_bleed_photo_hero` \| `split_editorial` \| `kinetic_type` \| `product_canvas_pinned` \| `immersive_canvas`. |
+| `section_topology` | string[] | Ordered, from: `full_bleed_plate`, `work_grid`, `manifesto`, `spec_table`, `scroll_chapter`, `studio_statement`, `product_hero`, `monumental_wordmark`, `trust_signals`, `case_grid`, `callout`, `stats_row`. |
+| `motion_signature` | string[] | From: `splittype_stagger`, `scroll_pin`, `lenis_smooth`, `parallax`, `webgl_canvas`, `none`. |
+| `signature_idea` | string, ≤200 chars | The ONE distinctive idea (the bespoke hook), e.g. "wordmark dissolves into the hero photo on scroll". NOT a reusable skeleton. |
 
 Be concrete. **No** "modern, clean, professional." Those words are banned — they describe nothing and they're the AI-aesthetic tell.
 
@@ -210,6 +224,10 @@ color_mood: <color_mood>
 typography_style: <typography_style>
 layout_pattern: <layout_pattern>
 palette_hex: <palette_hex as YAML list>
+hero_archetype: <hero_archetype>
+section_topology: <section_topology as YAML list>
+motion_signature: <motion_signature as YAML list>
+signature_idea: <signature_idea>
 qdrant_point_id: null
 embedded_at: null
 screenshot_path: ./screenshot.png
@@ -231,7 +249,7 @@ screenshot_path: ./screenshot.png
 
 ## Why this is a reference
 
-<2–3 sentences: what specifically would you steal for a WP block theme?>
+<2–3 sentences naming THE ONE distinctive idea (signature_idea) and the craft that makes it premium. Do NOT describe it as a reusable three-block skeleton.>
 ```
 
 ### 3d. Commit individually
