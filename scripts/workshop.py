@@ -245,7 +245,11 @@ def build_vault_index() -> dict[str, tuple[Path, Optional[Path]]]:
             log.warning("no id in frontmatter: %s", note)
             continue
         screenshot = note.parent / "screenshot.png"
-        index[fm_id] = (note, screenshot if screenshot.exists() else None)
+        entry = (note, screenshot if screenshot.exists() else None)
+        index[fm_id] = entry
+        # v1.5: also key by directory slug so AWWWARDS_CONFIGS.anchor_reference_ids
+        # (slug form, e.g. "989723a6-studio-namma") resolve. Slug and UUIDv5 never collide.
+        index[note.parent.name] = entry
     return index
 
 
