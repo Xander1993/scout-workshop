@@ -4,7 +4,9 @@ discovery. Wraps claude --print to invoke playbook execution with
 full Anthropic Max subscription quota, on VPS infrastructure with
 unrestricted internet. Replaces Anthropic Routine architecture.
 """
+import datetime
 import os
+import pathlib
 import subprocess
 import sys
 
@@ -31,6 +33,7 @@ all reachable directly via bash + curl as the playbook describes.
 
 
 CLAUDE_BIN = "/home/deployer/.nvm/versions/node/v22.22.1/bin/claude"
+LOG_DIR = pathlib.Path("/opt/scout-workshop/logs/scout-runs")
 
 
 def main():
@@ -38,13 +41,23 @@ def main():
     env.setdefault("VAULT_DIR", "/opt/scout-workshop/vault")
     env.pop("CLAUDECODE", None)
 
-    result = subprocess.run(
-        [CLAUDE_BIN, "--print", "--verbose", "--output-format", "stream-json", PROMPT],
-        cwd="/opt/scout-workshop",
-        env=env,
-        stdout=subprocess.DEVNULL,  # discard stream-json chunks; only exit code matters
-        timeout=7200,
-    )
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    ts = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    log_path = LOG_DIR / f"scout-{ts}.log"
+
+    with log_path.open("wb") as log:
+        log.write(f"=== scout.py run start {ts} ===\n".encode())
+        log.flush()
+        result = subprocess.run(
+            [CLAUDE_BIN, "--print", "--verbose", "--dangerously-skip-permissions", "--output-format", "stream-json", PROMPT],
+            cwd="/opt/scout-workshop",
+            env=env,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            timeout=7200,
+        )
+        log.write(f"\n=== scout.py run end exit={result.returncode} ===\n".encode())
+
     sys.exit(result.returncode)
 
 
