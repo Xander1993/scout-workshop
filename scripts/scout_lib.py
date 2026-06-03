@@ -764,7 +764,8 @@ def find_unembedded_notes(vault_root: Path = VAULT_DIR) -> list[Path]:
 
 PAYLOAD_FIELDS = (
     "id source source_url scraped_at title vertical reference_type "
-    "techniques color_mood typography_style layout_pattern palette_hex"
+    "techniques color_mood typography_style layout_pattern palette_hex "
+    "hero_archetype section_topology motion_signature signature_idea"
 ).split()
 
 
