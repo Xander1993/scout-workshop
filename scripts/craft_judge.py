@@ -9,6 +9,27 @@ import json
 from pathlib import Path
 
 
+_CRAFT_KEYS = ("monumentality", "restraint", "composition", "motion_realized", "signature_moment")
+
+
+def _enforce_floor(v: dict) -> str:
+    """The §13 floor, computed in code from the judge's numeric scores so a model
+    that self-reports 'pass' while scoring a 0 (or below the weighted floor) is
+    still vetoed. Thresholds live in quality_floor_config (live-tunable)."""
+    from quality_floor_config import QUALITY_FLOOR as QF  # leaf module, no cycle
+    scores = v.get("scores") or {}
+    tells = v.get("template_tells") or []
+    vals = [scores.get(k, 0) for k in _CRAFT_KEYS]
+    v["weighted_sum"] = sum(vals)
+    veto = (not scores
+            or any(s == 0 for s in vals)
+            or scores.get("signature_moment", 0) < QF["craft_signature_min"]
+            or scores.get("monumentality", 0) < QF["craft_monumentality_min"]
+            or len(tells) >= QF["craft_tells_veto_at"]
+            or sum(vals) < QF["craft_weighted_min"])
+    return "below_bar" if veto else "pass"
+
+
 def run(run_dir, kit_dir, kit_type, concept, screenshots, *,
         run_claude, load_prompt_template, extract_json) -> dict:
     run_dir = Path(run_dir)
@@ -28,6 +49,8 @@ def run(run_dir, kit_dir, kit_type, concept, screenshots, *,
     except Exception as e:  # noqa: BLE001 — a broken judge must not crash the run
         v = {"verdict": "below_bar", "reasons": f"judge JSON parse failed: {e}",
              "scores": {}, "template_tells": []}
-    v.setdefault("verdict", "below_bar")
+    # Recompute the §13 verdict from scores in code — never trust the model's
+    # self-reported verdict (it can contradict its own rule).
+    v["verdict"] = _enforce_floor(v)
     (run_dir / "craft_verdict.json").write_text(json.dumps(v, indent=2), encoding="utf-8")
     return v

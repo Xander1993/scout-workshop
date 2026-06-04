@@ -27,9 +27,9 @@ _EVAL = r"""() => {
   for (let i=1;i<blocks.length;i++){ const g = blocks[i].top - blocks[i-1].bottom; if (g>voidpx) voidpx=g; }
   const tells = [];
   if (document.querySelector('[class*="trust"],[class*="badge"],[class*="avatar"],[class*="testimonial"]')) tells.push('trust/badge');
-  if (document.querySelectorAll('[class~="card"],[class~="service"]').length >= 3) tells.push('card-grid');
+  if (document.querySelectorAll('[class*="card"],[class*="service"]').length >= 3) tells.push('card-grid');
   if (document.querySelector('a[href^="tel:"]')) tells.push('click-to-call');
-  if (document.querySelectorAll('a[class~="cta"],button[class~="cta"],a[class~="pill"],button[class~="pill"]').length >= 2) tells.push('repeated-cta');
+  if (document.querySelectorAll('a[class*="cta"],button[class*="cta"],a[class*="pill"],button[class*="pill"]').length >= 2) tells.push('repeated-cta');
   return {bleed: bleed, n: secs.length, hero_px: hero, body_px: body,
           void_px: Math.round(voidpx), page_h: document.body.scrollHeight, tells: tells};
 }"""

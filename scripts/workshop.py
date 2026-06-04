@@ -1230,13 +1230,16 @@ def run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots
     import awwwards_manifest, render_metrics, diversity_gate, craft_judge  # noqa: WPS433 (lazy)
     from quality_floor_config import QUALITY_FLOOR as QF  # noqa: WPS433
     reasons = []
+    manifest_ok = True
     try:
         manifest = awwwards_manifest.parse_manifest((run_dir / "brief.md").read_text(encoding="utf-8"))
         merrs = awwwards_manifest.validate(manifest)
         if merrs:
+            manifest_ok = False
             reasons.append(f"manifest invalid: {merrs}")
         (run_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     except awwwards_manifest.ManifestError as e:
+        manifest_ok = False
         manifest = {"hero_archetype": None, "sections": [], "signature_move": ""}
         reasons.append(f"no manifest: {e}")
     rm = {}
@@ -1244,10 +1247,11 @@ def run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots
         rm = render_metrics.render_metrics(kit_dir)
     except Exception as e:  # noqa: BLE001
         reasons.append(f"render_metrics failed: {e}")
-    # A large vertical gap is a "void" only on a SHORT page; on a long monumental
-    # scroll the same gap is intentional negative space (v1.5 design §12 / Rev 2).
-    void_bad = (rm.get("max_vertical_void_px", 0) > QF["vertical_void_max_px"].get(kit_type, 1200)
-                and rm.get("page_height_px", 999999) < QF["void_short_page_px"])
+    # A void is a broken/sparse gap and is ALWAYS gated — a gap this large is never
+    # intentional negative space (both real premium kits measure <=1300px). The
+    # earlier page-height carve-out made the void signal inert on tall pages, which
+    # is exactly the page class (long premium AND padded-generic) it must police.
+    void_bad = rm.get("max_vertical_void_px", 0) > QF["vertical_void_max_px"].get(kit_type, 2400)
     det_ok = (rm.get("hero_scale_ratio", 0) >= QF["hero_scale_min"]
               and len(rm.get("template_tells", [])) <= QF["template_tells_max"]
               and not void_bad)
@@ -1256,17 +1260,19 @@ def run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots
                        f"tells={rm.get('template_tells')}, "
                        f"void={rm.get('max_vertical_void_px')}/h{rm.get('page_height_px')})")
     sig = diversity_gate.signature(manifest, rm, concept)
-    repeat = diversity_gate.is_repeat(sig, diversity_gate.priors(register_family),
-                                      QF["diversity_reject_below"])
-    if repeat:
-        reasons.append("structural repeat of a recent kit")
-    diversity_gate.record(sig, register_family)
+    repeat = False
+    if manifest_ok:  # never compare/record a degenerate all-None signature
+        repeat = diversity_gate.is_repeat(sig, diversity_gate.priors(register_family),
+                                          QF["diversity_reject_below"])
+        if repeat:
+            reasons.append("structural repeat of a recent kit")
+        diversity_gate.record(sig, register_family)
     craft = craft_judge.run(run_dir, kit_dir, kit_type, concept, shots,
                             run_claude=run_claude, load_prompt_template=load_prompt_template,
                             extract_json=_extract_json_object)
     if craft.get("verdict") != "pass":
         reasons.append(f"craft below_bar: {craft.get('reasons', '')}")
-    passed = det_ok and not repeat and craft.get("verdict") == "pass"
+    passed = manifest_ok and det_ok and not repeat and craft.get("verdict") == "pass"
     v = {"passed": passed, "reasons": reasons, "rm": rm, "craft": craft, "sig": sig}
     (run_dir / "verdict.json").write_text(
         json.dumps({k: v[k] for k in ("passed", "reasons", "rm", "craft")}, indent=2), encoding="utf-8")

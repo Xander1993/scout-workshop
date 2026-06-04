@@ -527,3 +527,9 @@ HEAD is now at 72c7fb6 Workshop kit: beauty restrained-luxury-warm-v2
 2026-06-04T02:11:23Z INFO attempt 0 verdict: passed=True reasons=[]
 2026-06-04T02:11:23Z INFO PASS (premium) — kit at /opt/scout-workshop/workshop/runs/2026-06-04T02-04-52Z-awwwards-sun-baked-single-product/kit
 2026-06-04T02:11:23Z INFO DONE — /opt/scout-workshop/workshop/runs/2026-06-04T02-04-52Z-awwwards-sun-baked-single-product
+2026-06-04T02:16:23Z INFO disk preflight: 60.07 GB free
+2026-06-04T02:16:23Z INFO anchor complete (4/4) — exploration is v1.1, exiting
+2026-06-04T02:16:46Z INFO disk preflight: 60.07 GB free
+2026-06-04T02:16:46Z INFO anchor complete (4/4) — exploration is v1.1, exiting
+2026-06-04T02:17:10Z INFO disk preflight: 60.07 GB free
+2026-06-04T02:17:10Z INFO anchor complete (4/4) — exploration is v1.1, exiting
