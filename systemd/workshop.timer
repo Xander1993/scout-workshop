@@ -1,14 +1,16 @@
 [Unit]
-Description=Workshop weekly trigger — Sunday 01:00 UTC
+Description=Workshop twice-weekly trigger — Sunday + Wednesday 01:00 UTC
 Documentation=file:///opt/scout-workshop/docs/architecture-decisions.md
 
 # Per ADR-3:
 #   01:00 UTC = 03:00 Moldova in winter (EET, UTC+2)
 #             = 04:00 Moldova in summer (EEST, UTC+3)
 # DST drift accepted; no DST-switching logic.
+# v1.5: twice a week (Sun + Wed) to produce more premium kits; the register
+# iterator round-robins, so each run is a different aesthetic × kit-type.
 
 [Timer]
-OnCalendar=Sun *-*-* 01:00:00 UTC
+OnCalendar=Sun,Wed *-*-* 01:00:00 UTC
 Persistent=true
 AccuracySec=1m
 

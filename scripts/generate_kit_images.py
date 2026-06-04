@@ -33,6 +33,7 @@ import base64
 import io
 import json
 import logging
+import os
 import re
 import sys
 import time
@@ -41,6 +42,8 @@ from typing import Any
 
 import requests
 from PIL import Image, ImageStat
+
+import codex_imagegen  # local OAuth image backend (codex built-in image_gen tool)
 
 
 # ─────────────────────────────────────────────────────────────────────
@@ -487,6 +490,31 @@ def strip_picsum_audit_concerns(audit_md_path: Path) -> int:
 # Main entry point
 # ─────────────────────────────────────────────────────────────────────
 
+def _fallback_image(image_id, entry, full_prompt, aspect, images_dir, palette,
+                    image_id_to_path, statuses, error_reason):
+    """Gemini is unavailable for this image → try Codex (OAuth, no API key); on
+    failure write an SVG placeholder. Mutates image_id_to_path + statuses."""
+    out_png = images_dir / f"{image_id}.png"
+    try:
+        if codex_imagegen.available() and codex_imagegen.generate_image(
+                full_prompt, aspect, out_png):
+            image_id_to_path[image_id] = f"assets/images/{image_id}.png"
+            statuses[image_id] = {"status": "success", "path": str(out_png),
+                                  "error": None, "backend": "codex"}
+            log.info("image %s ok via codex (gemini: %s)", image_id, error_reason)
+            return
+    except Exception as e:  # noqa: BLE001 — codex must never break the loop
+        log.warning("codex imagegen errored for %s: %s", image_id, e)
+    out_svg = images_dir / f"{image_id}.svg"
+    try:
+        out_svg.write_text(make_placeholder_svg(image_id, entry, palette), encoding="utf-8")
+        image_id_to_path[image_id] = f"assets/images/{image_id}.svg"
+        statuses[image_id] = {"status": "fallback", "path": str(out_svg), "error": error_reason}
+    except Exception as e:  # noqa: BLE001
+        statuses[image_id] = {"status": "failed", "path": None,
+                              "error": f"codex+svg both failed: {error_reason} / {e!r}"}
+
+
 def generate_kit_images(
     kit_dir: Path, run_dir: Path,
     aesthetic_direction: str | None = None,
@@ -528,7 +556,8 @@ def generate_kit_images(
         ) from e
     manifest = _validate_manifest(manifest_raw, ipj_path, run_dir)
 
-    api_key = _load_api_key()  # raises if missing
+    force_codex = os.getenv("WORKSHOP_IMAGE_BACKEND", "").strip().lower() == "codex"
+    api_key = "" if force_codex else _load_api_key()  # gemini key (skipped for codex)
 
     # Resolve per-aesthetic prefix once for this kit. All images in the kit
     # share the same photographic register; the per-image differentiation is
@@ -540,10 +569,15 @@ def generate_kit_images(
     palette = _parse_palette_from_brief(run_dir / "brief.md")
     log.info("palette parsed from brief.md: %s", palette or "(none — using neutral)")
 
-    api_ok, api_reason = check_connectivity(api_key)
-    if not api_ok:
-        log.error("Gemini connectivity preflight failed: %s — falling back ALL %d images",
-                  api_reason, len(manifest))
+    if force_codex:
+        api_ok, api_reason = False, "forced_codex"
+        log.info("WORKSHOP_IMAGE_BACKEND=codex → skipping Gemini; codex imagegen for all %d images",
+                 len(manifest))
+    else:
+        api_ok, api_reason = check_connectivity(api_key)
+        if not api_ok:
+            log.error("Gemini connectivity preflight failed: %s — falling back ALL %d images",
+                      api_reason, len(manifest))
 
     daily_quota_exceeded = False
     consecutive_429 = 0
@@ -557,23 +591,12 @@ def generate_kit_images(
         aspect = entry.get("aspect_ratio", "4:3")
         full_prompt = image_prefix + " " + entry["generation_prompt"]
 
-        # short-circuit: no API → straight to SVG
+        # short-circuit: no Gemini (down / quota / forced codex) → codex, then SVG
         if not api_ok or daily_quota_exceeded:
-            reason = "api_unavailable" if not api_ok else "daily_quota_exceeded"
-            try:
-                out_svg.write_text(
-                    make_placeholder_svg(image_id, entry, palette),
-                    encoding="utf-8",
-                )
-                image_id_to_path[image_id] = f"assets/images/{image_id}.svg"
-                statuses[image_id] = {
-                    "status": "fallback", "path": str(out_svg), "error": reason,
-                }
-            except Exception as e:
-                statuses[image_id] = {
-                    "status": "failed", "path": None,
-                    "error": f"svg-write failed: {e!r}",
-                }
+            reason = ("forced_codex" if force_codex else
+                      "api_unavailable" if not api_ok else "daily_quota_exceeded")
+            _fallback_image(image_id, entry, full_prompt, aspect, images_dir, palette,
+                            image_id_to_path, statuses, reason)
             continue
 
         # call Gemini
@@ -592,21 +615,8 @@ def generate_kit_images(
                 elif consecutive_429 >= 3:
                     daily_quota_exceeded = True
                     log.error("3+ consecutive 429s — flipping to fallback-all defensively")
-            try:
-                out_svg.write_text(
-                    make_placeholder_svg(image_id, entry, palette),
-                    encoding="utf-8",
-                )
-                image_id_to_path[image_id] = f"assets/images/{image_id}.svg"
-                statuses[image_id] = {
-                    "status": "fallback", "path": str(out_svg),
-                    "error": err_str[:300],
-                }
-            except Exception as svg_err:
-                statuses[image_id] = {
-                    "status": "failed", "path": None,
-                    "error": f"api+svg both failed: api={err_str[:200]} svg={svg_err!r}",
-                }
+            _fallback_image(image_id, entry, full_prompt, aspect, images_dir, palette,
+                            image_id_to_path, statuses, err_str[:300])
             time.sleep(RATE_LIMIT_PAUSE_S)
             continue
 
@@ -615,21 +625,8 @@ def generate_kit_images(
         ok, reason = _validate_image(jpeg_bytes, aspect)
         if not ok:
             log.warning("image %s validation failed: %s — falling back", image_id, reason)
-            try:
-                out_svg.write_text(
-                    make_placeholder_svg(image_id, entry, palette),
-                    encoding="utf-8",
-                )
-                image_id_to_path[image_id] = f"assets/images/{image_id}.svg"
-                statuses[image_id] = {
-                    "status": "fallback", "path": str(out_svg),
-                    "error": f"validation: {reason}",
-                }
-            except Exception as svg_err:
-                statuses[image_id] = {
-                    "status": "failed", "path": None,
-                    "error": f"validation+svg both failed: validation={reason}, svg={svg_err!r}",
-                }
+            _fallback_image(image_id, entry, full_prompt, aspect, images_dir, palette,
+                            image_id_to_path, statuses, f"validation: {reason}")
             time.sleep(RATE_LIMIT_PAUSE_S)
             continue
 
