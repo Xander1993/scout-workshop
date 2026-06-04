@@ -162,6 +162,7 @@ function runCardHtml(r) {
       <div class="run-card-chips">
         <span class="chip size-sm register-${r.register}">${REG_LABELS[r.register] || r.register}</span>
         ${r.audit_status ? `<span class="chip size-sm status-${r.audit_status}">${STATUS_LABELS[r.audit_status]}</span>` : ""}
+        ${r.register_verdict ? `<span class="chip size-sm ${r.flagged ? "verdict-flagged" : "verdict-pass"}" title="${(r.register_verdict.reasons || []).join("; ")}">${r.flagged ? "⚑ FLAGGED" : "★ PREMIUM"}</span>` : ""}
         ${r.warnings_count > 0 ? `<span class="chip size-sm">${r.warnings_count}<span style="opacity:.6"> W</span></span>` : ""}
       </div>
     </div>

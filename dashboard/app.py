@@ -40,6 +40,29 @@ RUN_SLUG_RE = re.compile(
 )
 
 
+def read_register_verdict(run_dir: Path) -> dict[str, Any] | None:
+    """v1.5 register kits write verdict.json (the quality-gate result). Returns a
+    compact view, or None for conversion-era runs that have no verdict.json.
+    `flagged` = the kit was NOT deployable (dir renamed `…-flagged` or a
+    DO_NOT_DEPLOY sentinel present)."""
+    vpath = run_dir / "verdict.json"
+    if not vpath.exists():
+        return None
+    try:
+        v = json.loads(vpath.read_text(errors="replace"))
+    except (ValueError, OSError):
+        return None
+    craft = v.get("craft") or {}
+    flagged = run_dir.name.endswith("-flagged") or (run_dir / "DO_NOT_DEPLOY").exists()
+    return {
+        "passed": bool(v.get("passed")),
+        "flagged": bool(flagged),
+        "reasons": v.get("reasons") or [],
+        "craft_verdict": craft.get("verdict"),
+        "craft_scores": craft.get("scores") or {},
+    }
+
+
 def parse_run_dir(run_dir: Path) -> dict[str, Any] | None:
     """Read a single run directory and return a summary dict."""
     m = RUN_SLUG_RE.match(run_dir.name)
@@ -70,6 +93,11 @@ def parse_run_dir(run_dir: Path) -> dict[str, Any] | None:
         "gate_timings": [],
         "errors": [],
     }
+
+    # v1.5 register quality-gate verdict (None for conversion-era runs)
+    reg = read_register_verdict(run_dir)
+    summary["register_verdict"] = reg
+    summary["flagged"] = bool(reg and reg["flagged"])
 
     # Parse audit.md
     audit_path = run_dir / "audit.md"
@@ -172,6 +200,10 @@ def compute_stats(runs: list[dict[str, Any]]) -> dict[str, Any]:
     pass_count = sum(1 for r in runs if r.get("audit_status") == "pass")
     warn_count = sum(1 for r in runs if r.get("audit_status") == "warn")
     fail_count = sum(1 for r in runs if r.get("audit_status") == "fail")
+    register_count = sum(1 for r in runs if r.get("register_verdict"))
+    register_pass_count = sum(
+        1 for r in runs if (r.get("register_verdict") or {}).get("passed"))
+    flagged_count = sum(1 for r in runs if r.get("flagged"))
     avg_warnings = sum(r.get("warnings_count", 0) for r in runs) / total
     densities = Counter(r.get("density", "unknown") for r in runs)
     registers = Counter(r.get("register", "unknown") for r in runs)
@@ -183,6 +215,9 @@ def compute_stats(runs: list[dict[str, Any]]) -> dict[str, Any]:
         "pass_count": pass_count,
         "warn_count": warn_count,
         "fail_count": fail_count,
+        "register_count": register_count,
+        "register_pass_count": register_pass_count,
+        "flagged_count": flagged_count,
         "ship_rate_pct": int(((pass_count + warn_count) / total) * 100),
         "avg_warnings_per_run": round(avg_warnings, 1),
         "total_warnings": total_warnings,
