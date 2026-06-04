@@ -1387,6 +1387,48 @@ def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
 # main()
 # ─────────────────────────────────────────────────────────────────────
 
+def _register_alert_text(run_dir, sub_aesthetic: str, kit_type: str):
+    """Build the (text, screenshot_path|None) Telegram alert for a finished register
+    run by reading its verdict.json. Pure; a missing verdict reads as not-shipped."""
+    run_dir = Path(run_dir)
+    flagged = run_dir.name.endswith("-flagged") or (run_dir / "DO_NOT_DEPLOY").exists()
+    v = {}
+    try:
+        v = json.loads((run_dir / "verdict.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        flagged = True
+    craft = v.get("craft") or {}
+    scores = craft.get("scores") or {}
+    rm = v.get("rm") or {}
+    if flagged or not v.get("passed"):
+        reasons = "; ".join(v.get("reasons") or []) or "below bar (no verdict)"
+        text = (f"⚠️ Workshop kit FLAGGED — not deployed\n"
+                f"{sub_aesthetic} / {kit_type}\n"
+                f"reasons: {reasons}\n{run_dir.name}")
+    else:
+        text = (f"✅ Workshop shipped a PREMIUM kit\n"
+                f"{sub_aesthetic} / {kit_type}\n"
+                f"craft {sum(scores.values())}/15 · hero {rm.get('hero_scale_ratio', '?')}× · "
+                f"tells {len(rm.get('template_tells', []))}\n{run_dir.name}")
+    sd = run_dir / "kit" / "screenshots"
+    shots = sorted(sd.glob("*-desktop.png")) if sd.exists() else []
+    shot = next((s for s in shots if s.name.startswith("home")), shots[0] if shots else None)
+    return text, shot
+
+
+def _alert_register_result(sub_aesthetic: str, kit_type: str) -> None:
+    """Best-effort Telegram alert after a register run. NEVER raises — a delivery
+    failure must not fail the weekly run."""
+    try:
+        cands = sorted(RUNS_DIR.glob(f"*awwwards-{sub_aesthetic}-{kit_type}*"))
+        if not cands:
+            return
+        text, _shot = _register_alert_text(cands[-1], sub_aesthetic, kit_type)
+        _send_telegram_text_raw(text)
+    except Exception as e:  # noqa: BLE001 — alerting must never fail the run
+        log.warning("register alert failed (non-fatal): %s", e)
+
+
 def run_register_weekly() -> int:
     """Weekly cron entry: pick the next (sub, kit) in rotation and run the gated
     oneshot. On a corpus-thin failure (oneshot returns 1) advance to the next
@@ -1402,10 +1444,15 @@ def run_register_weekly() -> int:
         log.info("register-weekly: attempting %s / %s", sub, kit)
         rc = run_awwwards_oneshot(sub, kit)
         if rc == 0:
+            _alert_register_result(sub, kit)
             return 0
         log.warning("register-weekly: %s/%s did not ship (rc=%d) — trying next pair",
                     sub, kit, rc)
     log.error("register-weekly: no viable pair shipped a kit this run")
+    try:  # best-effort — a silent total failure on an autonomous system is the worst case
+        _send_telegram_text_raw("⚠️ Workshop register-weekly: no viable pair shipped a kit this run.")
+    except Exception:  # noqa: BLE001
+        pass
     return 1
 
 
