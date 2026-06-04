@@ -1387,6 +1387,28 @@ def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
 # main()
 # ─────────────────────────────────────────────────────────────────────
 
+def run_register_weekly() -> int:
+    """Weekly cron entry: pick the next (sub, kit) in rotation and run the gated
+    oneshot. On a corpus-thin failure (oneshot returns 1) advance to the next
+    viable pair, bounded by the number of pairs so a fully-starved set fails once
+    rather than looping forever."""
+    import register_schedule  # noqa: WPS433 (lazy)
+    pairs = register_schedule.active_pairs()
+    if not pairs:
+        log.error("register-weekly: no active sub-aesthetics")
+        return 1
+    for _ in range(len(pairs)):
+        sub, kit = register_schedule.next_pair()
+        log.info("register-weekly: attempting %s / %s", sub, kit)
+        rc = run_awwwards_oneshot(sub, kit)
+        if rc == 0:
+            return 0
+        log.warning("register-weekly: %s/%s did not ship (rc=%d) — trying next pair",
+                    sub, kit, rc)
+    log.error("register-weekly: no viable pair shipped a kit this run")
+    return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Workshop — generate one static-HTML kit per invocation."
@@ -1399,11 +1421,19 @@ def main() -> int:
         "--awwwards-oneshot", nargs=2, metavar=("SUB_AESTHETIC", "KIT_TYPE"),
         help="Generate one awwwards kit via the v1.5 register (additive; bypasses the conversion queue).",
     )
+    parser.add_argument(
+        "--register-weekly", action="store_true",
+        help="Weekly register cron: round-robin the active sub-aesthetics × kit-types through the gated pipeline.",
+    )
     args = parser.parse_args()
 
     if args.awwwards_oneshot:
         _setup_logging()
         return run_awwwards_oneshot(*args.awwwards_oneshot)
+
+    if args.register_weekly:
+        _setup_logging()
+        return run_register_weekly()
 
     _setup_logging()  # stdout + workshop.log; per-run handler added once run_dir exists
     lock = acquire_lock()
