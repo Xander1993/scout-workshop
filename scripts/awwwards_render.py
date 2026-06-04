@@ -78,17 +78,28 @@ _KIT_TYPE_RTYPES = {
     "single-product": {"product_marketing"},
     "editorial-studio": {"studio_site", "agency_portfolio", "product_marketing"},
 }
+# A kit-type also constrains the HERO archetype it may inherit. reference_type
+# (e.g. product_marketing) is too coarse — a product-marketing site can still be
+# wordmark-led (Marvell) and must NOT steer a single-product page into an
+# editorial wordmark hero. Keying valid heroes off the kit-type is robust to
+# such mis-tagging and keeps the two kit-types structurally distinct.
+_KIT_TYPE_HEROES = {
+    "single-product": {"full_bleed_photo_hero", "product_canvas_pinned"},
+    "editorial-studio": {"monumental_wordmark", "split_editorial"},
+}
 _ALLOWED_SOURCES = {"curated", "awwwards"}
 
 
 def filter_refs(pool: list[dict], kit_type: str) -> list[dict]:
     """Post-filter a candidate pool: premium sources only, never listing_frame,
-    reference_type appropriate to the kit_type."""
+    reference_type AND hero_archetype appropriate to the kit_type."""
     allow = _KIT_TYPE_RTYPES[kit_type]
+    heroes = _KIT_TYPE_HEROES.get(kit_type)
     return [p for p in pool
             if p.get("source") in _ALLOWED_SOURCES
             and p.get("reference_type") != "listing_frame"
-            and p.get("reference_type") in allow]
+            and p.get("reference_type") in allow
+            and (heroes is None or p.get("hero_archetype") in heroes)]
 
 
 def art_direction_query(sub_aesthetic: str, kit_type: str) -> str:
@@ -105,7 +116,11 @@ def retrieve_awwwards_refs(sub_aesthetic: str, kit_type: str, vault_index: dict,
     import scout_lib as sl  # type: ignore
     q = art_direction_query(sub_aesthetic, kit_type)
     qvec = sl.embed(q)
-    points = sl.qdrant_query(qvec, limit=30)
+    # Wide vector window (60), then rerank narrows to k. A sub-aesthetic whose
+    # palette is far from a premium ref (e.g. sun-baked vs glossy Apple) ranks
+    # those refs 30-60 in raw cosine; the reranker reorders them well once
+    # they're candidates, so recall matters more than the initial cutoff.
+    points = sl.qdrant_query(qvec, limit=60)
     pool = []
     for p in points:
         pl = dict(p.payload or {})

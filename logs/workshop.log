@@ -1,0 +1,529 @@
+2026-05-09T20:12:43Z INFO disk preflight: 77.87 GB free
+2026-05-09T20:12:43Z INFO run start: vertical=beauty aesthetic=restrained-luxury-warm run_dir=/opt/scout-workshop/workshop/runs/2026-05-09T20-12-43Z-beauty-restrained-luxury-warm
+2026-05-09T20:12:43Z INFO readiness_check: 4/4
+2026-05-09T20:12:43Z INFO vault_index built: 13 entries
+2026-05-09T20:12:44Z INFO retrieved 4 references (top: Miso — Beauty Clinic Landing Page)
+2026-05-09T20:12:44Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-09T20:13:43Z INFO brief.md written: 4141 bytes
+2026-05-09T20:13:43Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-09T20:16:43Z INFO kit generated: 6 files in /opt/scout-workshop/workshop/runs/2026-05-09T20-12-43Z-beauty-restrained-luxury-warm/kit
+2026-05-09T20:16:43Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-09T20:17:52Z INFO audit_status=warn warnings=5
+2026-05-09T20:18:00Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-09T20-12-43Z-beauty-restrained-luxury-warm/kit/screenshots
+2026-05-09T20:18:00Z INFO cloning git@github.com:Xander1993/camelotflows-kits.git to /opt/scout-workshop/.kits-mirror
+2026-05-09T20:18:04Z INFO push success on attempt 1
+2026-05-09T20:18:05Z INFO queue updated: completed=1, remaining=['editorial-feminine', 'natural-organic', 'modern-minimal']
+2026-05-09T20:18:05Z INFO run complete: push_ok=True
+2026-05-09T21:41:37Z INFO disk preflight: 77.85 GB free
+2026-05-09T21:41:37Z INFO run start: vertical=beauty aesthetic=editorial-feminine run_dir=/opt/scout-workshop/workshop/runs/2026-05-09T21-41-37Z-beauty-editorial-feminine
+2026-05-09T21:41:37Z INFO readiness_check: 4/4
+2026-05-09T21:41:37Z INFO vault_index built: 13 entries
+2026-05-09T21:41:38Z INFO retrieved 4 references (top: Miso — Beauty Clinic Landing Page)
+2026-05-09T21:41:38Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-09T21:42:40Z INFO brief.md written: 3924 bytes
+2026-05-09T21:42:40Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-09T21:47:04Z INFO kit generated: 7 files in /opt/scout-workshop/workshop/runs/2026-05-09T21-41-37Z-beauty-editorial-feminine/kit
+2026-05-09T21:47:04Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-09T21:47:42Z INFO audit_status=warn warnings=1
+2026-05-09T21:47:49Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-09T21-41-37Z-beauty-editorial-feminine/kit/screenshots
+2026-05-09T21:47:49Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-09T21:47:53Z INFO push success on attempt 1
+2026-05-09T21:47:53Z INFO queue updated: completed=2, remaining=['natural-organic', 'modern-minimal']
+2026-05-09T21:47:53Z INFO run complete: push_ok=True
+2026-05-09T22:20:40Z INFO disk preflight: 77.80 GB free
+2026-05-09T22:20:40Z INFO run start: vertical=beauty aesthetic=natural-organic run_dir=/opt/scout-workshop/workshop/runs/2026-05-09T22-20-40Z-beauty-natural-organic
+2026-05-09T22:20:40Z INFO readiness_check: 4/4
+2026-05-09T22:20:40Z INFO vault_index built: 13 entries
+2026-05-10T01:00:01Z INFO disk preflight: 78.37 GB free
+2026-05-10T01:00:01Z INFO run start: vertical=beauty aesthetic=natural-organic run_dir=/opt/scout-workshop/workshop/runs/2026-05-10T01-00-01Z-beauty-natural-organic
+2026-05-10T01:00:01Z INFO readiness_check: 4/4
+2026-05-10T01:00:01Z INFO vault_index built: 13 entries
+2026-05-10T01:00:02Z INFO retrieved 4 references (top: Miso — Beauty Clinic Landing Page)
+2026-05-10T01:00:02Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T01:00:43Z INFO brief.md written: 3787 bytes
+2026-05-10T01:00:43Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T01:05:52Z INFO kit generated: 7 files in /opt/scout-workshop/workshop/runs/2026-05-10T01-00-01Z-beauty-natural-organic/kit
+2026-05-10T01:05:52Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-10T01:06:27Z INFO audit_status=warn warnings=5
+2026-05-10T01:06:27Z INFO palette parsed from brief.md: {'bg': '#F5EDE2', 'fg': '#3A2A1F', 'accent': '#A66344', 'muted': '#BDB7AD', 'surface': '#E8D9C3'}
+2026-05-10T01:06:48Z INFO image hero ok: ok (896×1200, mean=134)
+2026-05-10T01:07:08Z INFO image hero-detail ok: ok (1024×1024, mean=134)
+2026-05-10T01:07:27Z INFO image service-1-signature-facial ok: ok (1200×896, mean=139)
+2026-05-10T01:07:52Z INFO image service-2-clarity-peel ok: ok (1200×896, mean=126)
+2026-05-10T01:08:10Z INFO image service-3-rituals-massage ok: ok (1200×896, mean=96)
+2026-05-10T01:08:31Z INFO image gallery-before-after-1 ok: ok (1024×1024, mean=120)
+2026-05-10T01:08:54Z INFO image gallery-before-after-2 ok: ok (1024×1024, mean=113)
+2026-05-10T01:09:07Z INFO image gallery-before-after-3 ok: ok (1024×1024, mean=138)
+2026-05-10T01:09:25Z INFO image strip-ingredient-rosehip ok: ok (1200×896, mean=120)
+2026-05-10T01:09:47Z INFO image strip-ingredient-chamomile ok: ok (1200×896, mean=167)
+2026-05-10T01:10:01Z INFO image strip-ingredient-clay ok: ok (1200×896, mean=154)
+2026-05-10T01:10:15Z INFO image strip-ingredient-honey ok: ok (1200×896, mean=141)
+2026-05-10T01:10:43Z INFO image service-row-signature ok: ok (1200×896, mean=140)
+2026-05-10T01:11:09Z INFO image service-row-clarity ok: ok (1200×896, mean=144)
+2026-05-10T01:11:30Z INFO image service-row-rituals ok: ok (1200×896, mean=115)
+2026-05-10T01:11:49Z INFO image service-row-seasonal ok: ok (1200×896, mean=141)
+2026-05-10T01:11:52Z INFO URL replacements per file: {'index.html': 12, 'services.html': 4, 'contacts.html': 0}
+2026-05-10T01:11:52Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-10T01:11:52Z INFO image generation: 16/16 success, 0 fallback, 0 failed
+2026-05-10T01:11:52Z INFO audit.md: stripped 2 picsum-related lighthouse concerns
+2026-05-10T01:11:58Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-10T01-00-01Z-beauty-natural-organic/kit/screenshots
+2026-05-10T01:11:58Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-10T01:12:05Z INFO push success on attempt 1
+2026-05-10T01:12:05Z INFO queue updated: completed=3, remaining=['modern-minimal']
+2026-05-10T01:12:05Z INFO run complete: push_ok=True
+2026-05-10T12:36:32Z INFO disk preflight: 78.12 GB free
+2026-05-10T12:36:32Z INFO run start: vertical=beauty aesthetic=modern-minimal run_dir=/opt/scout-workshop/workshop/runs/2026-05-10T12-36-32Z-beauty-modern-minimal
+2026-05-10T12:36:33Z INFO readiness_check: 4/4
+2026-05-10T12:36:33Z INFO vault_index built: 18 entries
+2026-05-10T12:36:34Z INFO retrieved 4 references (top: Miso — Beauty Clinic Landing Page)
+2026-05-10T12:36:34Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T12:37:14Z INFO brief.md written: 3970 bytes
+2026-05-10T12:37:14Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T12:41:29Z INFO kit generated: 7 files in /opt/scout-workshop/workshop/runs/2026-05-10T12-36-32Z-beauty-modern-minimal/kit
+2026-05-10T12:41:29Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-10T12:42:18Z INFO audit_status=pass warnings=4
+2026-05-10T12:42:18Z INFO palette parsed from brief.md: {'bg': '#F5EDE2', 'fg': '#2A1F18', 'accent': '#A66344', 'muted': '#BDB7AD', 'surface': '#FFFFFF'}
+2026-05-10T12:42:37Z INFO image hero ok: ok (896×1200, mean=130)
+2026-05-10T12:42:51Z INFO image service-1-signature-facial ok: ok (1200×896, mean=163)
+2026-05-10T12:43:18Z INFO image service-2-clarity-treatment ok: ok (1200×896, mean=153)
+2026-05-10T12:43:46Z INFO image service-3-restorative-bodywork ok: ok (1200×896, mean=117)
+2026-05-10T12:44:17Z INFO image about-studio ok: ok (1200×896, mean=144)
+2026-05-10T12:44:31Z INFO image service-detail-1-signature-facial ok: ok (1376×768, mean=109)
+2026-05-10T12:44:45Z INFO image service-detail-2-clarity-treatment ok: ok (1376×768, mean=152)
+2026-05-10T12:45:02Z INFO image service-detail-3-restorative-bodywork ok: ok (1376×768, mean=120)
+2026-05-10T12:45:29Z INFO image service-detail-4-bespoke-consultation ok: ok (1376×768, mean=163)
+2026-05-10T12:45:32Z INFO URL replacements per file: {'index.html': 5, 'services.html': 4, 'contacts.html': 0}
+2026-05-10T12:45:32Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-10T12:45:32Z INFO image generation: 9/9 success, 0 fallback, 0 failed
+2026-05-10T12:45:32Z INFO audit.md: stripped 1 picsum-related lighthouse concerns
+2026-05-10T12:45:39Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-10T12-36-32Z-beauty-modern-minimal/kit/screenshots
+2026-05-10T12:45:39Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-10T12:45:45Z INFO push success on attempt 1
+2026-05-10T12:45:45Z INFO queue updated: completed=4, remaining=[]
+2026-05-10T12:45:45Z INFO run complete: push_ok=True
+2026-05-10T14:50:56Z INFO disk preflight: 78.07 GB free
+2026-05-10T14:50:56Z INFO run start: vertical=beauty aesthetic=modern-minimal-v2 run_dir=/opt/scout-workshop/workshop/runs/2026-05-10T14-50-56Z-beauty-modern-minimal-v2
+2026-05-10T14:50:56Z INFO readiness_check: 4/4
+2026-05-10T14:50:56Z INFO vault_index built: 18 entries
+2026-05-10T14:50:57Z INFO retrieved 4 references (top: Miso — Beauty Clinic Landing Page)
+2026-05-10T14:50:57Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T14:51:52Z INFO brief.md written: 4696 bytes
+2026-05-10T14:51:52Z INFO prior kits palette context: 4-line summary
+2026-05-10T14:51:52Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T14:57:15Z INFO kit generated: 7 files in /opt/scout-workshop/workshop/runs/2026-05-10T14-50-56Z-beauty-modern-minimal-v2/kit
+2026-05-10T14:57:15Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-10T14:57:59Z INFO audit_status=warn warnings=7
+2026-05-10T14:57:59Z INFO image_prefix resolved for aesthetic 'modern-minimal-v2' → 'Modern Minimal' (303 chars)
+2026-05-10T14:57:59Z INFO palette parsed from brief.md: {'bg': '#FAFAFB', 'fg': '#0F0F10', 'accent': '#2563EB', 'muted': '#E4E4E7', 'surface': '#FFFFFF'}
+2026-05-10T14:58:17Z INFO image hero ok: ok (896×1200, mean=166)
+2026-05-10T14:58:32Z INFO image service-preview-1-signature-facial ok: ok (1200×896, mean=180)
+2026-05-10T14:58:53Z INFO image service-preview-2-laser-resurfacing ok: ok (1200×896, mean=190)
+2026-05-10T14:59:25Z INFO image service-preview-3-injectables ok: ok (1200×896, mean=220)
+2026-05-10T14:59:41Z INFO image studio-1-treatment-room ok: ok (1024×1024, mean=170)
+2026-05-10T14:59:56Z INFO image studio-2-instrument-tray ok: ok (1024×1024, mean=199)
+2026-05-10T15:00:18Z INFO image studio-3-reception ok: ok (1024×1024, mean=169)
+2026-05-10T15:00:32Z INFO image studio-4-skin-imaging ok: ok (1024×1024, mean=168)
+2026-05-10T15:00:53Z INFO image detail-1-signature-facial ok: ok (1200×896, mean=145)
+2026-05-10T15:01:15Z INFO image detail-2-laser-resurfacing ok: ok (1200×896, mean=179)
+2026-05-10T15:01:30Z INFO image detail-3-injectables ok: ok (1200×896, mean=164)
+2026-05-10T15:01:52Z INFO image detail-4-chemical-peel ok: ok (1200×896, mean=220)
+2026-05-10T15:01:54Z INFO URL replacements per file: {'index.html': 8, 'services.html': 4, 'contacts.html': 0}
+2026-05-10T15:01:54Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-10T15:01:54Z INFO image generation: 12/12 success, 0 fallback, 0 failed
+2026-05-10T15:01:54Z INFO audit.md: stripped 2 picsum-related lighthouse concerns
+2026-05-10T15:02:01Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-10T14-50-56Z-beauty-modern-minimal-v2/kit/screenshots
+2026-05-10T15:02:01Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-10T15:02:07Z INFO push success on attempt 1
+2026-05-10T15:02:07Z INFO queue updated: completed=5, remaining=['editorial-feminine-v2', 'restrained-luxury-warm-v2']
+2026-05-10T15:02:07Z INFO run complete: push_ok=True
+2026-05-10T18:36:41Z INFO disk preflight: 77.81 GB free
+2026-05-10T18:36:41Z INFO run start: vertical=beauty aesthetic=editorial-feminine-v2 run_dir=/opt/scout-workshop/workshop/runs/2026-05-10T18-36-41Z-beauty-editorial-feminine-v2
+2026-05-10T18:36:42Z INFO readiness_check: 4/4
+2026-05-10T18:36:42Z INFO vault_index built: 18 entries
+2026-05-10T18:36:42Z INFO retrieved 4 references (top: Miso — Beauty Clinic Landing Page)
+2026-05-10T18:36:42Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T18:37:33Z INFO brief.md written: 4062 bytes
+2026-05-10T18:37:33Z INFO prior kits palette context: 5-line summary
+2026-05-10T18:37:33Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T18:42:55Z INFO kit generated: 7 files in /opt/scout-workshop/workshop/runs/2026-05-10T18-36-41Z-beauty-editorial-feminine-v2/kit
+2026-05-10T18:42:55Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-10T18:43:52Z INFO audit_status=warn warnings=4
+2026-05-10T18:43:52Z INFO image_prefix resolved for aesthetic 'editorial-feminine-v2' → 'Editorial Feminine' (301 chars)
+2026-05-10T18:43:52Z INFO palette parsed from brief.md: {'bg': '#FBEDE9', 'fg': '#2F1F28', 'accent': '#B86A7A', 'muted': '#CDB8BD', 'surface': '#FEF5F2'}
+2026-05-10T18:44:23Z INFO image hero-portrait ok: ok (896×1200, mean=155)
+2026-05-10T18:44:40Z INFO image hero-product ok: ok (1024×1024, mean=169)
+2026-05-10T18:45:09Z INFO image service-1-signature-facial ok: ok (1200×896, mean=137)
+2026-05-10T18:45:30Z INFO image service-2-clarity-treatment ok: ok (1200×896, mean=175)
+2026-05-10T18:45:55Z INFO image service-3-renewal-ritual ok: ok (1200×896, mean=158)
+2026-05-10T18:46:16Z INFO image about-process ok: ok (1200×896, mean=135)
+2026-05-10T18:46:37Z INFO image service-detail-signature ok: ok (896×1200, mean=124)
+2026-05-10T18:46:56Z INFO image service-detail-clarity ok: ok (896×1200, mean=159)
+2026-05-10T18:47:23Z INFO image service-detail-renewal ok: ok (896×1200, mean=132)
+2026-05-10T18:47:44Z INFO image service-detail-consultation ok: ok (896×1200, mean=137)
+2026-05-10T18:47:47Z INFO URL replacements per file: {'index.html': 6, 'services.html': 4, 'contacts.html': 0}
+2026-05-10T18:47:47Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-10T18:47:47Z INFO image generation: 10/10 success, 0 fallback, 0 failed
+2026-05-10T18:47:47Z INFO audit.md: stripped 1 picsum-related audit concerns
+2026-05-10T18:47:53Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-10T18-36-41Z-beauty-editorial-feminine-v2/kit/screenshots
+2026-05-10T18:47:53Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-10T18:47:58Z INFO push success on attempt 1
+2026-05-10T18:48:14Z INFO queue updated: completed=6, remaining=['restrained-luxury-warm-v2']
+2026-05-10T18:48:14Z INFO run complete: push_ok=True
+2026-05-10T19:15:22Z INFO disk preflight: 77.99 GB free
+2026-05-10T19:15:22Z INFO run start: vertical=beauty aesthetic=restrained-luxury-warm-v2 run_dir=/opt/scout-workshop/workshop/runs/2026-05-10T19-15-22Z-beauty-restrained-luxury-warm-v2
+2026-05-10T19:15:22Z INFO readiness_check: 4/4
+2026-05-10T19:15:22Z INFO vault_index built: 18 entries
+2026-05-10T19:15:23Z INFO retrieved 4 references (top: Miso — Beauty Clinic Landing Page)
+2026-05-10T19:15:23Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T19:16:12Z INFO brief.md written: 4250 bytes
+2026-05-10T19:16:12Z INFO prior kits palette context: 6-line summary
+2026-05-10T19:16:12Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T19:22:40Z INFO kit generated: 7 files in /opt/scout-workshop/workshop/runs/2026-05-10T19-15-22Z-beauty-restrained-luxury-warm-v2/kit
+2026-05-10T19:22:40Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-10T19:23:40Z INFO audit_status=warn warnings=5
+2026-05-10T19:23:40Z INFO image_prefix resolved for aesthetic 'restrained-luxury-warm-v2' → 'Restrained Luxury Warm' (244 chars)
+2026-05-10T19:23:40Z INFO palette parsed from brief.md: {'bg': '#F5EDE2', 'fg': '#2F2218', 'accent': '#B96A47', 'muted': '#BFB3A2', 'surface': '#ECDFC9'}
+2026-05-10T19:23:52Z INFO image hero ok: ok (896×1200, mean=128)
+2026-05-10T19:24:08Z INFO image service-1-signature-facial ok: ok (1200×896, mean=142)
+2026-05-10T19:24:27Z INFO image service-2-clarity-treatment ok: ok (1200×896, mean=164)
+2026-05-10T19:24:43Z INFO image service-3-quiet-peel ok: ok (1200×896, mean=148)
+2026-05-10T19:25:05Z INFO image about ok: ok (896×1200, mean=140)
+2026-05-10T19:25:35Z INFO image strip-1-mask ok: ok (1024×1024, mean=170)
+2026-05-10T19:25:56Z INFO image strip-2-oil ok: ok (1024×1024, mean=136)
+2026-05-10T19:26:24Z INFO image strip-3-mist ok: ok (1024×1024, mean=151)
+2026-05-10T19:26:38Z INFO image strip-4-balm ok: ok (1024×1024, mean=156)
+2026-05-10T19:27:05Z INFO image svc-signature-facial ok: ok (1200×896, mean=156)
+2026-05-10T19:27:26Z INFO image svc-clarity-treatment ok: ok (1200×896, mean=126)
+2026-05-10T19:27:58Z INFO image svc-quiet-peel ok: ok (1200×896, mean=129)
+2026-05-10T19:28:18Z INFO image svc-skin-reading ok: ok (1200×896, mean=111)
+2026-05-10T19:28:20Z INFO URL replacements per file: {'index.html': 9, 'services.html': 4, 'contacts.html': 0}
+2026-05-10T19:28:20Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-10T19:28:20Z INFO image generation: 13/13 success, 0 fallback, 0 failed
+2026-05-10T19:28:20Z INFO audit.md: stripped 2 picsum-related audit concerns
+2026-05-10T19:28:27Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-10T19-15-22Z-beauty-restrained-luxury-warm-v2/kit/screenshots
+2026-05-10T19:28:27Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-10T19:28:32Z INFO push success on attempt 1
+2026-05-10T19:28:33Z INFO queue updated: completed=7, remaining=[]
+2026-05-10T19:28:33Z INFO run complete: push_ok=True
+2026-05-10T20:25:15Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T20:29:21Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-10T20:29:50Z INFO audit_status=fail warnings=8
+2026-05-10T20:29:50Z INFO palette parsed from brief.md: (none — using neutral)
+2026-05-10T20:30:02Z INFO image work-1-portrait ok: ok (896×1200, mean=34)
+2026-05-10T20:30:24Z INFO image work-2-detail ok: ok (1024×1024, mean=83)
+2026-05-10T20:30:48Z INFO image work-3-light ok: ok (1376×768, mean=65)
+2026-05-10T20:31:01Z INFO image work-4-still ok: ok (896×1200, mean=121)
+2026-05-10T20:31:23Z INFO image service-1-craft ok: ok (1200×896, mean=152)
+2026-05-10T20:31:44Z INFO image service-2-clarity ok: ok (896×1200, mean=78)
+2026-05-10T20:32:13Z INFO image service-3-architecture ok: ok (1200×896, mean=63)
+2026-05-10T20:32:15Z INFO URL replacements per file: {'index.html': 4, 'services.html': 3, 'contacts.html': 0}
+2026-05-10T20:32:15Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-10T20:32:23Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-10T20-25-15Z-awwwards-probe-2026-05-10/kit/screenshots
+2026-05-10T20:32:23Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-10T21:00:59Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T21:05:29Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-10T21:06:05Z INFO audit_status=fail warnings=8
+2026-05-10T21:06:05Z INFO palette parsed from brief.md: (none — using neutral)
+2026-05-10T21:06:29Z INFO image portfolio-1-clarity-room ok: ok (896×1200, mean=123)
+2026-05-10T21:06:55Z INFO image portfolio-2-resurface-study ok: ok (1376×768, mean=79)
+2026-05-10T21:07:16Z INFO image portfolio-3-archive-portrait ok: ok (1200×896, mean=86)
+2026-05-10T21:07:43Z INFO image portfolio-4-material-still ok: ok (1024×1024, mean=183)
+2026-05-10T21:08:00Z INFO image service-consult-room ok: ok (896×1200, mean=134)
+2026-05-10T21:08:13Z INFO image service-resurface-instrument ok: ok (896×1200, mean=62)
+2026-05-10T21:08:34Z INFO image service-restore-still ok: ok (896×1200, mean=82)
+2026-05-10T21:08:49Z INFO image service-refine-portrait ok: ok (896×1200, mean=153)
+2026-05-10T21:08:51Z INFO URL replacements per file: {'index.html': 4, 'services.html': 4, 'contacts.html': 0}
+2026-05-10T21:08:51Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-10T21:08:58Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-10T21-00-59Z-awwwards-awwwards-probe-2/kit/screenshots
+2026-05-10T21:09:01Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-10T21:14:10Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T21:19:14Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-10T21:20:10Z INFO audit_status=warn warnings=7
+2026-05-10T21:20:10Z INFO palette parsed from brief.md: (none — using neutral)
+2026-05-10T21:20:23Z INFO image portfolio-1 ok: ok (896×1200, mean=48)
+2026-05-10T21:20:37Z INFO image portfolio-2 ok: ok (1200×896, mean=98)
+2026-05-10T21:20:58Z INFO image portfolio-3 ok: ok (896×1200, mean=29)
+2026-05-10T21:21:26Z INFO image portfolio-4 ok: ok (1376×768, mean=74)
+2026-05-10T21:21:51Z INFO image service-1 ok: ok (1200×896, mean=67)
+2026-05-10T21:22:04Z INFO image service-2 ok: ok (1200×896, mean=39)
+2026-05-10T21:22:18Z INFO image service-3 ok: ok (1200×896, mean=61)
+2026-05-10T21:22:33Z INFO image service-4 ok: ok (1200×896, mean=43)
+2026-05-10T21:22:35Z INFO URL replacements per file: {'index.html': 4, 'services.html': 4, 'contacts.html': 0}
+2026-05-10T21:22:35Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-10T21:22:42Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-10T21-14-10Z-awwwards-awwwards-probe-3/kit/screenshots
+2026-05-10T21:22:45Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-10T21:26:08Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T21:30:15Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-10T21:30:55Z INFO audit_status=fail warnings=8
+2026-05-10T21:30:55Z INFO palette parsed from brief.md: (none — using neutral)
+2026-05-10T21:31:14Z INFO image work-1-portrait ok: ok (896×1200, mean=71)
+2026-05-10T21:31:34Z INFO image work-2-still-life ok: ok (1200×896, mean=162)
+2026-05-10T21:31:51Z INFO image work-3-architecture ok: ok (896×1200, mean=161)
+2026-05-10T21:32:25Z INFO image work-4-process ok: ok (1376×768, mean=102)
+2026-05-10T21:32:48Z INFO image service-1-consult ok: ok (1200×896, mean=49)
+2026-05-10T21:33:06Z INFO image service-2-resurface ok: ok (896×1200, mean=89)
+2026-05-10T21:33:28Z INFO image service-3-restore ok: ok (1200×896, mean=82)
+2026-05-10T21:33:51Z INFO image service-4-maintain ok: ok (896×1200, mean=117)
+2026-05-10T21:33:53Z INFO URL replacements per file: {'index.html': 4, 'services.html': 4, 'contacts.html': 0}
+2026-05-10T21:33:53Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-10T21:34:00Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-10T21-26-08Z-awwwards-awwwards-probe-4/kit/screenshots
+2026-05-10T21:34:03Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-10T22:18:59Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-10T22:26:03Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-10T22:26:40Z INFO audit_status=warn warnings=6
+2026-05-10T22:26:40Z INFO palette parsed from brief.md: (none — using neutral)
+2026-05-10T22:26:59Z INFO image studio-room ok: ok (1200×896, mean=33)
+2026-05-10T22:27:18Z INFO image hand-detail ok: ok (896×1200, mean=50)
+2026-05-10T22:27:39Z INFO image material-clay ok: ok (1024×1024, mean=106)
+2026-05-10T22:28:01Z INFO image portrait-quiet ok: ok (1376×768, mean=46)
+2026-05-10T22:28:04Z INFO URL replacements per file: {'index.html': 4, 'services.html': 0, 'contacts.html': 0}
+2026-05-10T22:28:04Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-10T22:28:11Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-10T22-18-59Z-awwwards-awwwards-probe-5/kit/screenshots
+2026-05-10T22:28:16Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-15T11:25:22Z INFO disk preflight: 79.29 GB free
+2026-05-15T11:25:22Z INFO disk preflight: 79.29 GB free
+2026-05-15T11:25:22Z INFO run start: vertical=agency aesthetic=modern-minimal run_dir=/opt/scout-workshop/workshop/runs/2026-05-15T11-25-22Z-agency-modern-minimal
+2026-05-15T11:25:22Z INFO run start: vertical=agency aesthetic=modern-minimal run_dir=/opt/scout-workshop/workshop/runs/2026-05-15T11-25-22Z-agency-modern-minimal
+2026-05-15T11:25:22Z INFO readiness_check: 8/4
+2026-05-15T11:25:22Z INFO readiness_check: 8/4
+2026-05-15T11:25:22Z INFO vault_index built: 33 entries
+2026-05-15T11:25:22Z INFO vault_index built: 33 entries
+2026-05-15T11:25:23Z INFO retrieved 8 references (top: Obys)
+2026-05-15T11:25:23Z INFO retrieved 8 references (top: Obys)
+2026-05-15T11:25:23Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-15T11:25:23Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-15T11:26:17Z INFO brief.md written: 4078 bytes
+2026-05-15T11:26:17Z INFO brief.md written: 4078 bytes
+2026-05-15T11:26:17Z INFO prior kits palette context: 1-line summary
+2026-05-15T11:26:17Z INFO prior kits palette context: 1-line summary
+2026-05-15T11:26:17Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-15T11:26:17Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-15T11:30:48Z INFO kit generated: 7 files in /opt/scout-workshop/workshop/runs/2026-05-15T11-25-22Z-agency-modern-minimal/kit
+2026-05-15T11:30:48Z INFO kit generated: 7 files in /opt/scout-workshop/workshop/runs/2026-05-15T11-25-22Z-agency-modern-minimal/kit
+2026-05-15T11:30:48Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-15T11:30:48Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-15T11:31:11Z INFO audit_status=pass warnings=0
+2026-05-15T11:31:11Z INFO audit_status=pass warnings=0
+2026-05-15T11:31:11Z INFO image_prefix resolved for aesthetic 'modern-minimal' → 'Modern Minimal' (303 chars)
+2026-05-15T11:31:11Z INFO image_prefix resolved for aesthetic 'modern-minimal' → 'Modern Minimal' (303 chars)
+2026-05-15T11:31:11Z INFO palette parsed from brief.md: {'bg': '#FAFAFB', 'fg': '#0F0F10', 'accent': '#DC2626', 'muted': '#D4D4D8', 'surface': '#FFFFFF'}
+2026-05-15T11:31:11Z INFO palette parsed from brief.md: {'bg': '#FAFAFB', 'fg': '#0F0F10', 'accent': '#DC2626', 'muted': '#D4D4D8', 'surface': '#FFFFFF'}
+2026-05-15T11:31:23Z INFO image hero ok: ok (1376×768, mean=101)
+2026-05-15T11:31:23Z INFO image hero ok: ok (1376×768, mean=101)
+2026-05-15T11:31:45Z INFO image case-study-1 ok: ok (1376×768, mean=200)
+2026-05-15T11:31:45Z INFO image case-study-1 ok: ok (1376×768, mean=200)
+2026-05-15T11:32:12Z INFO image case-study-2 ok: ok (1376×768, mean=138)
+2026-05-15T11:32:12Z INFO image case-study-2 ok: ok (1376×768, mean=138)
+2026-05-15T11:32:36Z INFO image case-study-3 ok: ok (1376×768, mean=169)
+2026-05-15T11:32:36Z INFO image case-study-3 ok: ok (1376×768, mean=169)
+2026-05-15T11:33:07Z INFO image service-1-brand-systems ok: ok (1200×896, mean=183)
+2026-05-15T11:33:07Z INFO image service-1-brand-systems ok: ok (1200×896, mean=183)
+2026-05-15T11:33:30Z INFO image service-2-editorial-sites ok: ok (1200×896, mean=161)
+2026-05-15T11:33:30Z INFO image service-2-editorial-sites ok: ok (1200×896, mean=161)
+2026-05-15T11:33:49Z INFO image service-3-art-direction ok: ok (1200×896, mean=159)
+2026-05-15T11:33:49Z INFO image service-3-art-direction ok: ok (1200×896, mean=159)
+2026-05-15T11:34:06Z INFO image service-4-advisory ok: ok (1200×896, mean=160)
+2026-05-15T11:34:06Z INFO image service-4-advisory ok: ok (1200×896, mean=160)
+2026-05-15T11:34:09Z INFO URL replacements per file: {'index.html': 4, 'services.html': 4, 'contacts.html': 0}
+2026-05-15T11:34:09Z INFO URL replacements per file: {'index.html': 4, 'services.html': 4, 'contacts.html': 0}
+2026-05-15T11:34:09Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-15T11:34:09Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-15T11:34:09Z INFO image generation: 8/8 success, 0 fallback, 0 failed
+2026-05-15T11:34:09Z INFO image generation: 8/8 success, 0 fallback, 0 failed
+2026-05-15T11:34:09Z INFO audit.md: stripped 1 picsum-related audit concerns
+2026-05-15T11:34:09Z INFO audit.md: stripped 1 picsum-related audit concerns
+2026-05-15T11:34:18Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-15T11-25-22Z-agency-modern-minimal/kit/screenshots
+2026-05-15T11:34:18Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-15T11-25-22Z-agency-modern-minimal/kit/screenshots
+2026-05-15T11:34:18Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-15T11:34:18Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+HEAD is now at 72c7fb6 Workshop kit: beauty restrained-luxury-warm-v2
+2026-05-15T11:34:23Z INFO push success on attempt 1
+2026-05-15T11:34:23Z INFO push success on attempt 1
+2026-05-15T11:34:24Z INFO queue updated: completed=1, remaining=['restrained-luxury-warm', 'natural-organic', 'editorial-feminine']
+2026-05-15T11:34:24Z INFO queue updated: completed=1, remaining=['restrained-luxury-warm', 'natural-organic', 'editorial-feminine']
+2026-05-15T11:34:24Z INFO run complete: push_ok=True
+2026-05-15T11:34:24Z INFO run complete: push_ok=True
+2026-05-17T01:00:02Z INFO disk preflight: 78.92 GB free
+2026-05-17T01:00:02Z INFO run start: vertical=agency aesthetic=restrained-luxury-warm run_dir=/opt/scout-workshop/workshop/runs/2026-05-17T01-00-02Z-agency-restrained-luxury-warm
+2026-05-17T01:00:02Z INFO readiness_check: 8/4
+2026-05-17T01:00:02Z INFO vault_index built: 33 entries
+2026-05-17T01:00:04Z INFO retrieved 8 references (top: Obys)
+2026-05-17T01:00:04Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-17T01:01:09Z INFO brief.md written: 5404 bytes
+2026-05-17T01:01:09Z INFO prior kits palette context: 1-line summary
+2026-05-17T01:01:09Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-17T01:05:36Z INFO kit generated: 7 files in /opt/scout-workshop/workshop/runs/2026-05-17T01-00-02Z-agency-restrained-luxury-warm/kit
+2026-05-17T01:05:36Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-17T01:06:55Z INFO audit_status=warn warnings=5
+2026-05-17T01:06:55Z INFO image_prefix resolved for aesthetic 'restrained-luxury-warm' → 'Restrained Luxury Warm' (244 chars)
+2026-05-17T01:06:55Z INFO palette parsed from brief.md: {'bg': '#F5EBD8', 'fg': '#2F2218', 'accent': '#C26A40', 'muted': '#BFB1A0', 'surface': '#ECDFC8'}
+2026-05-17T01:07:05Z INFO image hero ok: ok (896×1200, mean=110)
+2026-05-17T01:07:24Z INFO image service-1-identity ok: ok (1200×896, mean=187)
+2026-05-17T01:07:49Z INFO image service-2-editorial ok: ok (1200×896, mean=158)
+2026-05-17T01:08:04Z INFO image service-3-digital ok: ok (1200×896, mean=132)
+2026-05-17T01:08:25Z INFO image services-identity-full ok: ok (1200×896, mean=163)
+2026-05-17T01:08:44Z INFO image services-editorial-full ok: ok (1200×896, mean=185)
+2026-05-17T01:09:03Z INFO image services-digital-full ok: ok (1200×896, mean=151)
+2026-05-17T01:09:06Z INFO URL replacements per file: {'index.html': 4, 'services.html': 3, 'contacts.html': 0}
+2026-05-17T01:09:06Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-17T01:09:06Z INFO image generation: 7/7 success, 0 fallback, 0 failed
+2026-05-17T01:09:06Z INFO audit.md: stripped 1 picsum-related audit concerns
+2026-05-17T01:09:13Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-17T01-00-02Z-agency-restrained-luxury-warm/kit/screenshots
+2026-05-17T01:09:13Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-17T01:09:18Z INFO push success on attempt 1
+2026-05-17T01:09:34Z INFO queue updated: completed=2, remaining=['natural-organic', 'editorial-feminine']
+2026-05-17T01:09:34Z INFO run complete: push_ok=True
+2026-05-24T01:00:00Z INFO disk preflight: 77.93 GB free
+2026-05-24T01:00:00Z INFO run start: vertical=agency aesthetic=natural-organic run_dir=/opt/scout-workshop/workshop/runs/2026-05-24T01-00-00Z-agency-natural-organic
+2026-05-24T01:00:01Z INFO readiness_check: 8/4
+2026-05-24T01:00:01Z INFO vault_index built: 33 entries
+2026-05-24T01:00:03Z INFO retrieved 8 references (top: Obys)
+2026-05-24T01:00:03Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-24T01:01:10Z INFO brief.md written: 4357 bytes
+2026-05-24T01:01:10Z INFO prior kits palette context: 2-line summary
+2026-05-24T01:01:10Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-24T01:06:20Z INFO kit generated: 7 files in /opt/scout-workshop/workshop/runs/2026-05-24T01-00-00Z-agency-natural-organic/kit
+2026-05-24T01:06:20Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-24T01:07:28Z INFO audit_status=warn warnings=5
+2026-05-24T01:07:28Z INFO image_prefix resolved for aesthetic 'natural-organic' → 'Natural Organic' (313 chars)
+2026-05-24T01:07:28Z INFO palette parsed from brief.md: {'bg': '#EEE7DC', 'fg': '#2F2C28', 'accent': '#8FA284', 'muted': '#B5AC9F', 'surface': '#F6F2EA'}
+2026-05-24T01:07:53Z INFO image hero ok: ok (896×1200, mean=118)
+2026-05-24T01:08:13Z INFO image service-1-identity ok: ok (1200×896, mean=174)
+2026-05-24T01:08:28Z INFO image service-2-websites ok: ok (1200×896, mean=153)
+2026-05-24T01:08:53Z INFO image service-3-editorial ok: ok (1200×896, mean=164)
+2026-05-24T01:09:08Z INFO image about-studio ok: ok (896×1200, mean=121)
+2026-05-24T01:09:25Z INFO image service-detail-1-identity ok: ok (1200×896, mean=164)
+2026-05-24T01:09:37Z INFO image service-detail-2-websites ok: ok (1200×896, mean=133)
+2026-05-24T01:09:58Z INFO image service-detail-3-editorial ok: ok (1200×896, mean=156)
+2026-05-24T01:10:12Z INFO image service-detail-4-art-direction ok: ok (1200×896, mean=177)
+2026-05-24T01:10:14Z INFO URL replacements per file: {'index.html': 5, 'services.html': 4, 'contacts.html': 0}
+2026-05-24T01:10:14Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-24T01:10:14Z INFO image generation: 9/9 success, 0 fallback, 0 failed
+2026-05-24T01:10:14Z INFO audit.md: stripped 2 picsum-related audit concerns
+2026-05-24T01:10:23Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-24T01-00-00Z-agency-natural-organic/kit/screenshots
+2026-05-24T01:10:23Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-24T01:10:29Z INFO push success on attempt 1
+2026-05-24T01:10:31Z INFO queue updated: completed=3, remaining=['editorial-feminine']
+2026-05-24T01:10:31Z INFO run complete: push_ok=True
+2026-05-31T01:00:03Z INFO disk preflight: 76.07 GB free
+2026-05-31T01:00:03Z INFO run start: vertical=agency aesthetic=editorial-feminine run_dir=/opt/scout-workshop/workshop/runs/2026-05-31T01-00-03Z-agency-editorial-feminine
+2026-05-31T01:00:04Z INFO readiness_check: 8/4
+2026-05-31T01:00:04Z INFO vault_index built: 33 entries
+2026-05-31T01:00:05Z INFO retrieved 8 references (top: Obys)
+2026-05-31T01:00:05Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-31T01:01:06Z INFO brief.md written: 4419 bytes
+2026-05-31T01:01:06Z INFO prior kits palette context: 3-line summary
+2026-05-31T01:01:06Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-05-31T01:06:24Z INFO kit generated: 7 files in /opt/scout-workshop/workshop/runs/2026-05-31T01-00-03Z-agency-editorial-feminine/kit
+2026-05-31T01:06:24Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-05-31T01:07:26Z INFO audit_status=warn warnings=4
+2026-05-31T01:07:26Z INFO image_prefix resolved for aesthetic 'editorial-feminine' → 'Editorial Feminine' (301 chars)
+2026-05-31T01:07:26Z INFO palette parsed from brief.md: {'bg': '#FBEDE9', 'fg': '#2F1F28', 'accent': '#B6697A', 'muted': '#CDB6BC', 'surface': '#FEF7F4'}
+2026-05-31T01:07:40Z INFO image hero-editorial-portrait ok: ok (896×1200, mean=122)
+2026-05-31T01:08:02Z INFO image service-preview-identity ok: ok (1200×896, mean=170)
+2026-05-31T01:08:19Z INFO image service-preview-art-direction ok: ok (1200×896, mean=143)
+2026-05-31T01:08:40Z INFO image service-preview-editorial ok: ok (1200×896, mean=150)
+2026-05-31T01:08:52Z INFO image case-strip-maison-verre ok: ok (1376×768, mean=143)
+2026-05-31T01:09:15Z INFO image services-identity ok: ok (1200×896, mean=170)
+2026-05-31T01:09:36Z INFO image services-art-direction ok: ok (1200×896, mean=145)
+2026-05-31T01:10:04Z INFO image services-editorial ok: ok (1200×896, mean=170)
+2026-05-31T01:10:18Z INFO image services-digital ok: ok (1200×896, mean=149)
+2026-05-31T01:10:20Z INFO URL replacements per file: {'index.html': 5, 'services.html': 4, 'contacts.html': 0}
+2026-05-31T01:10:20Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-05-31T01:10:20Z INFO image generation: 9/9 success, 0 fallback, 0 failed
+2026-05-31T01:10:20Z INFO audit.md: stripped 2 picsum-related audit concerns
+2026-05-31T01:10:28Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-05-31T01-00-03Z-agency-editorial-feminine/kit/screenshots
+2026-05-31T01:10:28Z INFO syncing /opt/scout-workshop/.kits-mirror with origin/main
+2026-05-31T01:10:33Z INFO push success on attempt 1
+2026-05-31T01:12:34Z INFO queue updated: completed=4, remaining=[]
+2026-05-31T01:12:34Z INFO run complete: push_ok=True
+2026-06-04T01:01:49Z INFO awwwards oneshot: warm-earth / editorial-studio (seed=0)
+2026-06-04T01:01:50Z INFO retrieved 4 premium refs (top: Studio Namma)
+2026-06-04T01:01:50Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='')
+2026-06-04T01:02:01Z INFO concept: Carved Wordmark
+2026-06-04T01:02:01Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-06-04T01:02:45Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-06-04T01:08:32Z INFO palette parsed from brief.md: {'bg': '#EFE4D3', 'fg': '#2A2019', 'accent': '#AD4F3D', 'support': '#E6D3C1'}
+2026-06-04T01:08:32Z WARNING retry-eligible attempt 0: http 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex
+2026-06-04T01:08:32Z INFO retry 1/3 for aspect=16:9 after 5s backoff
+2026-06-04T01:08:37Z WARNING retry-eligible attempt 1: http 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex
+2026-06-04T01:08:37Z INFO retry 2/3 for aspect=16:9 after 15s backoff
+2026-06-04T01:08:52Z WARNING retry-eligible attempt 2: http 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex
+2026-06-04T01:08:52Z INFO retry 3/3 for aspect=16:9 after 60s backoff
+2026-06-04T01:09:52Z WARNING retry-eligible attempt 3: http 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex
+2026-06-04T01:09:52Z WARNING image clay-wheel-reel-001 API call failed: exhausted retries; last_err=http 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex
+2026-06-04T01:09:52Z ERROR daily quota indicators in 429 — flipping to fallback-all
+2026-06-04T01:09:55Z INFO URL replacements per file: {'index.html': 5}
+2026-06-04T01:09:55Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-06-04T01:10:18Z INFO captured 6 screenshots in /opt/scout-workshop/workshop/runs/2026-06-04T01-01-49Z-awwwards-warm-earth-editorial-studio/kit/screenshots
+2026-06-04T01:10:18Z INFO genericness: {'bleed_ratio': 0.88, 'hero_body_ratio': 9.0, 'template_tells': [], 'verdict': 'premium-leaning'}
+2026-06-04T01:10:18Z INFO DONE — kit at /opt/scout-workshop/workshop/runs/2026-06-04T01-01-49Z-awwwards-warm-earth-editorial-studio/kit (verdict=premium-leaning, bleed=0.88, hero/body=9.0, tells=[])
+2026-06-04T01:11:21Z INFO awwwards oneshot: sun-baked / single-product (seed=0)
+2026-06-04T01:11:22Z INFO retrieved 2 premium refs (top: Marvell Tile & Stone)
+2026-06-04T01:11:22Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='')
+2026-06-04T01:11:31Z INFO concept: Solar Noon
+2026-06-04T01:11:31Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-06-04T01:12:29Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-06-04T01:17:19Z INFO palette parsed from brief.md: {'bg': '#E5D6C2', 'fg': '#171513', 'accent': '#6D7647', 'support': '#998772'}
+2026-06-04T01:17:19Z WARNING retry-eligible attempt 0: http 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex
+2026-06-04T01:17:19Z INFO retry 1/3 for aspect=9:16 after 5s backoff
+2026-06-04T01:17:24Z WARNING retry-eligible attempt 1: http 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex
+2026-06-04T01:17:24Z INFO retry 2/3 for aspect=9:16 after 15s backoff
+2026-06-04T01:17:39Z WARNING retry-eligible attempt 2: http 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex
+2026-06-04T01:17:39Z INFO retry 3/3 for aspect=9:16 after 60s backoff
+2026-06-04T01:18:39Z WARNING retry-eligible attempt 3: http 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex
+2026-06-04T01:18:39Z WARNING image hero-vessel API call failed: exhausted retries; last_err=http 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex
+2026-06-04T01:18:39Z ERROR daily quota indicators in 429 — flipping to fallback-all
+2026-06-04T01:18:42Z INFO URL replacements per file: {'index.html': 5}
+2026-06-04T01:18:42Z INFO 0 picsum URLs remaining in HTML — replacement complete
+2026-06-04T01:18:49Z INFO captured 2 screenshots in /opt/scout-workshop/workshop/runs/2026-06-04T01-11-21Z-awwwards-sun-baked-single-product/kit/screenshots
+2026-06-04T01:18:49Z INFO genericness: {'bleed_ratio': 0.33, 'hero_body_ratio': 3.0, 'template_tells': [], 'verdict': 'template-leaning'}
+2026-06-04T01:18:49Z INFO DONE — kit at /opt/scout-workshop/workshop/runs/2026-06-04T01-11-21Z-awwwards-sun-baked-single-product/kit (verdict=template-leaning, bleed=0.33, hero/body=3.0, tells=[])
+2026-06-04T01:49:47Z INFO disk preflight: 61.37 GB free
+2026-06-04T01:49:47Z INFO anchor complete (4/4) — exploration is v1.1, exiting
+2026-06-04T02:03:08Z INFO awwwards oneshot: sun-baked / single-product (seed=0)
+2026-06-04T02:03:09Z ERROR only 1 premium refs for sun-baked/single-product (need >= 2) — corpus too thin
+2026-06-04T02:04:52Z INFO awwwards oneshot: sun-baked / single-product (seed=0)
+2026-06-04T02:04:53Z INFO retrieved 4 premium refs (top: Apple — AirPods Pro)
+2026-06-04T02:04:53Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='')
+2026-06-04T02:05:05Z INFO concept: Sun-Arc Pinned Canvas
+2026-06-04T02:05:05Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-06-04T02:05:50Z INFO claude --print effort=high attempt=1 (timeout=1800s, tools='Read Write')
+2026-06-04T02:10:20Z WARNING image gen non-fatal: image-prompts.json failed schema validation (1 issues; raw at /opt/scout-workshop/workshop/runs/2026-06-04T02-04-52Z-awwwards-sun-baked-single-product/raw_image_prompts.json): mezcal-bottle-night: aspect_ratio '7:10' not in ['16:9', '1:1', '3:4', '4:3', '9:16']
+2026-06-04T02:10:29Z INFO captured 2 screenshots in /opt/scout-workshop/workshop/runs/2026-06-04T02-04-52Z-awwwards-sun-baked-single-product/kit/screenshots
+2026-06-04T02:10:32Z INFO claude --print effort=medium attempt=1 (timeout=1800s, tools='Read')
+2026-06-04T02:11:23Z INFO attempt 0 verdict: passed=True reasons=[]
+2026-06-04T02:11:23Z INFO PASS (premium) — kit at /opt/scout-workshop/workshop/runs/2026-06-04T02-04-52Z-awwwards-sun-baked-single-product/kit
+2026-06-04T02:11:23Z INFO DONE — /opt/scout-workshop/workshop/runs/2026-06-04T02-04-52Z-awwwards-sun-baked-single-product

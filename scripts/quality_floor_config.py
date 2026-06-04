@@ -8,6 +8,7 @@ QUALITY_FLOOR = {
         "editorial-studio": 900,
         "single-product": 1600,          # one long page → larger gaps tolerated
     },
+    "void_short_page_px": 4000,          # a gap is only a "void" if total page height < this
     "retry": {
         "max": 1,
         "disable_palette_perturb_on_retry": True,

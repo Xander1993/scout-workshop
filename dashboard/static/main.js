@@ -309,13 +309,8 @@ function attachMagnetic(sel, strength = 0.25) {
 
 // ---------- INIT ----------
 async function init() {
-  // Smooth scroll via Lenis if available
-  if (window.Lenis) {
-    const lenis = new Lenis({ duration: 1.1, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-    requestAnimationFrame(raf);
-  }
-
+  // Native scroll only — Lenis removed because it fought ScrollTrigger
+  // and double-smoothed against CSS `scroll-behavior`.
   await fetchData();
   renderHeroStats();
   renderHeroLatest();

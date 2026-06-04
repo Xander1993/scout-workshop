@@ -1244,12 +1244,17 @@ def run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots
         rm = render_metrics.render_metrics(kit_dir)
     except Exception as e:  # noqa: BLE001
         reasons.append(f"render_metrics failed: {e}")
+    # A large vertical gap is a "void" only on a SHORT page; on a long monumental
+    # scroll the same gap is intentional negative space (v1.5 design §12 / Rev 2).
+    void_bad = (rm.get("max_vertical_void_px", 0) > QF["vertical_void_max_px"].get(kit_type, 1200)
+                and rm.get("page_height_px", 999999) < QF["void_short_page_px"])
     det_ok = (rm.get("hero_scale_ratio", 0) >= QF["hero_scale_min"]
               and len(rm.get("template_tells", [])) <= QF["template_tells_max"]
-              and rm.get("max_vertical_void_px", 0) <= QF["vertical_void_max_px"].get(kit_type, 1200))
+              and not void_bad)
     if not det_ok:
         reasons.append(f"genericness/density (hero={rm.get('hero_scale_ratio')}, "
-                       f"tells={rm.get('template_tells')}, void={rm.get('max_vertical_void_px')})")
+                       f"tells={rm.get('template_tells')}, "
+                       f"void={rm.get('max_vertical_void_px')}/h{rm.get('page_height_px')})")
     sig = diversity_gate.signature(manifest, rm, concept)
     repeat = diversity_gate.is_repeat(sig, diversity_gate.priors(register_family),
                                       QF["diversity_reject_below"])
