@@ -1416,44 +1416,68 @@ def _register_alert_text(run_dir, sub_aesthetic: str, kit_type: str):
     return text, shot
 
 
-def _alert_register_result(sub_aesthetic: str, kit_type: str) -> None:
+def _alert_register_result(sub_aesthetic: str, kit_type: str, run_dir=None) -> None:
     """Best-effort Telegram alert after a register run. NEVER raises — a delivery
-    failure must not fail the weekly run."""
+    failure must not fail the weekly run. `run_dir` is the exact finished run dir
+    (preferred); falls back to the newest matching dir if not supplied."""
     try:
-        cands = sorted(RUNS_DIR.glob(f"*awwwards-{sub_aesthetic}-{kit_type}*"))
-        if not cands:
-            return
-        text, _shot = _register_alert_text(cands[-1], sub_aesthetic, kit_type)
+        if run_dir is None:
+            cands = sorted(RUNS_DIR.glob(f"*awwwards-{sub_aesthetic}-{kit_type}*"))
+            if not cands:
+                return
+            run_dir = cands[-1]
+        text, _shot = _register_alert_text(run_dir, sub_aesthetic, kit_type)
         _send_telegram_text_raw(text)
     except Exception as e:  # noqa: BLE001 — alerting must never fail the run
         log.warning("register alert failed (non-fatal): %s", e)
 
 
+# Stop LAUNCHING new pairs past this wall-clock; leaves headroom under the unit's
+# TimeoutStartSec for one in-flight gated oneshot so the invocation can't be
+# SIGKILLed mid-write (corrupting a run-dir rename or the diversity store).
+REGISTER_WALL_BUDGET_S = 5400
+
+
 def run_register_weekly() -> int:
     """Weekly cron entry: pick the next (sub, kit) in rotation and run the gated
-    oneshot. On a corpus-thin failure (oneshot returns 1) advance to the next
-    viable pair, bounded by the number of pairs so a fully-starved set fails once
-    rather than looping forever."""
+    oneshot. On a corpus-thin failure (rc=1) advance to the next viable pair,
+    bounded by BOTH the pair count and a wall-clock budget. Holds the workshop
+    flock so it cannot collide with a manual oneshot / conversion run on the fixed
+    render ports (8200/8201) or the diversity store."""
     import register_schedule  # noqa: WPS433 (lazy)
     pairs = register_schedule.active_pairs()
     if not pairs:
         log.error("register-weekly: no active sub-aesthetics")
         return 1
-    for _ in range(len(pairs)):
-        sub, kit = register_schedule.next_pair()
-        log.info("register-weekly: attempting %s / %s", sub, kit)
-        rc = run_awwwards_oneshot(sub, kit)
-        if rc == 0:
-            _alert_register_result(sub, kit)
-            return 0
-        log.warning("register-weekly: %s/%s did not ship (rc=%d) — trying next pair",
-                    sub, kit, rc)
-    log.error("register-weekly: no viable pair shipped a kit this run")
-    try:  # best-effort — a silent total failure on an autonomous system is the worst case
-        _send_telegram_text_raw("⚠️ Workshop register-weekly: no viable pair shipped a kit this run.")
-    except Exception:  # noqa: BLE001
-        pass
-    return 1
+    lock = acquire_lock()
+    if lock is None:
+        log.info("register-weekly: another workshop run holds %s — exiting 0", LOCKFILE)
+        return 0
+    try:
+        loop_t0 = time.monotonic()
+        for _ in range(len(pairs)):
+            if (time.monotonic() - loop_t0) >= REGISTER_WALL_BUDGET_S:
+                log.error("register-weekly: wall-clock budget %ds reached before a ship — stopping",
+                          REGISTER_WALL_BUDGET_S)
+                break
+            sub, kit = register_schedule.next_pair()
+            log.info("register-weekly: attempting %s / %s", sub, kit)
+            before = set(RUNS_DIR.glob("*awwwards-*"))
+            rc = run_awwwards_oneshot(sub, kit)
+            if rc == 0:
+                new = sorted(set(RUNS_DIR.glob("*awwwards-*")) - before)
+                _alert_register_result(sub, kit, new[-1] if new else None)
+                return 0
+            log.warning("register-weekly: %s/%s did not ship (rc=%d) — trying next pair",
+                        sub, kit, rc)
+        log.error("register-weekly: no viable pair shipped a kit this run")
+        try:  # best-effort — a silent total failure on an autonomous system is the worst case
+            _send_telegram_text_raw("⚠️ Workshop register-weekly: no viable pair shipped a kit this run.")
+        except Exception:  # noqa: BLE001
+            pass
+        return 1
+    finally:
+        lock.close()
 
 
 def main() -> int:
@@ -1476,7 +1500,14 @@ def main() -> int:
 
     if args.awwwards_oneshot:
         _setup_logging()
-        return run_awwwards_oneshot(*args.awwwards_oneshot)
+        lock = acquire_lock()  # serialize vs the weekly cron / a conversion run
+        if lock is None:
+            log.info("another workshop run holds %s — exiting 0", LOCKFILE)
+            return 0
+        try:
+            return run_awwwards_oneshot(*args.awwwards_oneshot)
+        finally:
+            lock.close()
 
     if args.register_weekly:
         _setup_logging()
