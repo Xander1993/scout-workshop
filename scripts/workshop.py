@@ -1210,8 +1210,83 @@ def generate_kit_awwwards(brief_path, refs, run_dir, kit_type, directives, conce
     return kit_dir
 
 
+def _append_awwwards_telemetry(run_dir, kit_type, register_family, v):
+    line = {
+        "run": run_dir.name, "kit_type": kit_type, "register_family": register_family,
+        "passed": v["passed"], "reasons": v["reasons"],
+        "hero_scale": (v.get("rm") or {}).get("hero_scale_ratio"),
+        "tells": (v.get("rm") or {}).get("template_tells"),
+        "craft": (v.get("craft") or {}).get("verdict"),
+    }
+    p = PROJECT_ROOT / "state" / "quality_floor_telemetry.jsonl"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    with p.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(line) + "\n")
+
+
+def run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots):
+    """Three gates → combined verdict. Lazy-imports the gate modules so an import
+    error can never take down the conversion cron main()."""
+    import awwwards_manifest, render_metrics, diversity_gate, craft_judge  # noqa: WPS433 (lazy)
+    from quality_floor_config import QUALITY_FLOOR as QF  # noqa: WPS433
+    reasons = []
+    try:
+        manifest = awwwards_manifest.parse_manifest((run_dir / "brief.md").read_text(encoding="utf-8"))
+        merrs = awwwards_manifest.validate(manifest)
+        if merrs:
+            reasons.append(f"manifest invalid: {merrs}")
+        (run_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    except awwwards_manifest.ManifestError as e:
+        manifest = {"hero_archetype": None, "sections": [], "signature_move": ""}
+        reasons.append(f"no manifest: {e}")
+    rm = {}
+    try:
+        rm = render_metrics.render_metrics(kit_dir)
+    except Exception as e:  # noqa: BLE001
+        reasons.append(f"render_metrics failed: {e}")
+    det_ok = (rm.get("hero_scale_ratio", 0) >= QF["hero_scale_min"]
+              and len(rm.get("template_tells", [])) <= QF["template_tells_max"]
+              and rm.get("max_vertical_void_px", 0) <= QF["vertical_void_max_px"].get(kit_type, 1200))
+    if not det_ok:
+        reasons.append(f"genericness/density (hero={rm.get('hero_scale_ratio')}, "
+                       f"tells={rm.get('template_tells')}, void={rm.get('max_vertical_void_px')})")
+    sig = diversity_gate.signature(manifest, rm, concept)
+    repeat = diversity_gate.is_repeat(sig, diversity_gate.priors(register_family),
+                                      QF["diversity_reject_below"])
+    if repeat:
+        reasons.append("structural repeat of a recent kit")
+    diversity_gate.record(sig, register_family)
+    craft = craft_judge.run(run_dir, kit_dir, kit_type, concept, shots,
+                            run_claude=run_claude, load_prompt_template=load_prompt_template,
+                            extract_json=_extract_json_object)
+    if craft.get("verdict") != "pass":
+        reasons.append(f"craft below_bar: {craft.get('reasons', '')}")
+    passed = det_ok and not repeat and craft.get("verdict") == "pass"
+    v = {"passed": passed, "reasons": reasons, "rm": rm, "craft": craft, "sig": sig}
+    (run_dir / "verdict.json").write_text(
+        json.dumps({k: v[k] for k in ("passed", "reasons", "rm", "craft")}, indent=2), encoding="utf-8")
+    _append_awwwards_telemetry(run_dir, kit_type, register_family, v)
+    return v
+
+
+def _finalize_awwwards_verdict(run_dir, v, kit_type):
+    if v is None:
+        log.error("no attempt produced a kit")
+        return run_dir
+    if v["passed"]:
+        log.info("PASS (premium) — kit at %s/kit", run_dir)
+        return run_dir
+    # ship flagged: write sentinel + verdict INTO run_dir, THEN rename, THEN use the new path
+    (run_dir / "DO_NOT_DEPLOY").write_text(
+        "below_bar: " + "; ".join(v["reasons"]) + "\n", encoding="utf-8")
+    flagged = run_dir.with_name(run_dir.name + "-flagged")
+    run_dir.rename(flagged)
+    log.warning("FLAGGED below_bar — %s (%s)", flagged, "; ".join(v["reasons"]))
+    return flagged
+
+
 def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
-    """Generate ONE awwwards kit end-to-end (no cron, no gates, no delivery)."""
+    """Generate ONE awwwards kit end-to-end, gated (retry once → ship flagged)."""
     if kit_type not in KIT_REQUIRED_FILES_BY_KIT_TYPE:
         log.error("unknown kit_type %r (use editorial-studio|single-product)", kit_type)
         return 1
@@ -1225,6 +1300,7 @@ def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
     run_dir.mkdir(parents=True, exist_ok=True)
     _setup_logging(run_dir)
     log.info("awwwards oneshot: %s / %s (seed=%d)", sub_aesthetic, kit_type, seed)
+    t0 = time.monotonic()
 
     directives = awwwards_render.render_directives(sub_aesthetic, seed)
     vault_index = build_vault_index()
@@ -1238,32 +1314,61 @@ def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
     hero = refs[0]["payload"].get("hero_archetype", "monumental_wordmark")
     topo = refs[0]["payload"].get("section_topology", [])
 
-    try:
-        concept = run_design_concept(sub_aesthetic, kit_type, hero, refs, [], run_dir)
-        synthesize_brief_awwwards(sub_aesthetic, kit_type, directives, hero, topo, concept, refs, run_dir)
-        kit_dir = generate_kit_awwwards(run_dir / "brief.md", refs, run_dir, kit_type, directives, concept)
-    except (RuntimeError, subprocess.TimeoutExpired, subprocess.CalledProcessError,
-            ValueError, json.JSONDecodeError) as e:
-        log.error("awwwards oneshot aborted: %s", e)
-        return 1
+    from quality_floor_config import QUALITY_FLOOR as QF  # noqa: WPS433 (lazy)
+    register_family = cfg["register_family"]
+    best = None
+    for attempt in range(QF["retry"]["max"] + 1):
+        perturb = (attempt == 0)
+        recent = []
+        if attempt > 0:
+            if (time.monotonic() - t0) >= QF["run_budget_s"]:
+                log.warning("run budget (%ds) exhausted — skipping retry, shipping flagged",
+                            QF["run_budget_s"])
+                break
+            alt = next((r for r in refs[1:]
+                        if r["payload"].get("hero_archetype") != hero), None)
+            if alt is not None:
+                hero = alt["payload"].get("hero_archetype", hero)
+            recent = [(best.get("concept") or {}).get("hook_name", "")] if best else []
+            log.info("retry: archetype=%s, palette perturbation OFF", hero)
+        directives = awwwards_render.render_directives(sub_aesthetic, seed, perturb=perturb)
+        try:
+            concept = run_design_concept(sub_aesthetic, kit_type, hero, refs, recent, run_dir)
+            synthesize_brief_awwwards(sub_aesthetic, kit_type, directives, hero, topo, concept, refs, run_dir)
+            kit_dir = generate_kit_awwwards(run_dir / "brief.md", refs, run_dir, kit_type, directives, concept)
+        except (RuntimeError, subprocess.TimeoutExpired, subprocess.CalledProcessError,
+                ValueError, json.JSONDecodeError) as e:
+            log.error("awwwards attempt %d aborted: %s", attempt, e)
+            if best is None:
+                return 1
+            break
+        raw = (run_dir / "raw_kit_output.txt").read_text(encoding="utf-8")
+        if best is not None and raw == best.get("_raw"):
+            log.info("retry produced byte-identical output — stopping")
+            break
+        try:
+            from generate_kit_images import generate_kit_images as _gen_imgs  # noqa: WPS433
+            _gen_imgs(kit_dir, run_dir, image_prefix_override=directives["photography_prefix"])
+        except Exception as e:  # noqa: BLE001 — image gen non-fatal
+            log.warning("image gen non-fatal: %s", e)
+        pages = [f[:-5] for f in KIT_REQUIRED_FILES_BY_KIT_TYPE[kit_type] if f.endswith(".html")]
+        shots = []
+        try:
+            capture_screenshots(kit_dir, run_dir, pages=pages)
+            sd = kit_dir / "screenshots"
+            shots = sorted(str(p) for p in sd.glob("*-desktop.png")) if sd.exists() else []
+        except Exception as e:  # noqa: BLE001 — screenshots non-fatal
+            log.warning("screenshots non-fatal: %s", e)
+        v = run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots)
+        v["concept"] = concept
+        v["_raw"] = raw
+        best = v
+        log.info("attempt %d verdict: passed=%s reasons=%s", attempt, v["passed"], v["reasons"])
+        if v["passed"]:
+            break
 
-    try:
-        from generate_kit_images import generate_kit_images as _gen_imgs  # noqa: WPS433
-        _gen_imgs(kit_dir, run_dir, image_prefix_override=directives["photography_prefix"])
-    except Exception as e:  # image gen is non-fatal
-        log.warning("image gen non-fatal failure: %s", e)
-
-    pages = [f[:-5] for f in KIT_REQUIRED_FILES_BY_KIT_TYPE[kit_type] if f.endswith(".html")]
-    try:
-        capture_screenshots(kit_dir, run_dir, pages=pages)
-    except Exception as e:  # screenshots non-fatal
-        log.warning("screenshots non-fatal failure: %s", e)
-
-    gp = genericness_proxy.score_kit(kit_dir)
-    (run_dir / "genericness.json").write_text(json.dumps(gp, indent=2), encoding="utf-8")
-    log.info("genericness: %s", gp)
-    log.info("DONE — kit at %s (verdict=%s, bleed=%s, hero/body=%s, tells=%s)",
-             kit_dir, gp["verdict"], gp["bleed_ratio"], gp["hero_body_ratio"], gp["template_tells"])
+    final_dir = _finalize_awwwards_verdict(run_dir, best, kit_type)
+    log.info("DONE — %s", final_dir)
     return 0
 
 

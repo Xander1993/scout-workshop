@@ -507,6 +507,26 @@ Semantic HTML5, one <h1>, correct heading nesting, mobile-first CSS, below-fold 
 After writing all 4 files, print one line: `KIT WRITTEN`.
 <<< END PROMPT kit_generation_single_product
 
+>>> BEGIN PROMPT audit_craft_awwwards
+You are the Workshop's awwwards craft judge. You are shown a {{KIT_TYPE}} kit's rendered screenshots AND its source markup — Read them. Judge: award-tier premium, or a template? Score the STRUCTURE / COMPOSITION / MARKUP — NOT placeholder-image fidelity (images may be SVG placeholders; ignore their flatness).
+
+Score each 0-3 with one-line evidence:
+- monumentality (hero type at true display scale?)
+- restraint (one disciplined accent, no template furniture?)
+- composition (full-bleed plates, negative space, alternating rhythm?)
+- motion_realized (markup shows real GSAP/Lenis/scroll motion, not declared-only?)
+- signature_moment (is {{SIGNATURE_MOVE}} actually executed in the page, not just named?)
+
+template_tells: list any of {trust strip, 3-icon card grid, repeated CTA bar, click-to-call, tiny hero}.
+
+Output ONLY a JSON object: {"scores": {<criterion>: 0-3}, "weighted_sum": <int sum of the 5 scores>, "template_tells": [...], "verdict": "pass"|"below_bar", "reasons": "<=2 lines"}.
+Rule: verdict = below_bar if ANY score == 0, OR signature_moment < 2, OR monumentality < 2, OR len(template_tells) >= 2, OR (sum of scores) < 11; else pass.
+
+Kit type: {{KIT_TYPE}}. signature_move: {{SIGNATURE_MOVE}}
+Read these screenshots: {{SHOT_PATHS}}
+Read the source markup in: {{KIT_DIR}}
+<<< END PROMPT audit_craft_awwwards
+
 ---
 
 ## Notes for the operator (not consumed by `workshop.py`)

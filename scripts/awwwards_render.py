@@ -33,13 +33,16 @@ def perturb_hex(hex_str: str, seed: int) -> str:
     return "#" + "".join(f"{int(round(c * 255)):02X}" for c in (r, g, b))
 
 
-def render_directives(sub_aesthetic: str, seed: int) -> dict:
+def render_directives(sub_aesthetic: str, seed: int, perturb: bool = True) -> dict:
     cfg = get_awwwards_config(sub_aesthetic)
     pal = cfg["palette"]
-    bg = perturb_hex(pal["bg"], seed)
-    fg = perturb_hex(pal["fg"], seed)
-    accents = [perturb_hex(a, seed) for a in pal["accents"]]
-    supporting = [perturb_hex(c, seed) for c in pal["supporting"]]
+    # perturb=False (retry path): use the pinned palette verbatim — palette
+    # perturbation is the proven no-op, so a retry varies STRUCTURE, not colour.
+    _p = (lambda h: perturb_hex(h, seed)) if perturb else (lambda h: h.upper())
+    bg = _p(pal["bg"])
+    fg = _p(pal["fg"])
+    accents = [_p(a) for a in pal["accents"]]
+    supporting = [_p(c) for c in pal["supporting"]]
     palette_directive = (
         "Pinned palette (perturbed for this run — use these EXACT hexes as CSS tokens, do NOT range):\n"
         f"  --color-bg: {bg};\n  --color-fg: {fg};\n"
