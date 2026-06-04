@@ -15,5 +15,8 @@ vault/
 day-2-bootstrap.md
 logs/ingest-daemon.log
 logs/*-act.log
+logs/*.log
+logs/scout-runs/
+logs/scout-daily/
 day-2-v1-1-patches.md
 state/*-failures.json
