@@ -67,6 +67,9 @@ sys.path.insert(0, str(HERE))
 
 import scout_lib as sl  # noqa: E402  (path injected above)
 from aesthetic_configs import get_config as get_aesthetic_config  # noqa: E402
+from aesthetic_configs import get_awwwards_config  # noqa: E402  (v1.5 register)
+import awwwards_render  # noqa: E402
+import genericness_proxy  # noqa: E402
 
 # ─────────────────────────────────────────────────────────────────────
 # Constants — tuned for v1.0; change deliberately, not casually
@@ -591,6 +594,15 @@ KIT_REQUIRED_FILES = (
     "image-prompts.json",
 )
 
+# v1.5 awwwards register: per-kit_type required files (editorial-studio = 3-page,
+# single-product = 1-page). The conversion path keeps using KIT_REQUIRED_FILES.
+KIT_REQUIRED_FILES_BY_KIT_TYPE = {
+    "editorial-studio": ("index.html", "work.html", "contact.html",
+                         "assets/css/style.css", "assets/js/main.js", "image-prompts.json"),
+    "single-product": ("index.html",
+                       "assets/css/style.css", "assets/js/main.js", "image-prompts.json"),
+}
+
 
 def generate_kit(
     brief_path: Path,
@@ -757,7 +769,7 @@ def _render_audit_markdown(data: dict[str, Any]) -> str:
 # (was phase 6 before v1.1 — image generation now occupies phase 6)
 # ─────────────────────────────────────────────────────────────────────
 
-def capture_screenshots(kit_dir: Path, run_dir: Path) -> dict[str, Path]:
+def capture_screenshots(kit_dir: Path, run_dir: Path, pages=PAGES) -> dict[str, Path]:
     """Serve `kit_dir` over loopback, take 6 PNGs, return dict of paths.
 
     Failure (browser crash, server bind failure, navigation timeout) raises;
@@ -796,11 +808,12 @@ def capture_screenshots(kit_dir: Path, run_dir: Path) -> dict[str, Path]:
                 for vp_name, vp_w, vp_h in VIEWPORTS:
                     ctx = browser.new_context(viewport={"width": vp_w, "height": vp_h})
                     try:
-                        for page_name in PAGES:
+                        for page_name in pages:
                             page = ctx.new_page()
                             try:
                                 page.goto(url_root + f"{page_name}.html",
-                                          wait_until="networkidle", timeout=20_000)
+                                          wait_until="load", timeout=20_000)
+                                page.wait_for_timeout(2500)  # settle GSAP/Lenis motion
                                 logical = "home" if page_name == "index" else page_name
                                 path = screenshots_dir / f"{logical}-{vp_name}.png"
                                 page.screenshot(path=str(path), full_page=True)
@@ -1115,6 +1128,146 @@ def _telegram_send_media_group(files: list[tuple[str, Path]], caption: str) -> N
 
 
 # ─────────────────────────────────────────────────────────────────────
+# v1.5 Awwwards register — additive oneshot (no cron, no gates, no delivery)
+# ─────────────────────────────────────────────────────────────────────
+
+def run_design_concept(sub_aesthetic, kit_type, hero_archetype, refs, recent, run_dir):
+    """Commit the kit to ONE bespoke signature idea → concept.json."""
+    template = load_prompt_template("design_concept")
+    cfg = get_awwwards_config(sub_aesthetic)
+    subs = {
+        "{{SUB_AESTHETIC}}": sub_aesthetic,
+        "{{REGISTER_FAMILY}}": cfg["register_family"],
+        "{{KIT_TYPE}}": kit_type,
+        "{{HERO_ARCHETYPE}}": hero_archetype,
+        "{{REF_SIGNATURE_IDEAS}}": "\n".join(
+            f"- {r['payload'].get('signature_idea','')}" for r in refs) or "(none)",
+        "{{RECENT_CONCEPTS}}": "\n".join(f"- {c}" for c in recent) or "(none)",
+    }
+    prompt = template
+    for k, v in subs.items():
+        prompt = prompt.replace(k, v)
+    out = run_claude(prompt, effort="medium", add_dirs=[run_dir], tools="")
+    data = json.loads(_extract_json_object(out))
+    (run_dir / "concept.json").write_text(json.dumps(data, indent=2), encoding="utf-8")
+    log.info("concept: %s", data.get("hook_name"))
+    return data
+
+
+def synthesize_brief_awwwards(sub_aesthetic, kit_type, directives, hero_archetype,
+                              topo, concept, refs, run_dir):
+    template = load_prompt_template("brief_synthesis_awwwards")
+    refs_list = "\n".join(f"- {r['note_path']}" for r in refs if r.get("note_path"))
+    subs = {
+        "{{SUB_AESTHETIC}}": sub_aesthetic,
+        "{{KIT_TYPE}}": kit_type,
+        "{{REGISTER_FAMILY}}": directives["register_family"],
+        "{{HERO_ARCHETYPE}}": hero_archetype,
+        "{{PALETTE_DIRECTIVE}}": directives["palette_directive"],
+        "{{TYPOGRAPHY_DIRECTIVE}}": directives["typography_directive"],
+        "{{MOTION_DIRECTIVE}}": directives["motion_directive"],
+        "{{SIGNATURE_MOVE}}": concept.get("signature_move", ""),
+        "{{AVOID_LIST}}": "; ".join(directives.get("avoid", [])),
+        "{{REFERENCE_NOTES_LIST}}": refs_list,
+    }
+    prompt = template
+    for k, v in subs.items():
+        prompt = prompt.replace(k, v)
+    out = run_claude(prompt, effort="high", add_dirs=[VAULT_DIR, run_dir], tools="Read Write")
+    brief_path = run_dir / "brief.md"
+    brief_path.write_text(out, encoding="utf-8")
+    if "section_manifest" not in out:
+        log.warning("brief missing section_manifest (Phase 1b gates depend on it)")
+    return brief_path
+
+
+def generate_kit_awwwards(brief_path, refs, run_dir, kit_type, directives, concept):
+    kit_dir = run_dir / "kit"
+    (kit_dir / "assets/css").mkdir(parents=True, exist_ok=True)
+    (kit_dir / "assets/js").mkdir(parents=True, exist_ok=True)
+    template = load_prompt_template("kit_generation_" + kit_type.replace("-", "_"))
+    imgs = [r["image_path"] for r in refs if r.get("image_path")][:KIT_REFERENCE_IMAGE_COUNT]
+    while imgs and len(imgs) < KIT_REFERENCE_IMAGE_COUNT:
+        imgs.append(imgs[-1])
+    subs = {
+        "{{KIT_DIR}}": str(kit_dir),
+        "{{RUN_DIR}}": str(run_dir),
+        "{{SIGNATURE_MOVE}}": concept.get("signature_move", ""),
+    }
+    for i in range(1, KIT_REFERENCE_IMAGE_COUNT + 1):
+        subs[f"{{{{REF_IMAGE_{i}}}}}"] = str(imgs[i - 1]) if i <= len(imgs) else ""
+    prompt = template
+    for k, v in subs.items():
+        prompt = prompt.replace(k, v)
+    out = run_claude(prompt, effort="high", add_dirs=[VAULT_DIR, run_dir], tools="Read Write")
+    (run_dir / "raw_kit_output.txt").write_text(out, encoding="utf-8")
+    required = KIT_REQUIRED_FILES_BY_KIT_TYPE[kit_type]
+    missing = [rel for rel in required
+               if not (kit_dir / rel).exists() or (kit_dir / rel).stat().st_size == 0]
+    if missing:
+        raise RuntimeError(f"awwwards kit incomplete; missing/empty: {missing}; "
+                           f"raw at {run_dir/'raw_kit_output.txt'}")
+    return kit_dir
+
+
+def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
+    """Generate ONE awwwards kit end-to-end (no cron, no gates, no delivery)."""
+    if kit_type not in KIT_REQUIRED_FILES_BY_KIT_TYPE:
+        log.error("unknown kit_type %r (use editorial-studio|single-product)", kit_type)
+        return 1
+    cfg = get_awwwards_config(sub_aesthetic)  # raises KeyError on unknown sub_aesthetic
+    if cfg.get("vault_pending"):
+        log.error("sub_aesthetic %r is vault_pending — no anchors yet", sub_aesthetic)
+        return 1
+    seed = 0
+    ts = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H-%M-%SZ")
+    run_dir = RUNS_DIR / f"{ts}-awwwards-{sub_aesthetic}-{kit_type}"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    _setup_logging(run_dir)
+    log.info("awwwards oneshot: %s / %s (seed=%d)", sub_aesthetic, kit_type, seed)
+
+    directives = awwwards_render.render_directives(sub_aesthetic, seed)
+    vault_index = build_vault_index()
+    refs = awwwards_render.retrieve_awwwards_refs(sub_aesthetic, kit_type, vault_index)
+    need = cfg.get("min_exemplar_count", 2)
+    if len(refs) < need:
+        log.error("only %d premium refs for %s/%s (need >= %d) — corpus too thin",
+                  len(refs), sub_aesthetic, kit_type, need)
+        return 1
+    log.info("retrieved %d premium refs (top: %s)", len(refs), refs[0]["payload"].get("title"))
+    hero = refs[0]["payload"].get("hero_archetype", "monumental_wordmark")
+    topo = refs[0]["payload"].get("section_topology", [])
+
+    try:
+        concept = run_design_concept(sub_aesthetic, kit_type, hero, refs, [], run_dir)
+        synthesize_brief_awwwards(sub_aesthetic, kit_type, directives, hero, topo, concept, refs, run_dir)
+        kit_dir = generate_kit_awwwards(run_dir / "brief.md", refs, run_dir, kit_type, directives, concept)
+    except (RuntimeError, subprocess.TimeoutExpired, subprocess.CalledProcessError,
+            ValueError, json.JSONDecodeError) as e:
+        log.error("awwwards oneshot aborted: %s", e)
+        return 1
+
+    try:
+        from generate_kit_images import generate_kit_images as _gen_imgs  # noqa: WPS433
+        _gen_imgs(kit_dir, run_dir, image_prefix_override=directives["photography_prefix"])
+    except Exception as e:  # image gen is non-fatal
+        log.warning("image gen non-fatal failure: %s", e)
+
+    pages = [f[:-5] for f in KIT_REQUIRED_FILES_BY_KIT_TYPE[kit_type] if f.endswith(".html")]
+    try:
+        capture_screenshots(kit_dir, run_dir, pages=pages)
+    except Exception as e:  # screenshots non-fatal
+        log.warning("screenshots non-fatal failure: %s", e)
+
+    gp = genericness_proxy.score_kit(kit_dir)
+    (run_dir / "genericness.json").write_text(json.dumps(gp, indent=2), encoding="utf-8")
+    log.info("genericness: %s", gp)
+    log.info("DONE — kit at %s (verdict=%s, bleed=%s, hero/body=%s, tells=%s)",
+             kit_dir, gp["verdict"], gp["bleed_ratio"], gp["hero_body_ratio"], gp["template_tells"])
+    return 0
+
+
+# ─────────────────────────────────────────────────────────────────────
 # main()
 # ─────────────────────────────────────────────────────────────────────
 
@@ -1126,7 +1279,15 @@ def main() -> int:
         "--dry-run", action="store_true",
         help="readiness_check + retrieve_inspiration only; no claude calls, no delivery",
     )
+    parser.add_argument(
+        "--awwwards-oneshot", nargs=2, metavar=("SUB_AESTHETIC", "KIT_TYPE"),
+        help="Generate one awwwards kit via the v1.5 register (additive; bypasses the conversion queue).",
+    )
     args = parser.parse_args()
+
+    if args.awwwards_oneshot:
+        _setup_logging()
+        return run_awwwards_oneshot(*args.awwwards_oneshot)
 
     _setup_logging()  # stdout + workshop.log; per-run handler added once run_dir exists
     lock = acquire_lock()

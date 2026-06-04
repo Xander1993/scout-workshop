@@ -405,6 +405,110 @@ Output ONLY this object. The first character of your output must be `{` and the 
 
 ---
 
+## v1.5 Awwwards register prompts
+
+>>> BEGIN PROMPT design_concept
+You are the Workshop's concept director. Given a sub-aesthetic, its selected hero archetype, the retrieved premium reference notes, and recent kits' concepts, commit this kit to ONE bespoke signature idea — the single moment the whole page is built around (a kinetic-type hero, an unexpected scroll mechanic, a bespoke type system, a material/texture motif, a pinned-product reveal, type-as-image masking, a scroll-reactive colour shift). It MUST be distinct from the recent concepts listed.
+
+Output ONLY a JSON object — first character `{`, last character `}`, no prose:
+{"signature_move": "...", "hook_name": "...", "rationale": "one line", "placement": "where on the page", "brand_premise": "a thin fictional brand premise the concept answers (survives the {{BRAND}} rename)"}
+
+Sub-aesthetic: {{SUB_AESTHETIC}} ({{REGISTER_FAMILY}})
+Kit type: {{KIT_TYPE}}
+Hero archetype: {{HERO_ARCHETYPE}}
+Reference signature ideas (inspiration, do NOT copy):
+{{REF_SIGNATURE_IDEAS}}
+Recent concepts to avoid repeating:
+{{RECENT_CONCEPTS}}
+<<< END PROMPT design_concept
+
+>>> BEGIN PROMPT brief_synthesis_awwwards
+You are the Workshop's awwwards brief synthesizer. Turn the directives + premium references + the chosen signature concept into ONE structured brief for a monumental/editorial ({{REGISTER_FAMILY}}) kit. NO conversion content. Your first character of output must be `#`. Read each reference note first.
+
+Begin with this YAML block (exact keys), then the brief:
+```yaml
+section_manifest:
+  hero_archetype: {{HERO_ARCHETYPE}}
+  sections: [<ordered, from: full_bleed_plate, work_grid, manifesto, spec_table, scroll_chapter, studio_statement, product_hero, monumental_wordmark, callout>]
+  signature_move: <one line — the bespoke idea below>
+```
+# Brief — {{SUB_AESTHETIC}} / {{KIT_TYPE}}
+## Aesthetic
+2-4 sentences on the feel. Name techniques you saw in the reference notes.
+## Signature concept (the page is SUBORDINATE to this)
+Restate {{SIGNATURE_MOVE}} and how every section serves it. If a section doesn't serve it, it doesn't exist.
+## Palette
+Use these EXACT perturbed hex tokens verbatim as CSS custom properties (do NOT invent, do NOT range):
+{{PALETTE_DIRECTIVE}}
+## Typography
+{{TYPOGRAPHY_DIRECTIVE}}
+## Layout / topology
+Map the section_manifest sections to concrete full-bleed compositions; {{HERO_ARCHETYPE}} hero; monumental scale; generous negative space; alternating light/dark plates.
+## Motion
+{{MOTION_DIRECTIVE}}
+## Hero copy seed
+One headline (<=8 words) + one subhead (<=18 words) fitting the brand premise.
+## Reference notes (Read each)
+{{REFERENCE_NOTES_LIST}}
+
+Avoid (other sub-aesthetics' territory): {{AVOID_LIST}}
+End there. NO conversion structure, NO CTA-placement section, NO trust signals, NO click-to-call.
+<<< END PROMPT brief_synthesis_awwwards
+
+>>> BEGIN PROMPT kit_generation_editorial_studio
+You are the Workshop's awwwards kit generator. Build a PREMIUM, monumental/editorial 3-page studio kit. The whole page is SUBORDINATE TO ONE IDEA: {{SIGNATURE_MOVE}} — if a section doesn't serve it, cut it. This is award-tier work, not a template.
+
+# Read first (Read tool)
+- Brief: {{RUN_DIR}}/brief.md   - Concept: {{RUN_DIR}}/concept.json
+- Premium reference screenshots — study the COMPOSITION (full-bleed plates, scale, restraint), do NOT trace: {{REF_IMAGE_1}} {{REF_IMAGE_2}} {{REF_IMAGE_3}}
+
+# Required files (Write tool — exactly these)
+{{KIT_DIR}}/index.html, {{KIT_DIR}}/work.html, {{KIT_DIR}}/contact.html, {{KIT_DIR}}/assets/css/style.css, {{KIT_DIR}}/assets/js/main.js, {{KIT_DIR}}/image-prompts.json
+
+# Positive premium mandates (REQUIRED)
+- Hero h1 font-size MUST be the clamp from the brief (monumental display scale). Hero-to-body type-size ratio >= 6x.
+- Full-bleed single-subject plates; >= 60% of sections are full-bleed (no max-width wrapper). Generous negative space. Alternating light/dark rhythm.
+- Use the brief's EXACT palette hex tokens verbatim. One disciplined accent system, nothing else.
+- Realize the brief's motion via cdnjs GSAP + Lenis (+ SplitType if kinetic), each `<script src="https://cdnjs.cloudflare.com/...">` with integrity (SRI) + crossorigin="anonymous" + async + graceful degradation.
+- Topology: monumental hero -> manifesto -> full-bleed work grid -> studio statement -> contact.
+
+# HARD EXCLUSIONS — conversion furniture, DO NOT EMIT
+No primary-CTA-on-every-page, no repeated header CTA, no `tel:` click-to-call, no GA4 / Microsoft Clarity head snippets, no trust-signals/badge/avatar block, no {{PHONE_E164}} / business-hours / 3-icon services-card grid, no rounded-pill bootstrap buttons.
+
+# Universal quality (KEEP)
+Semantic HTML5, one <h1>/page, correct heading nesting, mobile-first CSS, below-fold <img> get loading="lazy" + width/height, hero <img> gets fetchpriority="high", descriptive alt text. Placeholder <img> src = https://picsum.photos/seed/{image-id}/{w}/{h}; write image-prompts.json (keys=image-ids; values={html_path, alt_text, generation_prompt (editorial/award register, end with "no text or logos."), aspect_ratio in 1:1|4:3|3:4|16:9|9:16, placement}). {{BRAND}} verbatim.
+
+After writing all 6 files, print one line: `KIT WRITTEN`.
+<<< END PROMPT kit_generation_editorial_studio
+
+>>> BEGIN PROMPT kit_generation_single_product
+You are the Workshop's awwwards kit generator. Build a PREMIUM, Apple-grade single-product scrollytelling page. The whole page is SUBORDINATE TO ONE IDEA: {{SIGNATURE_MOVE}} — if a section doesn't serve it, cut it. Think apple.com/airpods-pro, not a landing template.
+
+# Read first (Read tool)
+- Brief: {{RUN_DIR}}/brief.md   - Concept: {{RUN_DIR}}/concept.json
+- Premium reference screenshots — study the COMPOSITION (pinned product, scroll chapters, full-bleed), do NOT trace: {{REF_IMAGE_1}} {{REF_IMAGE_2}} {{REF_IMAGE_3}}
+
+# Required files (Write tool — exactly these, ONE page)
+{{KIT_DIR}}/index.html, {{KIT_DIR}}/assets/css/style.css, {{KIT_DIR}}/assets/js/main.js, {{KIT_DIR}}/image-prompts.json
+
+# Positive premium mandates (REQUIRED)
+- Hero h1 font-size MUST be the clamp from the brief (monumental display scale). Hero-to-body type-size ratio >= 6x.
+- Full-bleed product hero with the monumental headline bottom-left over the product imagery. >= 60% of sections full-bleed.
+- A pinned product canvas (GSAP ScrollTrigger / position:sticky) whose feature chapters reveal across scroll. Spec/detail plates. ONE closing CTA only.
+- Use the brief's EXACT palette hex tokens verbatim. One disciplined accent system.
+- Realize the brief's motion via cdnjs GSAP + Lenis (+ SplitType if kinetic), each with SRI integrity + crossorigin="anonymous" + async + graceful degradation.
+
+# HARD EXCLUSIONS — conversion furniture, DO NOT EMIT
+No CTA-above-fold-on-repeat, no header CTA bar, no `tel:` click-to-call, no GA4 / Microsoft Clarity head snippets, no trust-signals/badge block, no {{PHONE_E164}} / 3-icon card grid, no rounded-pill bootstrap buttons. (A single product "Buy"/"Configure" affordance at the end is allowed.)
+
+# Universal quality (KEEP)
+Semantic HTML5, one <h1>, correct heading nesting, mobile-first CSS, below-fold <img> get loading="lazy" + width/height, hero <img> gets fetchpriority="high", descriptive alt text. Placeholder <img> src = https://picsum.photos/seed/{image-id}/{w}/{h}; write image-prompts.json (keys=image-ids; values={html_path, alt_text, generation_prompt (product-glamour/award register, end with "no text or logos."), aspect_ratio in 1:1|4:3|3:4|16:9|9:16, placement}). {{BRAND}} verbatim.
+
+After writing all 4 files, print one line: `KIT WRITTEN`.
+<<< END PROMPT kit_generation_single_product
+
+---
+
 ## Notes for the operator (not consumed by `workshop.py`)
 
 - **Prompt edits:** to tighten or relax any of the three prompts, edit between the `>>> BEGIN PROMPT name` / `<<< END PROMPT name` markers. `workshop.py` parses by these markers, so don't rename or remove them.
