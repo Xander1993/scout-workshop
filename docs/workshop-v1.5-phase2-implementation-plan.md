@@ -217,7 +217,7 @@ def test_read_verdict_absent_is_none(tmp_path):
 - [ ] **D1.** Full suite green in the worktree; merge `awwwards-v1.5-p2` → main; push.
 - [ ] **D2.** 4-agent implementation audit of A–C (iterator rotation + corpus-skip; dashboard parsing + no regression to conversion rows; alert best-effort + no run-failure path). Fix until agents agree.
 - [ ] **D3.** Dry validation: `workshop.py --register-weekly` end-to-end on the host generates a real kit, gates it, and (on a deliberately-failing kit) ships `-flagged` + alerts. Confirm wall-clock < `TimeoutStartSec` even with a retry.
-- [ ] **D4. USER CONFIRM, then flip:** change `ExecStart` to append `--register-weekly`; `systemctl daemon-reload`. **Rollback** = revert that one line + `daemon-reload` (conversion path is untouched and still works).
+- [ ] **D4. USER CONFIRM, then flip:** in `systemd/workshop.service` (and the `/etc/systemd/system/` symlink target) (a) append `--register-weekly` to `ExecStart`, and (b) **raise `TimeoutStartSec` from 7500 to 21600 (6h)** — the audit proved a single in-flight oneshot's attempt-0 has no internal wall-clock cap (4 Claude calls × up to 1800s×2 ≈ 4h worst case) and the loop budget adds 5400s, so 7500s would risk a SIGKILL mid-write; 21600s covers the provable ~5.6h upper bound. Then `systemctl daemon-reload`. (Defense-in-depth already shipped: the diversity store now writes atomically, so even a kill can't corrupt cross-run state.) **Rollback** = revert those two lines + `daemon-reload` (conversion path is untouched and still works).
 - [ ] **D5.** Observe the first live Sunday run via the dashboard + telemetry + alert.
 
 ---

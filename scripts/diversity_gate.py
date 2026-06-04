@@ -7,6 +7,7 @@ within `threshold` of any prior kit in the same register_family.
 from __future__ import annotations
 import hashlib
 import json
+import os
 from pathlib import Path
 
 
@@ -81,4 +82,8 @@ def record(sig: dict, register_family: str, cap: int = 24) -> None:
     lst.append(sig)
     data[register_family] = lst[-cap:]
     _STORE.parent.mkdir(parents=True, exist_ok=True)
-    _STORE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    # Atomic write: a kill mid-write must not corrupt this CROSS-RUN state (a
+    # truncated store would poison every future week's diversity gate).
+    tmp = _STORE.with_name(_STORE.name + ".tmp")
+    tmp.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    os.replace(tmp, _STORE)
