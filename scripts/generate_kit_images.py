@@ -490,6 +490,7 @@ def strip_picsum_audit_concerns(audit_md_path: Path) -> int:
 def generate_kit_images(
     kit_dir: Path, run_dir: Path,
     aesthetic_direction: str | None = None,
+    image_prefix_override: str | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Generate or fall-back-placehold every image referenced by the kit's
     image-prompts.json. Rewrites picsum URLs in HTML to local paths.
@@ -532,7 +533,7 @@ def generate_kit_images(
     # Resolve per-aesthetic prefix once for this kit. All images in the kit
     # share the same photographic register; the per-image differentiation is
     # in the manifest's generation_prompt field.
-    image_prefix = _resolve_image_prefix(aesthetic_direction)
+    image_prefix = image_prefix_override or _resolve_image_prefix(aesthetic_direction)
 
     images_dir = kit_dir / "assets" / "images"
     images_dir.mkdir(parents=True, exist_ok=True)
