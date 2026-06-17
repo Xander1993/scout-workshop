@@ -1,0 +1,30 @@
+{
+  "adobe-wall-dawn": {
+    "html_path": "kit/index.html → .plate--open .plate__wall",
+    "alt_text": "A bare adobe wall catching the first warm light of dawn",
+    "generation_prompt": "Editorial product-glamour photograph of a bare adobe wall at dawn, hand-troweled clay surface in pale ochre tones, raking sunrise light from the lower left, soft warm shadows pooling along subtle imperfections in the plaster, a hint of dust suspended in the air, no objects in frame, deep negative space, cinematic large-format feel, awwwards-grade still life, no text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Full-bleed opening plate hero — fetchpriority=high background image."
+  },
+  "adobe-wall-texture": {
+    "html_path": "kit/index.html → .canvas__wall .canvas__wall-img",
+    "alt_text": "",
+    "generation_prompt": "Award-quality close still of a high-desert adobe wall surface, hand-applied clay plaster with subtle trowel marks and faint mineral striations, neutral warm bone-to-ochre tonal range, very gentle directional light from camera-left, no objects in frame, photographed at a slight tilt to show texture, edge-to-edge composition for use behind a centered product, cinematic stillness, no text or logos.",
+    "aspect_ratio": "9:16",
+    "placement": "Pinned product canvas — wall texture sitting behind the bottle through all four sun washes."
+  },
+  "mezcal-bottle-pinned": {
+    "html_path": "kit/index.html → .canvas__bottle .canvas__bottle-img",
+    "alt_text": "A single terracotta-glassed bottle of {{BRAND}} mezcal, centered against an adobe wall",
+    "generation_prompt": "Editorial product-glamour photograph of a single hand-blown clay-tinted glass mezcal bottle, slim shouldered silhouette with a thick neck and a deep terracotta wax seal, blank label suggested but unreadable, centered composition against soft adobe-toned background, gentle warm key light from upper-left modeling the curvature, faint pooled shadow beneath, large-format stillness, museum-grade restraint, awwwards single-product hero register, no text or logos.",
+    "aspect_ratio": "9:16",
+    "placement": "Centered, pinned bottle that stays fixed while the wall washes change behind it."
+  },
+  "mezcal-bottle-night": {
+    "html_path": "kit/index.html → .closer .closer__bottle",
+    "alt_text": "The same bottle, photographed against night-darkened clay, a single warm light catching its shoulder",
+    "generation_prompt": "Cinematic low-key product-glamour photograph of the same hand-blown clay-tinted mezcal bottle, now set against deep night-clay near-black background, a single narrow warm rim light grazing the right shoulder of the bottle, terracotta wax seal catching a soft accent of ember red, deep negative space, restrained moody stillness, awwwards closing plate composition, no text or logos.",
+    "aspect_ratio": "7:10",
+    "placement": "Right side of the closing two-column plate — paired with the night-clay copy block."
+  }
+}

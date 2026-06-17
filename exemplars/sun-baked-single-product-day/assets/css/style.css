@@ -1,0 +1,402 @@
+/* ============================================================
+   VESPRA - sun-baked single-product
+   One wall. One bottle. One sun moving across it.
+   ============================================================ */
+
+:root{
+  --bg: #E7DCC4;
+  --ink: #1B140F;
+  --accent: #B3372D;          /* single locked accent */
+  --sand: #DBCAB2;
+  --stone: #8A6A4F;
+  --cream: #F0E6D4;
+
+  /* live wash tokens - JS swaps body[data-wash] */
+  --wash-bg: var(--sand);
+  --wash-veil: rgba(27,20,15,0);
+  --wash-glow: rgba(179,55,45,0);
+
+  --display: "Bricolage Grotesque", "Inter", system-ui, sans-serif;
+  --body: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+
+  --gutter: clamp(22px, 4.5vw, 72px);
+  --radius: 3px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+  --ease-soft: cubic-bezier(.65,.05,.35,1);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+html{
+  -webkit-text-size-adjust:100%;
+  scroll-behavior:auto;
+  background:var(--ink);
+}
+body{
+  margin:0;
+  font-family:var(--body);
+  font-weight:400;
+  font-size:clamp(15px,1.05vw,17px);
+  line-height:1.6;
+  color:var(--ink);
+  background:var(--wash-bg);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  transition:background-color 900ms var(--ease);
+}
+img{ max-width:100%; height:auto; display:block; }
+h1,h2,h3,p,figure{ margin:0; }
+a{ color:inherit; text-decoration:none; }
+hr{ border:0; }
+::selection{ background:var(--accent); color:var(--cream); }
+
+.skip{
+  position:absolute; left:-9999px; top:0; z-index:100;
+  background:var(--ink); color:var(--cream);
+  padding:10px 16px; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+}
+.skip:focus{ left:12px; top:12px; }
+
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+
+/* ---------------- NAV ---------------- */
+.nav{
+  position:fixed; inset:0 0 auto 0; z-index:40;
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center;
+  gap:var(--gutter);
+  padding:20px var(--gutter);
+  font-family:var(--body);
+  font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--cream);
+  pointer-events:none;
+  mix-blend-mode:difference;
+}
+.nav > *{ pointer-events:auto; }
+.nav__mark{
+  font-family:var(--display); font-weight:700; font-size:19px;
+  letter-spacing:-0.02em; text-transform:lowercase;
+}
+.nav__links{ display:flex; gap:clamp(18px,3vw,40px); justify-content:center; }
+.nav__links a{ opacity:.8; transition:opacity .3s var(--ease); }
+.nav__links a:hover{ opacity:1; }
+.nav__reserve{
+  justify-self:end; opacity:.9;
+  border-bottom:1px solid currentColor; padding-bottom:3px;
+  transition:opacity .3s var(--ease);
+}
+.nav__reserve:hover{ opacity:1; }
+@media (max-width:760px){
+  .nav__links{ display:none; }
+  .nav{ grid-template-columns:auto 1fr; }
+}
+
+/* ---------------- 1. HERO ---------------- */
+.hero{
+  position:relative; min-height:100svh;
+  display:grid; align-items:end;
+  overflow:hidden; isolation:isolate;
+  background:var(--ink);
+}
+.hero__wall{
+  position:absolute; inset:0; z-index:1;
+  width:100%; height:100%; object-fit:cover;
+  filter:saturate(.92) contrast(1.02);
+  transform:scale(1.04); transform-origin:60% 40%;
+}
+.hero__grade{
+  position:absolute; inset:0; z-index:2;
+  background:
+    linear-gradient(180deg, rgba(27,20,15,.10) 0%, rgba(27,20,15,0) 26%, rgba(27,20,15,.30) 64%, rgba(27,20,15,.74) 100%),
+    radial-gradient(120% 90% at 12% 116%, rgba(179,55,45,.22), transparent 58%);
+}
+.hero__shaft{
+  position:absolute; inset:-20% -10%; z-index:2; pointer-events:none;
+  background:linear-gradient(118deg, transparent 36%, rgba(255,228,178,.16) 48%, transparent 60%);
+  mix-blend-mode:screen;
+  animation:shaft 11s var(--ease) infinite alternate;
+}
+@keyframes shaft{
+  from{ transform:translate3d(-4%,2%,0); opacity:.55; }
+  to{   transform:translate3d(5%,-3%,0); opacity:1; }
+}
+.hero__type{
+  position:relative; z-index:3;
+  padding:0 var(--gutter) clamp(40px,7vh,84px);
+  width:100%;
+  display:grid; grid-template-columns:1fr; gap:clamp(14px,2vh,26px);
+  align-items:end;
+}
+.hero__mark{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(4.5rem,21vw,18rem);
+  line-height:.82;
+  letter-spacing:-0.04em;
+  text-transform:lowercase;
+  color:var(--cream);
+}
+.hero__mark .char{ display:inline-block; transform:translateY(108%); opacity:0; will-change:transform,opacity; }
+.hero__tag{
+  max-width:42ch; justify-self:end;
+  font-size:clamp(14px,1.15vw,17px);
+  line-height:1.55; color:var(--cream); opacity:.86;
+}
+@media (max-width:760px){
+  .hero__tag{ justify-self:start; max-width:34ch; }
+}
+
+/* ---------------- 2. PINNED CANVAS + 4 CHAPTERS ---------------- */
+.canvas{
+  position:relative; background:var(--wash-bg);
+  background-image:linear-gradient(rgba(220,196,166,.55), rgba(220,196,166,.55)), url("../images/adobe-wall-texture.png");
+  background-size:cover; background-position:center; background-repeat:no-repeat;
+}
+.canvas__pin{
+  position:sticky; top:0; height:100svh; width:100%;
+  overflow:hidden; isolation:isolate;
+  background:var(--wash-bg);
+  transition:background-color 1100ms var(--ease);
+}
+.canvas__wall{ position:absolute; inset:-6% 0; z-index:1; will-change:transform; }
+.canvas__wall-img{
+  width:100%; height:100%; object-fit:cover;
+  filter:saturate(.8) contrast(.98); opacity:.92;
+}
+.canvas__wash{
+  position:absolute; inset:0; z-index:2; pointer-events:none;
+  background:var(--wash-veil);
+  transition:background-color 1100ms var(--ease);
+}
+.canvas__wash::after{
+  content:""; position:absolute; inset:0;
+  /* the sun glow position (--sun-x/--sun-y) scrubs across the wall on scroll = a real sun arc */
+  background:radial-gradient(46% 42% at var(--sun-x, 50%) var(--sun-y, 58%), var(--wash-glow), transparent 70%);
+}
+/* the product as a framed still-life mounted on the wall - an intentional gallery
+   print, not a floating cutout: the photo owns its own backdrop inside the mat, so
+   there is no mask halo or rectangular seam at any wash. */
+.canvas__bottle{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  z-index:3; width:clamp(204px,24vw,348px);
+  background:var(--cream); border-radius:var(--radius);
+  padding:clamp(13px,1.15vw,19px) clamp(13px,1.15vw,19px) clamp(38px,3.3vw,54px);
+  box-shadow:0 1px 0 rgba(255,255,255,.55) inset,
+             0 52px 70px -30px rgba(27,20,15,.55),
+             0 12px 26px -12px rgba(27,20,15,.42);
+  will-change:transform;
+}
+.canvas__bottle-img{
+  width:100%; aspect-ratio:9/13; height:auto; object-fit:cover; object-position:center 44%;
+  border-radius:1px;
+}
+.canvas__bottle-mark{
+  position:absolute; left:0; right:0; bottom:clamp(11px,.95vw,17px);
+  z-index:1; display:flex; flex-direction:column; align-items:center; gap:4px;
+  text-align:center; pointer-events:none;
+}
+.canvas__bottle-mark-name{
+  font-family:var(--display); font-weight:600;
+  font-size:clamp(11px,1.15vw,15px); letter-spacing:.34em; text-transform:uppercase;
+  color:#4a3826; opacity:.82;
+}
+.canvas__bottle-mark-sub{
+  font-family:var(--body); font-weight:500;
+  font-size:clamp(7px,.62vw,8.5px); letter-spacing:.24em; text-transform:uppercase;
+  color:#6b513a; opacity:.7;
+}
+.canvas__copy{
+  position:absolute; left:var(--gutter); right:var(--gutter);
+  bottom:clamp(34px,7vh,84px); z-index:4; max-width:34ch; pointer-events:none;
+}
+.canvas__copy::before{
+  content:""; position:absolute; left:calc(var(--gutter) * -1); right:calc(var(--gutter) * -1);
+  bottom:calc(clamp(34px,7vh,84px) * -1); top:-32px; z-index:-1;
+  background:linear-gradient(0deg, rgba(231,220,196,.55), rgba(231,220,196,0) 88%);
+  transition:background .9s var(--ease);
+}
+body[data-wash="dusk"] .canvas__copy::before,
+body[data-wash="night"] .canvas__copy::before{
+  background:linear-gradient(0deg, rgba(20,13,9,.62), rgba(20,13,9,0) 90%);
+}
+.canvas__title{
+  font-family:var(--display); font-weight:700;
+  font-size:clamp(2.3rem,7vw,5.4rem); line-height:.95; letter-spacing:-0.03em;
+  color:var(--ink); max-width:15ch;
+}
+.canvas__title [data-line]{ display:block; }
+.canvas__title [data-line] > span{
+  display:block; opacity:0; transform:translateY(10px);
+  transition:opacity .5s var(--ease), transform .6s var(--ease-soft);
+}
+.canvas__title.is-in [data-line] > span{ opacity:1; transform:translateY(0); }
+.canvas__body{
+  margin-top:clamp(12px,1.8vh,20px); max-width:42ch;
+  font-size:clamp(14px,1.05vw,16px); line-height:1.6; color:var(--ink); opacity:.88;
+  transition:opacity .45s var(--ease);
+}
+body.no-js .canvas__copy{ display:none; }
+
+/* chapter scroll spacers (drive the pin) */
+.chapter{
+  position:relative; min-height:64svh; z-index:2;
+  padding:0 var(--gutter) clamp(56px,10vh,110px);
+  display:grid; align-items:end; pointer-events:none;
+}
+.chapter > *{ pointer-events:auto; }
+.chapter__h3{
+  font-family:var(--display); font-weight:600;
+  font-size:clamp(1.4rem,2.4vw,2.1rem); line-height:1.08; letter-spacing:-0.015em;
+  color:var(--ink); max-width:18ch; opacity:0; margin-bottom:14px;
+}
+.chapter__body{ max-width:38ch; font-size:clamp(14px,1vw,16px); line-height:1.65; color:var(--ink); opacity:.82; }
+
+/* with JS the pinned copy carries the per-chapter text; the chapter articles
+   stay as scroll spacers (height preserved) but their text is hidden. */
+body.js .chapter{ visibility:hidden; }
+body.no-js .chapter{ visibility:visible; }
+body.no-js .chapter__h3{ opacity:1; }
+@media (prefers-reduced-motion:reduce){
+  .chapter{ visibility:visible !important; }
+  .canvas__copy{ display:none; }
+}
+
+/* wash tokens - scoped so post-canvas sections keep their own theme */
+body[data-wash="dawn"]  { --wash-bg:#DCC4A6; --wash-veil:rgba(179,55,45,.06); --wash-glow:rgba(255,196,120,.18); }
+body[data-wash="noon"]  { --wash-bg:#E9DEC6; --wash-veil:rgba(255,244,214,.04); --wash-glow:rgba(255,248,224,.26); }
+body[data-wash="dusk"]  { --wash-bg:#7A4E36; --wash-veil:rgba(120,40,28,.30);  --wash-glow:rgba(179,55,45,.30); }
+body[data-wash="night"] { --wash-bg:#160F0B; --wash-veil:rgba(0,0,0,.52);      --wash-glow:rgba(179,55,45,.30); }
+body[data-wash="dusk"]  .canvas__title,
+body[data-wash="dusk"]  .canvas__body,
+body[data-wash="night"] .canvas__title,
+body[data-wash="night"] .canvas__body{ color:var(--cream); }
+
+/* ---------------- 3. SPEC ---------------- */
+.spec{ position:relative; z-index:3; background:var(--bg); padding:clamp(80px,13vh,150px) var(--gutter); }
+.spec__head{
+  display:grid; grid-template-columns:1.4fr 1fr; gap:var(--gutter); align-items:end;
+  padding-bottom:clamp(34px,5vh,60px); border-bottom:1px solid rgba(27,20,15,.18);
+}
+.spec__h2{ font-family:var(--display); font-weight:700; font-size:clamp(2.1rem,5.2vw,4.2rem); line-height:1; letter-spacing:-0.03em; max-width:13ch; }
+.spec__note{ font-size:clamp(14px,1.05vw,16px); line-height:1.6; opacity:.7; max-width:34ch; align-self:end; }
+.spec__table{ margin-top:8px; }
+.spec__row{
+  display:grid; grid-template-columns:1fr 2.2fr; gap:var(--gutter); align-items:baseline;
+  padding:clamp(16px,2.1vh,26px) 0; border-bottom:1px solid rgba(27,20,15,.12);
+}
+.spec__row:last-child{ border-bottom:0; }
+.spec__k{ font-family:var(--display); font-weight:600; font-size:clamp(1.05rem,1.6vw,1.55rem); letter-spacing:-0.01em; }
+.spec__v{ font-size:clamp(14px,1.05vw,17px); line-height:1.5; opacity:.82; }
+@media (max-width:760px){
+  .canvas__bottle{ top:42%; width:clamp(150px,46vw,210px); }
+  .canvas__copy{ max-width:none; bottom:clamp(28px,5vh,56px); }
+  .canvas__title{ font-size:clamp(2rem,9vw,3rem); }
+  .spec__head{ grid-template-columns:1fr; gap:14px; }
+  .spec__row{ grid-template-columns:1fr; gap:4px; padding:16px 0; }
+}
+
+/* ---------------- 4. STUDIO ---------------- */
+.studio{
+  position:relative; z-index:3; background:var(--stone); color:var(--cream);
+  padding:clamp(90px,15vh,170px) var(--gutter);
+  display:grid; grid-template-columns:1fr 2fr; gap:clamp(32px,5vw,100px); align-items:start;
+}
+.studio__label{ font-size:12px; letter-spacing:.2em; text-transform:uppercase; opacity:.78; display:block; padding-top:10px; }
+.studio__p{ font-family:var(--display); font-weight:400; font-size:clamp(1.2rem,1.85vw,1.8rem); line-height:1.3; letter-spacing:-0.012em; max-width:32ch; margin-bottom:26px; }
+.studio__p--lead{ font-size:clamp(1.6rem,2.7vw,2.6rem); font-weight:500; line-height:1.16; margin-bottom:32px; }
+.studio__rule{ width:60px; height:2px; background:var(--accent); margin:0 0 32px; }
+.studio__sig{ font-family:var(--body); font-size:12px; letter-spacing:.16em; text-transform:uppercase; opacity:.78; margin-top:10px; }
+@media (max-width:860px){ .studio{ grid-template-columns:1fr; gap:18px; } }
+
+/* ---------------- 5. CLOSER ---------------- */
+.closer{
+  position:relative; color:var(--cream);
+  background:
+    radial-gradient(120% 90% at 72% 48%, rgba(179,55,45,.20), transparent 58%),
+    linear-gradient(160deg, #2a1a11 0%, #1c120c 60%, #140d09 100%);
+  padding:clamp(70px,12vh,130px) var(--gutter);
+  display:grid; grid-template-columns:1fr 1fr; gap:clamp(36px,6vw,110px); align-items:center; overflow:hidden;
+}
+.closer__media{ position:relative; justify-self:end; width:100%; max-width:420px; aspect-ratio:9/13; }
+.closer__bottle{
+  width:100%; height:100%; object-fit:cover; object-position:center;
+  /* the night photograph's own near-black backdrop dissolves into the dark closer;
+     only the extreme outer edge is feathered so no rectangle survives, no oval halo */
+  -webkit-mask-image:radial-gradient(74% 84% at 50% 52%, #000 56%, transparent 100%);
+  mask-image:radial-gradient(74% 84% at 50% 52%, #000 56%, transparent 100%);
+  filter:brightness(.9) contrast(1.07) drop-shadow(0 40px 60px rgba(0,0,0,.55));
+}
+.closer__mark{
+  position:absolute; left:50%; top:62%; transform:translate(-50%,-50%);
+  z-index:2; display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center; pointer-events:none;
+}
+.closer__mark-name{ font-family:var(--display); font-weight:600; font-size:clamp(11px,1.1vw,14px); letter-spacing:.34em; text-transform:uppercase; color:#3a2c1d; opacity:.88; }
+.closer__mark-sub{ font-family:var(--body); font-weight:500; font-size:clamp(7px,.6vw,8.5px); letter-spacing:.24em; text-transform:uppercase; color:#5a4632; opacity:.78; }
+.closer__copy{ max-width:36ch; }
+.closer__label{ display:block; font-family:var(--display); font-weight:600; font-size:13px; letter-spacing:.24em; text-transform:uppercase; color:var(--accent); margin-bottom:18px; }
+.closer__line{ font-family:var(--display); font-weight:400; font-size:clamp(1.6rem,3vw,2.6rem); line-height:1.22; letter-spacing:-0.015em; color:var(--cream); }
+@media (max-width:860px){
+  .closer{ grid-template-columns:1fr; gap:32px; }
+  .closer__media{ justify-self:center; max-width:340px; }
+}
+
+/* ---------------- 6. CALLOUT ---------------- */
+.callout{
+  background:var(--bg); padding:clamp(80px,13vh,150px) var(--gutter);
+  text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(22px,3.5vh,40px);
+}
+/* on mobile the reserve section owns a full screen so the #reserve anchor can land
+   at the top of the viewport - otherwise it sits too near the document end, clamps,
+   and leaves clipped closer copy colliding with the fixed nav. */
+@media (max-width:760px){
+  .callout{ min-height:100svh; }
+}
+.callout__lede{ font-family:var(--display); font-weight:400; font-size:clamp(1.15rem,1.7vw,1.55rem); line-height:1.45; max-width:30ch; opacity:.9; }
+.callout__cta{
+  display:inline-block; background:var(--accent); color:var(--cream);
+  font-family:var(--display); font-weight:600; font-size:clamp(1rem,1.4vw,1.2rem);
+  letter-spacing:.01em; padding:18px 38px; border-radius:var(--radius);
+  will-change:transform; transition:background-color .3s var(--ease), transform .2s var(--ease);
+}
+.callout__cta:hover{ background:var(--ink); }
+.callout__cta-inner{ display:inline-block; }
+.callout__meta{ font-size:11px; letter-spacing:.18em; text-transform:uppercase; opacity:.55; max-width:46ch; }
+
+/* ---------------- FOOTER ---------------- */
+.foot{
+  background:var(--ink); color:var(--cream);
+  padding:clamp(36px,6vh,60px) var(--gutter);
+  display:grid; grid-template-columns:auto 1fr auto; gap:var(--gutter); align-items:center;
+  font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+}
+.foot__mark{ font-family:var(--display); font-weight:700; font-size:16px; letter-spacing:-0.01em; text-transform:lowercase; opacity:.95; }
+.foot__line{ text-align:center; opacity:.55; }
+.foot__cert{ text-align:right; opacity:.55; }
+@media (max-width:760px){
+  .foot{ grid-template-columns:1fr; text-align:center; gap:10px; }
+  .foot__line,.foot__cert{ text-align:center; }
+}
+
+/* ---------------- Lenis ---------------- */
+html.lenis{ height:auto; }
+.lenis.lenis-smooth{ scroll-behavior:auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent]{ overscroll-behavior:contain; }
+.lenis.lenis-stopped{ overflow:hidden; }
+
+/* ---------------- Reduced motion / no-JS ---------------- */
+@media (prefers-reduced-motion:reduce){
+  *{ transition:none !important; animation:none !important; }
+  .hero__mark .char{ transform:none; opacity:1; }
+  .hero__wall{ transform:none; }
+  .canvas__title [data-line] > span{ transform:none; }
+  .canvas__pin{ position:relative; height:auto; min-height:80svh; }
+  .chapter{ min-height:auto; padding-top:clamp(40px,7vh,80px); }
+  .chapter__h3{ opacity:1 !important; }
+}
+body.no-js .canvas__pin{ position:relative; height:80svh; }
+body.no-js .canvas__title{ display:none; }
+body.no-js .chapter{ min-height:auto; padding-top:clamp(40px,7vh,80px); }

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#1B140F">
+<title>VESPRA. Made for the long afternoon.</title>
+<meta name="description" content="A single high-desert mezcal, pressed slow under the sun and bottled once a year at one adobe distillery in Sonora.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500&display=swap">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="no-js" data-wash="dawn">
+
+<a class="skip" href="#story">Skip to content</a>
+
+<header class="nav" aria-label="Primary">
+  <a class="nav__mark" href="#top" aria-label="VESPRA home">vespra</a>
+  <nav class="nav__links" aria-label="Sections">
+    <a href="#story">The Day</a>
+    <a href="#spec">The Bottle</a>
+    <a href="#studio">The Distillery</a>
+  </nav>
+  <a class="nav__reserve" href="#reserve">Reserve</a>
+</header>
+
+<main id="top">
+
+  <!-- 1. HERO - full-bleed dawn wall + monumental wordmark -->
+  <section class="hero" aria-label="VESPRA, made for the long afternoon">
+    <img class="hero__wall"
+         src="assets/images/adobe-wall-dawn.png"
+         alt="A bare adobe wall catching a shaft of the first warm light at dawn."
+         fetchpriority="high"
+         width="2400" height="3200">
+    <div class="hero__grade" aria-hidden="true"></div>
+    <div class="hero__shaft" aria-hidden="true"></div>
+    <div class="hero__type">
+      <h1 class="hero__mark" data-split>vespra</h1>
+      <p class="hero__tag">A single high-desert mezcal, pressed slow under the sun and bottled once a year. Made for the long afternoon.</p>
+    </div>
+  </section>
+
+  <!-- 2. PINNED PRODUCT CANVAS + four sun-arc chapters -->
+  <section id="story" class="canvas" aria-label="The day in four chapters">
+
+    <div class="canvas__pin">
+      <div class="canvas__wall">
+        <img class="canvas__wall-img"
+             src="assets/images/adobe-wall-texture.png"
+             alt=""
+             loading="lazy"
+             width="2000" height="3200">
+      </div>
+      <div class="canvas__wash" aria-hidden="true"></div>
+      <figure class="canvas__bottle">
+        <img class="canvas__bottle-img"
+             src="assets/images/mezcal-bottle-pinned.png"
+             alt="A single amber clay-glass bottle of VESPRA mezcal, terracotta wax seal, standing against an adobe wall."
+             loading="lazy"
+             width="900" height="1400">
+        <span class="canvas__bottle-mark" aria-hidden="true">
+          <span class="canvas__bottle-mark-name">vespra</span>
+          <span class="canvas__bottle-mark-sub">mezcal · lote 01</span>
+        </span>
+      </figure>
+      <div class="canvas__copy">
+        <h2 class="canvas__title" data-chapter-title aria-live="polite">
+          <span data-line>Pressed at first light.</span>
+        </h2>
+        <p class="canvas__body" data-chapter-body>Agave hearts hauled in before the sun cracks the ridge. Stone-pressed slow, the way the highlands have asked since the road in was a footpath.</p>
+      </div>
+    </div>
+
+    <article class="chapter" data-chapter="dawn" data-wash="dawn" data-label="Dawn">
+      <h3 class="chapter__h3">Pressed at first light.</h3>
+      <p class="chapter__body">Agave hearts hauled in before the sun cracks the ridge. Stone-pressed slow, the way the highlands have asked since the road in was a footpath. Nothing accelerated.</p>
+    </article>
+
+    <article class="chapter" data-chapter="noon" data-wash="noon" data-label="Noon">
+      <h3 class="chapter__h3">Bottled at noon.</h3>
+      <p class="chapter__body">The light flattens and shadows pull in tight. One bottle, filled by hand, sealed with wax the colour of the wall it leans against. No second label, no second thoughts.</p>
+    </article>
+
+    <article class="chapter" data-chapter="dusk" data-wash="dusk" data-label="Dusk">
+      <h3 class="chapter__h3">Rested through dusk.</h3>
+      <p class="chapter__body">Held in clay while the wall outside cools from sienna into rust. The spirit reads the day back to itself, listens to the room, and slows.</p>
+    </article>
+
+    <article class="chapter" data-chapter="night" data-wash="night" data-label="Night">
+      <h3 class="chapter__h3">Poured after dark.</h3>
+      <p class="chapter__body">A short glass, no ice. The bottle goes back on its shelf and the wall keeps the last of the heat. This is the hour it was built for.</p>
+    </article>
+
+  </section>
+
+  <!-- 3. SPEC TABLE -->
+  <section id="spec" class="spec" aria-label="The bottle, in numbers">
+    <div class="spec__head">
+      <h2 class="spec__h2">One ingredient list. One ritual.</h2>
+      <p class="spec__note">Everything VESPRA promises fits on a single page, because there is only ever one bottle to describe.</p>
+    </div>
+    <div class="spec__table" role="table" aria-label="VESPRA specifications">
+      <div class="spec__row" role="row"><span class="spec__k" role="rowheader">Agave</span><span class="spec__v" role="cell">Espadín, nine-year, single estate</span></div>
+      <div class="spec__row" role="row"><span class="spec__k" role="rowheader">Roast</span><span class="spec__v" role="cell">Conical earthen pit, five days, mesquite</span></div>
+      <div class="spec__row" role="row"><span class="spec__k" role="rowheader">Press</span><span class="spec__v" role="cell">Tahona, horse-drawn, one revolution a minute</span></div>
+      <div class="spec__row" role="row"><span class="spec__k" role="rowheader">Ferment</span><span class="spec__v" role="cell">Open pine, ambient yeast, seven to eleven days</span></div>
+      <div class="spec__row" role="row"><span class="spec__k" role="rowheader">Distil</span><span class="spec__v" role="cell">Copper alembic, double pass, hand cut</span></div>
+      <div class="spec__row" role="row"><span class="spec__k" role="rowheader">Rest</span><span class="spec__v" role="cell">Clay tinaja, ninety days, unfiltered</span></div>
+      <div class="spec__row" role="row"><span class="spec__k" role="rowheader">Bottle</span><span class="spec__v" role="cell">700ml, 46% ABV, wax sealed, numbered</span></div>
+      <div class="spec__row" role="row"><span class="spec__k" role="rowheader">Yield</span><span class="spec__v" role="cell">Twelve hundred bottles, once a year, never again</span></div>
+    </div>
+  </section>
+
+  <!-- 4. STUDIO STATEMENT -->
+  <section id="studio" class="studio" aria-label="The distillery">
+    <div class="studio__col studio__col--label">
+      <span class="studio__label">The distillery, in its own words</span>
+    </div>
+    <div class="studio__col studio__col--body">
+      <p class="studio__p studio__p--lead">We build one bottle a year because that is what the agave allows. Anything else would be a brochure, not a spirit.</p>
+      <hr class="studio__rule" aria-hidden="true">
+      <p class="studio__p">The wall behind the still is the one my grandfather pressed against to hear the copper sing. The sun crosses it twice a day. The bottle is what we have to show for it.</p>
+      <p class="studio__sig">Mateo Salvatierra, maestro mezcalero</p>
+    </div>
+  </section>
+
+  <!-- 5. CLOSER - night bottle -->
+  <section class="closer" aria-label="The bottle, after dark">
+    <figure class="closer__media">
+      <img class="closer__bottle"
+           src="assets/images/mezcal-bottle-night.png"
+           alt="The same VESPRA bottle, after dark, a single warm light catching its shoulder."
+           loading="lazy"
+           width="900" height="1400">
+    </figure>
+    <div class="closer__copy">
+      <span class="closer__label">Night</span>
+      <p class="closer__line">The wall keeps the last of the heat. The bottle keeps the rest.</p>
+    </div>
+  </section>
+
+  <!-- 6. CALLOUT - single quiet CTA -->
+  <section id="reserve" class="callout" aria-label="Reserve">
+    <p class="callout__lede">This year's release opens for reservation at the autumn equinox.</p>
+    <a class="callout__cta" href="#reserve" data-magnetic><span class="callout__cta-inner">Reserve a bottle</span></a>
+    <p class="callout__meta">Twelve hundred bottles, one allocation per address, shipped when the wax is dry.</p>
+  </section>
+
+</main>
+
+<footer class="foot" aria-label="Footer">
+  <span class="foot__mark">vespra</span>
+  <span class="foot__line">Bottled at a single adobe distillery, Sonora, MMXXVI</span>
+  <span class="foot__cert">CRT, Lote 01, NOM-070</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+        crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+        crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"
+        crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
+<script src="assets/js/main.js" defer></script>
+
+</body>
+</html>
