@@ -256,11 +256,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 .spec__shadow{
   position:absolute;
-  top:8%; left:-10%;
+  top:2%; left:-10%;
   width:96%;
-  height:84%;
+  height:94%;
   background:var(--color-fg);
-  clip-path: polygon(0 18%, 92% 0, 100% 78%, 8% 100%);
+  clip-path: polygon(0 9%, 97% 0, 100% 86%, 5% 100%);
   opacity:.97;
   z-index:1;
 }
@@ -273,7 +273,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   position:relative; z-index:2;
   color:var(--color-bg);
   max-width:980px;
-  margin-left:6vw;
+  margin-left:6vw; padding-top:clamp(46px,7vh,92px);
 }
 .spec__title{ color:var(--color-bg); margin: 16px 0 40px; max-width:18ch; }
 .spec__table{
