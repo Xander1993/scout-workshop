@@ -1,0 +1,65 @@
+{
+  "sun-baked-relief-wall": {
+    "html_path": "index.html",
+    "alt_text": "A deeply carved limestone relief wall in raking late-afternoon Marrakech sun, deep umber shadows lengthening into the foreground.",
+    "generation_prompt": "Editorial architectural photograph of a deeply carved limestone relief wall in a Marrakech courtyard, raking late-afternoon desert sun cutting across the surface so each carved letterform-like notch casts a long hard-edged umber shadow into the foreground. Single chromatic event: warm ochre highlight against cool umber shadow. Restrained palette of #E7DCC4, #DDD0B4, #B8462C, #9C8E73, #1A1814. Medium format film grain, no people, monumental composition, generous negative space. no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "frieze cell 01, work grid on index"
+  },
+  "marvell-stone-spread": {
+    "html_path": "index.html",
+    "alt_text": "A spread from the Marvell & Co. stone catalogue: tabular specimen swatches in terracotta and ochre, photographed in raking warm light.",
+    "generation_prompt": "Editorial still life, top-down, of a thick uncoated stone catalogue lying open on a near-white linen surface. The left page is set in a tight monumental serif eyebrow; the right is a tabular grid of warm-earth specimen swatches in terracotta, ochre and umber; a single physical tile rests at the corner of the page. Single warm side-light from the upper right casting a long hard-edged shadow across the spread. Palette restricted to #E7DCC4, #DDD0B4, #B8462C, #9C8E73, #1A1814. Marvell Tile & Stone material restraint, generous negative space. no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "frieze cell 02, work grid on index"
+  },
+  "solstice-issue-cover": {
+    "html_path": "index.html",
+    "alt_text": "The cover of Solstice Issue iii on uncoated ochre paper, a single deeply embossed serif glyph catching low warm light.",
+    "generation_prompt": "Editorial cover photograph of a thick uncoated ochre cardstock magazine cover bearing a single deeply blind-embossed serif glyph at monumental scale, photographed in low raking warm desert sunlight so the embossed letterform catches a thin highlight on its upper edge and casts a long deep shadow toward the lower right. Restrained sun-baked palette #E7DCC4, #DDD0B4, #B8462C, #9C8E73. Single subject, generous negative space, medium-format film grain. no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "frieze cell 03, work grid on index"
+  },
+  "casa-namma-long-room": {
+    "html_path": "index.html",
+    "alt_text": "A long room at Casa Namma — terracotta plaster, oak bench, raking afternoon sun cutting the polished floor into measured stripes.",
+    "generation_prompt": "Wide editorial architectural photograph of a long monastic room with a deep terracotta plaster wall on the right, a single low oak bench, a polished concrete floor, and hard raking late-afternoon sunlight entering through narrow vertical slits, cutting the floor into measured stripes of warm light and long umber shadow. Single chromatic event, restrained sun-baked palette of #E7DCC4, #B8462C, #9C8E73, #1A1814. Editorial monograph mood — Studio Namma / Marvell Tile & Stone reference. Single-subject composition, generous negative space, no people, medium-format film grain. no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "frieze cell 04, work grid on index"
+  },
+  "silent-house-letterforms": {
+    "html_path": "index.html",
+    "alt_text": "Specimen sheet of Silent House custom serif letterforms on near-white paper, each glyph casting a long sharp shadow across the sheet.",
+    "generation_prompt": "Editorial specimen photograph of a single A2 sheet of near-white uncoated paper bearing four large, deeply cut transitional serif letterforms in matte umber ink, photographed at a low angle with raking late-afternoon light from the right so each letterform casts a long hard-edged shadow across the sheet. Restrained sun-baked palette #E7DCC4, #1A1814, #9C8E73, with a single faint terracotta annotation in the margin. Silent House asymmetric editorial restraint. Single subject, generous negative space, full-bleed, medium-format film grain. no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "frieze cell 05, work grid on index"
+  },
+  "terracotta-wall-dusk": {
+    "html_path": "index.html",
+    "alt_text": "A terracotta plaster wall at the exact minute the sun leaves it, casting a long hard-edged shadow across an empty stone courtyard.",
+    "generation_prompt": "Cinematic full-bleed landscape photograph of a tall terracotta plaster wall in a Marrakech riad courtyard at the precise moment the sun leaves it, casting a long hard-edged shadow across an empty stone courtyard floor. The light is dusk-orange and raking, the wall glows in the last warm minute, the shadow is the subject. Restrained sun-baked palette #B8462C, #E7DCC4, #9C8E73, #1A1814. Single subject, generous negative space, no people, medium-format film grain, editorial restraint. no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "frieze cell 06, work grid on index"
+  },
+  "casa-namma-long-room-w": {
+    "html_path": "work.html",
+    "alt_text": "A long, sun-raked room at Casa Namma — terracotta plaster wall, a single oak bench, hard raking afternoon light cutting the floor into measured stripes.",
+    "generation_prompt": "Wide full-bleed editorial architectural photograph of a long monastic room with a deep terracotta plaster wall on the right, a single low oak bench, polished concrete floor, and hard raking late-afternoon sunlight cutting the floor into long measured stripes of warm ochre and deep umber shadow. Single chromatic event, restrained sun-baked palette #E7DCC4, #B8462C, #9C8E73, #1A1814. Monumental editorial composition, generous negative space, no people, medium-format film grain. no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "full-bleed opening plate, work page"
+  },
+  "marvell-stone-catalogue-w": {
+    "html_path": "work.html",
+    "alt_text": "A spread from the Marvell & Co. stone catalogue lying open on near-white linen, tabular specimen swatches of terracotta and ochre under raking warm light.",
+    "generation_prompt": "Editorial still life photograph of an open uncoated stone catalogue lying on near-white linen, raking warm side-light from the upper right casting a single long hard-edged shadow across the spread of tabular terracotta and ochre specimen swatches. A single physical warm-earth tile rests at the corner of the page. Restrained palette #E7DCC4, #DDD0B4, #B8462C, #9C8E73, #1A1814. Single subject, generous negative space, medium-format film grain. no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "mid full-bleed plate, work page"
+  },
+  "dusk-courtyard-marrakech": {
+    "html_path": "contact.html",
+    "alt_text": "A terracotta plaster wall in a Marrakech courtyard at the exact minute the sun leaves it, casting a long hard-edged shadow across an empty stone floor.",
+    "generation_prompt": "Cinematic full-bleed photograph of a tall terracotta plaster wall in a quiet Marrakech riad courtyard, photographed at the exact minute the sun leaves the wall: the last warm dusk-orange light glowing on the upper edge while a long, hard-edged umber shadow rakes across an empty stone floor toward the camera. The shadow is the subject. Restrained sun-baked palette #B8462C, #E7DCC4, #9C8E73, #1A1814. Single subject, no people, generous negative space, monumental architectural restraint, medium-format film grain. no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "full-bleed plate, contact page"
+  }
+}

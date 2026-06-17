@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Riwaq, an editorial studio built to be read in sunlight</title>
+<meta name="description" content="Riwaq is a Marrakech editorial studio publishing one long-form architectural essay per solstice, printed in pigment ground from the very stone it documents.">
+<meta name="theme-color" content="#E7DCC4">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- masthead -->
+<header class="masthead" role="banner">
+  <a href="index.html" class="masthead__brand" aria-label="Riwaq home">Riwaq</a>
+  <nav class="masthead__nav" aria-label="primary">
+    <a href="index.html" aria-current="page">Index</a>
+    <a href="work.html">Work</a>
+    <a href="contact.html">Colophon</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- I. SUNSTRUCK RELIEF (dawn → sunset) -->
+  <section class="plate plate--hero" aria-labelledby="hero-h1">
+    <div class="hero" data-hero>
+      <div class="hero__grid" aria-hidden="true"></div>
+
+      <!-- live canvas: the headline carved from sun-cast shadow -->
+      <canvas
+        class="hero__canvas"
+        data-hero-canvas
+        data-text="Built to be read in sunlight."
+        aria-hidden="true"></canvas>
+
+      <!-- screen-reader & no-canvas fallback h1 -->
+      <h1 id="hero-h1" class="hero__h1" data-h1-echo>Built to be read in sunlight.</h1>
+      <div class="hero__static" aria-hidden="true">
+        <h1>Built to be read in sunlight.</h1>
+      </div>
+
+      <!-- corner label -->
+      <span class="hero__corner hero__corner--tl">Riwaq, editorial studio, Marrakech</span>
+
+      <!-- standfirst appears only after the sun has set -->
+      <p class="hero__standfirst" data-standfirst>
+        A studio for editorial brands that prefer weather, stone and patience over noise, gradients and motion for its own sake.
+      </p>
+    </div>
+  </section>
+
+  <!-- II. MANIFESTO (midday - the only moment the type is fully legible) -->
+  <section class="plate plate--manifesto" aria-labelledby="manifesto-h2">
+    <div class="manifesto">
+      <div class="manifesto__index">
+        <span>Manifesto</span>
+        <strong>One room, one wall.</strong>
+        <span>Riwaq, Marrakech</span>
+      </div>
+      <div>
+        <h2 id="manifesto-h2" class="manifesto__lede">
+          We publish one long-form architectural essay <em>per solstice</em>, printed in pigment ground from the very stone it documents.
+        </h2>
+        <div class="manifesto__body">
+          <p>
+            Riwaq is a small editorial practice working out of a single sunlit room on the Rue Riad Zitoun el Jdid. We make books, identities, and field guides for clients who would rather build a sundial than a slide deck: museums, ateliers, vineyards, and architects of the slow kind.
+          </p>
+          <p>
+            Four issues a year. Six commissions per orbit. Everything is measured in the warm hour the wall holds.
+          </p>
+        </div>
+        <a class="magnetic" href="contact.html" data-magnetic>
+          <span>Commission the next solstice</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- III. SPEC TABLE (the colophon - every issue in raking light) -->
+  <section class="plate plate--spec" aria-labelledby="spec-h2">
+    <header class="spec__head">
+      <p class="spec__eyebrow">Issues to date</p>
+      <h2 id="spec-h2" class="spec__title">Every issue, in raking light.</h2>
+      <p class="spec__caption">
+        Each issue is printed in pigment ground from the stone it documents. The table is the record: subject, pigment, extent, and the season it was filed.
+      </p>
+    </header>
+
+    <table class="spec__table" aria-describedby="spec-h2">
+      <thead>
+        <tr>
+          <th scope="col">Issue</th>
+          <th scope="col">Subject</th>
+          <th scope="col">Pigment</th>
+          <th scope="col" class="num">Pages</th>
+          <th scope="col">Filed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-spec-row><td class="key">i</td><td>A field guide to quiet ground</td><td>Ground ochre</td><td class="num">132</td><td>mmxxiv</td></tr>
+        <tr data-spec-row><td class="key">ii</td><td>The long room at Casa Namma</td><td>Burnt sienna</td><td class="num">96</td><td>mmxxiv</td></tr>
+        <tr data-spec-row><td class="key">iii</td><td>Marvell stone, second printing</td><td>Terracotta wash</td><td class="num">168</td><td>mmxxv</td></tr>
+        <tr data-spec-row><td class="key">iv</td><td>An almanac for slow buildings</td><td>Raw umber</td><td class="num">132</td><td>mmxxv</td></tr>
+        <tr data-spec-row><td class="key">v</td><td>Solar calendar</td><td>Pale ochre</td><td class="num">64</td><td>mmxxv</td></tr>
+        <tr data-spec-row><td class="key">vi</td><td>Silent House letterforms</td><td>Matte umber</td><td class="num">48</td><td>mmxxvi</td></tr>
+        <tr data-spec-row><td class="key">vii</td><td>The dusk wall, printed</td><td>Dusk orange</td><td class="num">32</td><td>mmxxvi</td></tr>
+        <tr data-spec-row><td class="key">viii</td><td>The hour the wall goes cold</td><td>Cold umber</td><td class="num">40</td><td>mmxxvi</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- IV. WORK GRID (golden hour - a single carved frieze) -->
+  <section class="plate plate--work" aria-labelledby="work-h2">
+    <header class="work__head">
+      <div>
+        <p class="work__eyebrow">Selected work</p>
+        <h2 id="work-h2" class="work__title">Six from the index.</h2>
+      </div>
+      <p class="work__caption">
+        Read as a single carved wall under one light. Follow the index for the full record.
+      </p>
+    </header>
+
+    <div class="frieze" role="list">
+      <a class="frieze__cell" role="listitem" href="work.html">
+        <img
+          src="assets/images/sun-baked-relief-wall.png"
+          alt="A deeply carved limestone relief wall in raking late-afternoon Marrakech sun, deep umber shadows lengthening into the foreground."
+          width="1400" height="1050" loading="lazy">
+        <div class="frieze__caption">
+          <span class="ttl">A field guide to quiet ground</span>
+          <span>Monograph, mmxxiv</span>
+        </div>
+      </a>
+      <a class="frieze__cell" role="listitem" href="work.html">
+        <img
+          src="assets/images/marvell-stone-spread.png"
+          alt="A spread from the Marvell &amp; Co. stone catalogue: tabular specimen swatches in terracotta and ochre, photographed in raking warm light."
+          width="1400" height="1050" loading="lazy">
+        <div class="frieze__caption">
+          <span class="ttl">Marvell Stone, second printing</span>
+          <span>Identity, mmxxv</span>
+        </div>
+      </a>
+      <a class="frieze__cell" role="listitem" href="work.html">
+        <img
+          src="assets/images/solstice-issue-cover.png"
+          alt="The cover of Solstice Issue iii on uncoated ochre paper, a single deeply embossed serif glyph catching low warm light."
+          width="1400" height="1050" loading="lazy">
+        <div class="frieze__caption">
+          <span class="ttl">Solar calendar, issue iii</span>
+          <span>Editorial, mmxxv</span>
+        </div>
+      </a>
+      <a class="frieze__cell" role="listitem" href="work.html">
+        <img
+          src="assets/images/casa-namma-long-room.png"
+          alt="A long room at Casa Namma: terracotta plaster, oak bench, raking afternoon sun cutting the polished floor into measured stripes."
+          width="1400" height="1050" loading="lazy">
+        <div class="frieze__caption">
+          <span class="ttl">The long room at Casa Namma</span>
+          <span>Spatial, mmxxv</span>
+        </div>
+      </a>
+      <a class="frieze__cell" role="listitem" href="work.html">
+        <img
+          src="assets/images/silent-house-letterforms.png"
+          alt="Specimen sheet of Silent House custom serif letterforms on near-white paper, each glyph casting a long sharp shadow across the sheet."
+          width="1400" height="1050" loading="lazy">
+        <div class="frieze__caption">
+          <span class="ttl">Silent House, letterforms</span>
+          <span>Type, mmxxvi</span>
+        </div>
+      </a>
+      <a class="frieze__cell" role="listitem" href="work.html">
+        <img
+          src="assets/images/terracotta-wall-dusk.png"
+          alt="A terracotta plaster wall at the exact minute the sun leaves it, casting a long hard-edged shadow across an empty stone courtyard."
+          width="1400" height="1050" loading="lazy">
+        <div class="frieze__caption">
+          <span class="ttl">The hour the wall goes cold</span>
+          <span>Film, mmxxvi</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- V. STUDIO STATEMENT (twilight - ochre drains, umber rises) -->
+  <section class="plate plate--statement" aria-labelledby="statement-h2">
+    <div class="statement">
+      <p class="statement__eyebrow">Studio statement</p>
+      <p class="statement__body" id="statement-h2">
+        We work between two solstices. Everything else is the long hour between, when the wall is still warm, the room is quiet, and the type is finally <em>legible at every angle of the day</em>.
+      </p>
+      <dl class="statement__meta">
+        <div>
+          <dt>Founded</dt>
+          <dd>mmxix, Marrakech</dd>
+        </div>
+        <div>
+          <dt>Cadence</dt>
+          <dd>Four issues per orbit</dd>
+        </div>
+        <div>
+          <dt>Currently</dt>
+          <dd>Two openings, Hibernal mmxxvi</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- VI. MONUMENTAL WORDMARK (sunset - residual heat in umber) -->
+  <section class="plate plate--wordmark" aria-label="Wordmark closer">
+    <p class="wordmark" aria-hidden="true">Riwaq<span class="glow">.</span></p>
+    <div class="colophon">
+      <span>© Riwaq, mmxxvi</span>
+      <span>Set in Cormorant Garamond, Inter Tight &amp; JetBrains Mono</span>
+      <span class="colophon__right">Marrakech, Médina</span>
+    </div>
+  </section>
+
+</main>
+
+<!-- motion stack: cdnjs · SRI · crossorigin · async · graceful degradation.
+     If any of these fail SRI/network, the page still works:
+     - canvas hero is rendered by inline JS using vanilla scroll events
+     - hero static fallback covers no-canvas environments
+     - smooth scroll falls back to native -->
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+  crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+  crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"
+  crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js"
+  crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>
