@@ -51,7 +51,7 @@ html,body{
   font-weight:400;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
-  overflow-x:hidden;
+  overflow-x:clip;
 }
 ::selection{background:var(--red);color:var(--bone)}
 
