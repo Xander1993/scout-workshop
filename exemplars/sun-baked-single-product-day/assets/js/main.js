@@ -151,11 +151,14 @@
             var y = 72 - Math.sin(p * Math.PI) * 44;
             wash.style.setProperty('--sun-x', x.toFixed(1) + '%');
             wash.style.setProperty('--sun-y', y.toFixed(1) + '%');
-            /* clean exit: resolve the bottle + copy out over the final stretch so the
-               pin releases into the night wall, not a half-cropped product frame. */
-            var fade = p < 0.86 ? 1 : Math.max(0, 1 - (p - 0.86) / 0.12);
-            if (bottle) { bottle.style.opacity = fade.toFixed(3); }
-            if (canvasCopy) { canvasCopy.style.opacity = fade.toFixed(3); }
+            /* The bottle cutout reads on every wash (dawn -> near-black night) so the
+               canvas never sits on an empty wall. Only in the final stretch (p>0.93)
+               do bottle + copy ease out, so the pin releases onto a clean wall instead
+               of shearing the night bottle across the beige spec section below. */
+            var fade = p > 0.93 ? (1 - (p - 0.93) / 0.07) : 1;
+            fade = Math.max(0, Math.min(1, fade));
+            if (bottle) bottle.style.opacity = fade.toFixed(3);
+            if (canvasCopy) canvasCopy.style.opacity = fade.toFixed(3);
           }
         });
       }
