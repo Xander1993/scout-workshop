@@ -46,6 +46,7 @@ body{
   transition:background-color 900ms var(--ease);
 }
 img{ max-width:100%; height:auto; display:block; }
+#spec,#studio,#reserve{ scroll-margin-top:76px; }
 h1,h2,h3,p,figure{ margin:0; }
 a{ color:inherit; text-decoration:none; }
 hr{ border:0; }
@@ -68,14 +69,21 @@ hr{ border:0; }
   position:fixed; inset:0 0 auto 0; z-index:40;
   display:grid; grid-template-columns:auto 1fr auto; align-items:center;
   gap:var(--gutter);
-  padding:20px var(--gutter);
+  padding:18px var(--gutter);
   font-family:var(--body);
   font-size:11px; letter-spacing:.2em; text-transform:uppercase;
   color:var(--cream);
   pointer-events:none;
-  mix-blend-mode:difference;
+  transition:transform .45s var(--ease), background-color .3s ease, backdrop-filter .3s ease;
 }
 .nav > *{ pointer-events:auto; }
+/* once past the hero the nav rides a protected scrim band so it never reads as
+   colliding with live content; it retracts on scroll-down and returns on scroll-up. */
+.nav--scrolled{
+  background:linear-gradient(180deg, rgba(20,13,9,.82) 0%, rgba(20,13,9,.5) 62%, rgba(20,13,9,0) 100%);
+  -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px);
+}
+.nav--hidden{ transform:translateY(-115%); }
 .nav__mark{
   font-family:var(--display); font-weight:700; font-size:19px;
   letter-spacing:-0.02em; text-transform:lowercase;
@@ -176,37 +184,20 @@ hr{ border:0; }
   /* the sun glow position (--sun-x/--sun-y) scrubs across the wall on scroll = a real sun arc */
   background:radial-gradient(46% 42% at var(--sun-x, 50%) var(--sun-y, 58%), var(--wash-glow), transparent 70%);
 }
-/* the product as a framed still-life mounted on the wall - an intentional gallery
-   print, not a floating cutout: the photo owns its own backdrop inside the mat, so
-   there is no mask halo or rectangular seam at any wash. */
+/* the product as an integrated still-life on the wall: the bottle photo carries
+   a real printed VESPRA label, and its own adobe backdrop is feathered at the
+   edges so it dissolves into the live wall behind it - no mat, no rectangular
+   seam, no caption. A grounded contact shadow anchors it to the floor. */
 .canvas__bottle{
   position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-  z-index:3; width:clamp(204px,24vw,348px);
-  background:var(--cream); border-radius:var(--radius);
-  padding:clamp(13px,1.15vw,19px) clamp(13px,1.15vw,19px) clamp(38px,3.3vw,54px);
-  box-shadow:0 1px 0 rgba(255,255,255,.55) inset,
-             0 52px 70px -30px rgba(27,20,15,.55),
-             0 12px 26px -12px rgba(27,20,15,.42);
+  z-index:3; width:clamp(230px,27vw,392px);
+  filter:drop-shadow(0 46px 56px rgba(27,20,15,.46));
   will-change:transform;
 }
 .canvas__bottle-img{
-  width:100%; aspect-ratio:9/13; height:auto; object-fit:cover; object-position:center 44%;
-  border-radius:1px;
-}
-.canvas__bottle-mark{
-  position:absolute; left:0; right:0; bottom:clamp(11px,.95vw,17px);
-  z-index:1; display:flex; flex-direction:column; align-items:center; gap:4px;
-  text-align:center; pointer-events:none;
-}
-.canvas__bottle-mark-name{
-  font-family:var(--display); font-weight:600;
-  font-size:clamp(11px,1.15vw,15px); letter-spacing:.34em; text-transform:uppercase;
-  color:#4a3826; opacity:.82;
-}
-.canvas__bottle-mark-sub{
-  font-family:var(--body); font-weight:500;
-  font-size:clamp(7px,.62vw,8.5px); letter-spacing:.24em; text-transform:uppercase;
-  color:#6b513a; opacity:.7;
+  width:100%; aspect-ratio:9/13; height:auto; object-fit:cover; object-position:center 46%;
+  -webkit-mask-image:radial-gradient(78% 86% at 50% 50%, #000 60%, transparent 100%);
+  mask-image:radial-gradient(78% 86% at 50% 50%, #000 60%, transparent 100%);
 }
 .canvas__copy{
   position:absolute; left:var(--gutter); right:var(--gutter);
@@ -275,20 +266,22 @@ body[data-wash="night"] .canvas__title,
 body[data-wash="night"] .canvas__body{ color:var(--cream); }
 
 /* ---------------- 3. SPEC ---------------- */
-.spec{ position:relative; z-index:3; background:var(--bg); padding:clamp(80px,13vh,150px) var(--gutter); }
+.spec{ position:relative; z-index:3; background:var(--bg); padding:clamp(60px,9vh,108px) var(--gutter); }
 .spec__head{
   display:grid; grid-template-columns:1.4fr 1fr; gap:var(--gutter); align-items:end;
-  padding-bottom:clamp(34px,5vh,60px); border-bottom:1px solid rgba(27,20,15,.18);
+  padding-bottom:clamp(28px,4vh,48px); border-bottom:2px solid var(--ink);
 }
-.spec__h2{ font-family:var(--display); font-weight:700; font-size:clamp(2.1rem,5.2vw,4.2rem); line-height:1; letter-spacing:-0.03em; max-width:13ch; }
+.spec__h2{ font-family:var(--display); font-weight:700; font-size:clamp(2.1rem,5.2vw,4rem); line-height:1; letter-spacing:-0.03em; max-width:13ch; }
 .spec__note{ font-size:clamp(14px,1.05vw,16px); line-height:1.6; opacity:.7; max-width:34ch; align-self:end; }
-.spec__table{ margin-top:8px; }
+.spec__table{ margin-top:4px; }
 .spec__row{
   display:grid; grid-template-columns:1fr 2.2fr; gap:var(--gutter); align-items:baseline;
-  padding:clamp(16px,2.1vh,26px) 0; border-bottom:1px solid rgba(27,20,15,.12);
+  padding:clamp(14px,1.7vh,22px) 0; border-bottom:1px solid rgba(27,20,15,.12);
+  transition:padding-left .3s var(--ease);
 }
 .spec__row:last-child{ border-bottom:0; }
-.spec__k{ font-family:var(--display); font-weight:600; font-size:clamp(1.05rem,1.6vw,1.55rem); letter-spacing:-0.01em; }
+.spec__k{ position:relative; font-family:var(--display); font-weight:600; font-size:clamp(1.05rem,1.6vw,1.55rem); letter-spacing:-0.01em; }
+.spec__k::before{ content:""; position:absolute; left:-18px; top:.58em; width:7px; height:7px; background:var(--accent); border-radius:50%; }
 .spec__v{ font-size:clamp(14px,1.05vw,17px); line-height:1.5; opacity:.82; }
 @media (max-width:760px){
   .canvas__bottle{ top:42%; width:clamp(150px,46vw,210px); }
@@ -301,10 +294,10 @@ body[data-wash="night"] .canvas__body{ color:var(--cream); }
 /* ---------------- 4. STUDIO ---------------- */
 .studio{
   position:relative; z-index:3; background:var(--stone); color:var(--cream);
-  padding:clamp(90px,15vh,170px) var(--gutter);
-  display:grid; grid-template-columns:1fr 2fr; gap:clamp(32px,5vw,100px); align-items:start;
+  padding:clamp(64px,10vh,120px) var(--gutter);
+  display:grid; grid-template-columns:1fr 2fr; gap:clamp(28px,4vw,80px); align-items:start;
 }
-.studio__label{ font-size:12px; letter-spacing:.2em; text-transform:uppercase; opacity:.78; display:block; padding-top:10px; }
+.studio__label{ font-size:12px; letter-spacing:.2em; text-transform:uppercase; opacity:.8; display:block; padding-top:12px; border-top:2px solid var(--accent); max-width:8ch; }
 .studio__p{ font-family:var(--display); font-weight:400; font-size:clamp(1.2rem,1.85vw,1.8rem); line-height:1.3; letter-spacing:-0.012em; max-width:32ch; margin-bottom:26px; }
 .studio__p--lead{ font-size:clamp(1.6rem,2.7vw,2.6rem); font-weight:500; line-height:1.16; margin-bottom:32px; }
 .studio__rule{ width:60px; height:2px; background:var(--accent); margin:0 0 32px; }
@@ -317,17 +310,17 @@ body[data-wash="night"] .canvas__body{ color:var(--cream); }
   background:
     radial-gradient(120% 90% at 72% 48%, rgba(179,55,45,.20), transparent 58%),
     linear-gradient(160deg, #2a1a11 0%, #1c120c 60%, #140d09 100%);
-  padding:clamp(70px,12vh,130px) var(--gutter);
-  display:grid; grid-template-columns:1fr 1fr; gap:clamp(36px,6vw,110px); align-items:center; overflow:hidden;
+  padding:clamp(56px,9vh,108px) var(--gutter);
+  display:grid; grid-template-columns:1fr 1fr; gap:clamp(36px,6vw,96px); align-items:center; overflow:hidden;
 }
 .closer__media{ position:relative; justify-self:end; width:100%; max-width:420px; aspect-ratio:9/13; }
 .closer__bottle{
   width:100%; height:100%; object-fit:cover; object-position:center;
-  /* the night photograph's own near-black backdrop dissolves into the dark closer;
-     only the extreme outer edge is feathered so no rectangle survives, no oval halo */
-  -webkit-mask-image:radial-gradient(74% 84% at 50% 52%, #000 56%, transparent 100%);
-  mask-image:radial-gradient(74% 84% at 50% 52%, #000 56%, transparent 100%);
-  filter:brightness(.9) contrast(1.07) drop-shadow(0 40px 60px rgba(0,0,0,.55));
+  /* the night photograph's seamless near-black backdrop dissolves into the dark
+     closer; the edge is feathered well inside the frame so no rectangle survives */
+  -webkit-mask-image:radial-gradient(72% 82% at 50% 50%, #000 46%, transparent 100%);
+  mask-image:radial-gradient(72% 82% at 50% 50%, #000 46%, transparent 100%);
+  filter:brightness(.94) contrast(1.05) drop-shadow(0 40px 60px rgba(0,0,0,.55));
 }
 .closer__mark{
   position:absolute; left:50%; top:62%; transform:translate(-50%,-50%);
@@ -345,15 +338,9 @@ body[data-wash="night"] .canvas__body{ color:var(--cream); }
 
 /* ---------------- 6. CALLOUT ---------------- */
 .callout{
-  background:var(--bg); padding:clamp(80px,13vh,150px) var(--gutter);
+  background:var(--bg); padding:clamp(60px,9vh,104px) var(--gutter);
   text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:clamp(22px,3.5vh,40px);
-}
-/* on mobile the reserve section owns a full screen so the #reserve anchor can land
-   at the top of the viewport - otherwise it sits too near the document end, clamps,
-   and leaves clipped closer copy colliding with the fixed nav. */
-@media (max-width:760px){
-  .callout{ min-height:100svh; }
+  gap:clamp(16px,2.4vh,28px);
 }
 .callout__lede{ font-family:var(--display); font-weight:400; font-size:clamp(1.15rem,1.7vw,1.55rem); line-height:1.45; max-width:30ch; opacity:.9; }
 .callout__cta{

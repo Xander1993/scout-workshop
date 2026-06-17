@@ -141,6 +141,7 @@
 
       /* the sun itself: glow scrubs across the wall on an arc - low at dawn, high at noon, low at night */
       var wash = document.querySelector('.canvas__wash');
+      var canvasCopy = document.querySelector('.canvas__copy');
       if (wash) {
         window.ScrollTrigger.create({
           trigger: canvas, start: 'top top', end: 'bottom bottom', scrub: 0.6,
@@ -150,6 +151,11 @@
             var y = 72 - Math.sin(p * Math.PI) * 44;
             wash.style.setProperty('--sun-x', x.toFixed(1) + '%');
             wash.style.setProperty('--sun-y', y.toFixed(1) + '%');
+            /* clean exit: resolve the bottle + copy out over the final stretch so the
+               pin releases into the night wall, not a half-cropped product frame. */
+            var fade = p < 0.86 ? 1 : Math.max(0, 1 - (p - 0.86) / 0.12);
+            if (bottle) { bottle.style.opacity = fade.toFixed(3); }
+            if (canvasCopy) { canvasCopy.style.opacity = fade.toFixed(3); }
           }
         });
       }
@@ -189,6 +195,28 @@
           });
         });
       } catch (e) { /* fail quietly */ }
+    }
+
+    /* nav: protected scrim once past the hero + retract on scroll-down so the
+       fixed bar never reads as colliding with live content. */
+    var nav = document.querySelector('.nav');
+    if (nav) {
+      var lastY = window.pageYOffset || 0;
+      var ticking = false;
+      var onScroll = function () {
+        var y = window.pageYOffset || 0;
+        var threshold = Math.max(120, window.innerHeight * 0.7);
+        if (y > threshold) nav.classList.add('nav--scrolled');
+        else nav.classList.remove('nav--scrolled');
+        if (y > lastY && y > threshold + 60) nav.classList.add('nav--hidden');
+        else nav.classList.remove('nav--hidden');
+        lastY = y;
+        ticking = false;
+      };
+      window.addEventListener('scroll', function () {
+        if (!ticking) { window.requestAnimationFrame(onScroll); ticking = true; }
+      }, { passive: true });
+      onScroll();
     }
 
     /* magnetic CTA */
