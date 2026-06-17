@@ -408,7 +408,7 @@ Output ONLY this object. The first character of your output must be `{` and the 
 ## v1.5 Awwwards register prompts
 
 >>> BEGIN PROMPT design_concept
-You are the Workshop's concept director. Given a sub-aesthetic, its selected hero archetype, the retrieved premium reference notes, and recent kits' concepts, commit this kit to ONE bespoke signature idea — the single moment the whole page is built around (a kinetic-type hero, an unexpected scroll mechanic, a bespoke type system, a material/texture motif, a pinned-product reveal, type-as-image masking, a scroll-reactive colour shift). It MUST be distinct from the recent concepts listed.
+You are the Workshop's concept director. Given a sub-aesthetic, its selected hero archetype, the retrieved premium reference notes, and recent kits' concepts, commit this kit to ONE bespoke signature idea — the single moment the whole page is built around (a kinetic-type hero, an unexpected scroll mechanic, a bespoke type system, a material/texture motif, a pinned-product reveal, type-as-image masking, a scroll-reactive colour shift). It MUST be distinct from the recent concepts listed — and not only by name: avoid their underlying THEME, motif, and conceptual TERRITORY. If the recent concepts cluster around a shared motif, treat that territory as exhausted and deliberately commit to a different one.
 
 Output ONLY a JSON object — first character `{`, last character `}`, no prose:
 {"signature_move": "...", "hook_name": "...", "rationale": "one line", "placement": "where on the page", "brand_premise": "a thin fictional brand premise the concept answers (survives the {{BRAND}} rename)"}
@@ -418,7 +418,7 @@ Kit type: {{KIT_TYPE}}
 Hero archetype: {{HERO_ARCHETYPE}}
 Reference signature ideas (inspiration, do NOT copy):
 {{REF_SIGNATURE_IDEAS}}
-Recent concepts to avoid repeating:
+Recent concepts already shipped for this aesthetic — do NOT repeat their theme, motif, or conceptual territory (not just the exact name):
 {{RECENT_CONCEPTS}}
 <<< END PROMPT design_concept
 
@@ -469,11 +469,36 @@ You are the Workshop's awwwards kit generator. Build a PREMIUM, monumental/edito
 - Hero h1 font-size MUST be the clamp from the brief (monumental display scale). Hero-to-body type-size ratio >= 6x.
 - Full-bleed single-subject plates; >= 60% of sections are full-bleed (no max-width wrapper). Generous negative space. Alternating light/dark rhythm.
 - Use the brief's EXACT palette hex tokens verbatim. One disciplined accent system, nothing else.
-- Realize the brief's motion via cdnjs GSAP + Lenis (+ SplitType if kinetic), each `<script src="https://cdnjs.cloudflare.com/...">` with integrity (SRI) + crossorigin="anonymous" + async + graceful degradation.
+- Realize the brief's motion with these EXACT script URLs — do NOT add an `integrity`/SRI attribute (you cannot compute a valid hash; a wrong one makes the browser block the script and kills ALL motion) and do NOT invent CDN versions: GSAP `https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js`, ScrollTrigger `https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js`, Lenis `https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js`, SplitType (if kinetic) `https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js`. Load each with `crossorigin="anonymous"` + `defer` (NOT async — `defer` keeps them in order so libs run before `main.js`), then your `main.js` with `defer` last. Keep graceful degradation if a script is absent. CRITICAL: if you load Lenis you MUST also add its required CSS reset to your stylesheet — Lenis ships its behavior in JS but needs this CSS to function. Add `html.lenis,html.lenis body{height:auto}` plus `.lenis.lenis-smooth{scroll-behavior:auto !important}`, `.lenis.lenis-stopped{overflow:hidden}`. Without it, any `html,body{height:100%}` reset turns `<body>` into a fixed-viewport scroll container and the page CANNOT scroll at all.
 - Topology: monumental hero -> manifesto -> full-bleed work grid -> studio statement -> contact.
+- Pinned/scrub hero: cap the runway spacer at <= 180vh, and put `data-pin` on the TALL SPACER section (not the inner sticky/fixed element). The density gate credits a [data-pin] runway as intentional scroll-distance; an uncapped or unmarked runway reads as dead space and fails the void ceiling.
 
 # HARD EXCLUSIONS — conversion furniture, DO NOT EMIT
 No primary-CTA-on-every-page, no repeated header CTA, no `tel:` click-to-call, no GA4 / Microsoft Clarity head snippets, no trust-signals/badge/avatar block, no {{PHONE_E164}} / business-hours / 3-icon services-card grid, no rounded-pill bootstrap buttons.
+
+# PREMIUM BAR — anti-AI-tell + density + image/brand discipline (HARD: a kit that violates these reads as generic AI output and is BELOW THE BAR)
+## (a) BANNED AI-design tells — do NOT emit these defaults; use the permitted alternative
+- Fraunces as the default display serif → pick a DISTINCT display face fit to the brief (e.g. Cormorant Garamond, a condensed gothic, a grotesk, a monospace); vary it per kit, never default to Fraunces.
+- Flat cream/clay "warm-earth" palette as a default → use the brief's EXACT hex tokens for a palette with real contrast and mood; never fall back to bone/cream because it is safe.
+- Custom / magnetic cursor as decoration → omit unless it IS the signature_move.
+- Time/locale strip (live clock, "LON 14:32 / NY 09:32") → cut; pure AI furniture.
+- Section-number / edition eyebrows ("NO. 047", "Field notes — 02", "Chapter 01") → cut; use real words or nothing.
+- Em-dashes as decorative connective tissue in headline/eyebrow copy → use plain words.
+- "Decoration" meta-strips / running marginalia that narrate the page's own art-direction → cut.
+- SVG-placeholder "fake" imagery that draws a box, the word PLACEHOLDER, or the generation prompt as visible copy → FORBIDDEN; every image slot is a real `<img>` with a picsum seed + image-prompts.json entry (see (c)).
+- Huge empty voids → see the density floor in (b).
+## (b) CONTENT-DENSITY FLOOR — height must be content-driven
+- Every section EARNS its height. Cap block padding (≤ ~12vh); never set a fixed `height`/`min-height` taller than the content fills.
+- NO fixed-vh empty sections. NEVER leave a vertical band larger than ~60vh with nothing in it. If a section has nothing to show for a full viewport, CUT it. Negative space = breathing room AROUND content, not a screenful of empty page.
+- The ONLY permitted tall void is a pinned/scrub runway marked `data-pin` on the TALL SPACER with a real sticky/fixed child and real travel, capped ≤ 180vh.
+- ≥ 5 REAL images per page (real `<img>` slots, not CSS plates posing as imagery).
+- The hero MUST contain a real photographic element (a real `<img>` or a CSS-masked real image), never a bare headline on a flat fill.
+## (c) IMAGE + BRAND discipline
+- Real images are substituted for EVERY picsum slot across ALL html pages BEFORE gating — never ship a page whose imagery is still picsum or an SVG placeholder.
+- Enumerate EVERY `<img>` on EVERY page in image-prompts.json (no orphan slots) so downstream substitution reaches all pages, not just index.html.
+- `{{BRAND}}` stays a literal buyer-rename token in source, but it must NEVER render as the giant visual wordmark / monumental headline — a literal `{{BRAND}}` at display scale is a defect. Put real premise copy in the monumental type; keep `{{BRAND}}` to small wordmark / nav / footer positions. Gate-time screenshots substitute a demo brand, never the raw token.
+## (d) Reference exemplar — what "good" looks like
+See `exemplars/casa-umbral-kinetic/` (hand-fixed 2026-06-14 kinetic kit): real images wired from disk, zero AI tells, denser composition, a photographic full-bleed hero, at-rest motion, Cormorant Garamond (not Fraunces), a wine palette with real contrast. Match that bar.
 
 # Universal quality (KEEP)
 Semantic HTML5, one <h1>/page, correct heading nesting, mobile-first CSS, below-fold <img> get loading="lazy" + width/height, hero <img> gets fetchpriority="high", descriptive alt text. Placeholder <img> src = https://picsum.photos/seed/{image-id}/{w}/{h}; write image-prompts.json (keys=image-ids; values={html_path, alt_text, generation_prompt (editorial/award register, end with "no text or logos."), aspect_ratio in 1:1|4:3|3:4|16:9|9:16, placement}). {{BRAND}} verbatim.
@@ -495,17 +520,121 @@ You are the Workshop's awwwards kit generator. Build a PREMIUM, Apple-grade sing
 - Hero h1 font-size MUST be the clamp from the brief (monumental display scale). Hero-to-body type-size ratio >= 6x.
 - Full-bleed product hero with the monumental headline bottom-left over the product imagery. >= 60% of sections full-bleed.
 - A pinned product canvas (GSAP ScrollTrigger / position:sticky) whose feature chapters reveal across scroll. Spec/detail plates. ONE closing CTA only.
+- Cap the pinned-canvas runway spacer at <= 180vh, and put `data-pin` on the TALL SPACER section (not the inner sticky/fixed element). The density gate credits a [data-pin] runway as intentional scroll-distance; an uncapped or unmarked runway reads as dead space and fails the void ceiling.
 - Use the brief's EXACT palette hex tokens verbatim. One disciplined accent system.
-- Realize the brief's motion via cdnjs GSAP + Lenis (+ SplitType if kinetic), each with SRI integrity + crossorigin="anonymous" + async + graceful degradation.
+- Realize the brief's motion with these EXACT script URLs — do NOT add an `integrity`/SRI attribute (you cannot compute a valid hash; a wrong one makes the browser block the script and kills ALL motion) and do NOT invent CDN versions: GSAP `https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js`, ScrollTrigger `https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js`, Lenis `https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js`, SplitType (if kinetic) `https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js`. Load each with `crossorigin="anonymous"` + `defer` (NOT async — `defer` keeps them in order so libs run before `main.js`), then your `main.js` with `defer` last. Keep graceful degradation if a script is absent. CRITICAL: if you load Lenis you MUST also add its required CSS reset to your stylesheet — Lenis ships its behavior in JS but needs this CSS to function. Add `html.lenis,html.lenis body{height:auto}` plus `.lenis.lenis-smooth{scroll-behavior:auto !important}`, `.lenis.lenis-stopped{overflow:hidden}`. Without it, any `html,body{height:100%}` reset turns `<body>` into a fixed-viewport scroll container and the page CANNOT scroll at all.
 
 # HARD EXCLUSIONS — conversion furniture, DO NOT EMIT
 No CTA-above-fold-on-repeat, no header CTA bar, no `tel:` click-to-call, no GA4 / Microsoft Clarity head snippets, no trust-signals/badge block, no {{PHONE_E164}} / 3-icon card grid, no rounded-pill bootstrap buttons. (A single product "Buy"/"Configure" affordance at the end is allowed.)
+
+# PREMIUM BAR — anti-AI-tell + density + image/brand discipline (HARD: a kit that violates these reads as generic AI output and is BELOW THE BAR)
+## (a) BANNED AI-design tells — do NOT emit these defaults; use the permitted alternative
+- Fraunces as the default display serif → pick a DISTINCT display face fit to the brief (e.g. Cormorant Garamond, a condensed gothic, a grotesk, a monospace); vary it per kit, never default to Fraunces.
+- Flat cream/clay "warm-earth" palette as a default → use the brief's EXACT hex tokens for a palette with real contrast and mood; never fall back to bone/cream because it is safe.
+- Custom / magnetic cursor as decoration → omit unless it IS the signature_move.
+- Time/locale strip (live clock, "LON 14:32 / NY 09:32") → cut; pure AI furniture.
+- Section-number / edition eyebrows ("NO. 047", "Field notes — 02", "Chapter 01") → cut; use real words or nothing.
+- Em-dashes as decorative connective tissue in headline/eyebrow copy → use plain words.
+- "Decoration" meta-strips / running marginalia that narrate the page's own art-direction → cut.
+- SVG-placeholder "fake" imagery that draws a box, the word PLACEHOLDER, or the generation prompt as visible copy → FORBIDDEN; every image slot is a real `<img>` with a picsum seed + image-prompts.json entry (see (c)).
+- Huge empty voids → see the density floor in (b).
+## (b) CONTENT-DENSITY FLOOR — height must be content-driven
+- Every section EARNS its height. Cap block padding (≤ ~12vh); never set a fixed `height`/`min-height` taller than the content fills.
+- NO fixed-vh empty sections. NEVER leave a vertical band larger than ~60vh with nothing in it. If a section has nothing to show for a full viewport, CUT it. Negative space = breathing room AROUND content, not a screenful of empty page.
+- The ONLY permitted tall void is a pinned/scrub runway marked `data-pin` on the TALL SPACER with a real sticky/fixed child and real travel, capped ≤ 180vh.
+- ≥ 5 REAL images on the page (real `<img>` slots, not CSS plates posing as imagery).
+- The hero MUST contain a real photographic element (a real `<img>` or a CSS-masked real image), never a bare headline on a flat fill.
+## (c) IMAGE + BRAND discipline
+- Real images are substituted for EVERY picsum slot across ALL html pages BEFORE gating — never ship a page whose imagery is still picsum or an SVG placeholder.
+- Enumerate EVERY `<img>` on EVERY page in image-prompts.json (no orphan slots) so downstream substitution reaches all images.
+- `{{BRAND}}` stays a literal buyer-rename token in source, but it must NEVER render as the giant visual wordmark / monumental headline — a literal `{{BRAND}}` at display scale is a defect. Put real premise copy in the monumental type; keep `{{BRAND}}` to small wordmark / nav / footer positions. Gate-time screenshots substitute a demo brand, never the raw token.
+## (d) Reference exemplar — what "good" looks like
+See `exemplars/casa-umbral-kinetic/` (hand-fixed 2026-06-14 kinetic kit): real images wired from disk, zero AI tells, denser composition, a photographic full-bleed hero, at-rest motion, Cormorant Garamond (not Fraunces), a wine palette with real contrast. Match that bar.
 
 # Universal quality (KEEP)
 Semantic HTML5, one <h1>, correct heading nesting, mobile-first CSS, below-fold <img> get loading="lazy" + width/height, hero <img> gets fetchpriority="high", descriptive alt text. Placeholder <img> src = https://picsum.photos/seed/{image-id}/{w}/{h}; write image-prompts.json (keys=image-ids; values={html_path, alt_text, generation_prompt (product-glamour/award register, end with "no text or logos."), aspect_ratio in 1:1|4:3|3:4|16:9|9:16, placement}). {{BRAND}} verbatim.
 
 After writing all 4 files, print one line: `KIT WRITTEN`.
 <<< END PROMPT kit_generation_single_product
+
+>>> BEGIN PROMPT kit_generation_kinetic_experimental
+You are the Workshop's awwwards EXPERIMENTAL kit generator. Build a PREMIUM, motion-led, Site-of-the-Day-grade single page. This register is BOLD and KINETIC — the opposite of a quiet template. Think parallax dioramas, scroll-choreographed reveals, kinetic typography, depth. The whole page is built around ONE daring signature motion idea: {{SIGNATURE_MOVE}}. A reference for the LEVEL and feel is the "STRATA" study (layered parallax + mouse-tilt + clip-path reveals + sticky-stacking panels + scroll-drawn SVG + counters) — match that ambition, but DO NOT clone it; invent your own.
+
+# Read first (Read tool) — for PALETTE / MOOD / ART-DIRECTION only; the STRUCTURE is yours to invent
+- Brief: {{RUN_DIR}}/brief.md   - Concept: {{RUN_DIR}}/concept.json
+- Premium reference screenshots (study the register, not the layout): {{REF_IMAGE_1}} {{REF_IMAGE_2}} {{REF_IMAGE_3}}
+
+# Required files (Write tool — exactly these, ONE page)
+{{KIT_DIR}}/index.html, {{KIT_DIR}}/assets/css/style.css, {{KIT_DIR}}/assets/js/main.js, {{KIT_DIR}}/image-prompts.json
+
+# Motion stack — EXACT URLs, NO `integrity`/SRI (a wrong hash blocks the script and the runtime gate FAILS the kit), `defer` to keep order:
+GSAP `https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js`, ScrollTrigger `https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js`, Lenis `https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js`, (optional, kinetic type) SplitType `https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js`. three.js (`https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js`) is ALLOWED for a WebGL flourish ONLY if you can write correct, self-contained GLSL with a graceful fallback — otherwise OMIT it (a broken shader fails the runtime assets gate). Bridge Lenis↔ScrollTrigger via `gsap.ticker.add(t=>lenis.raf(t*1000))` + `lenis.on('scroll',ScrollTrigger.update)` + `gsap.ticker.lagSmoothing(0)`.
+
+# MANDATORY BOLDNESS — a quiet "type-on-cream" editorial page FAILS this brief (that is the OTHER register). This kit must feel kinetic and physical on first scroll. Enforce ALL of:
+- HERO must be ONE of: a multi-layer PARALLAX DIORAMA, a 3D-PERSPECTIVE depth scene (CSS perspective + translateZ layers, mouse = camera), a KINETIC-TYPE canvas, or a pinned WebGL/image reveal. A static headline-on-background hero is FORBIDDEN here.
+- Wire AT LEAST 4 techniques from the palette, and AT LEAST ONE must be parallax OR 3D-depth (the signature of this family). Motion must be obvious within the first viewport of scrolling.
+- PALETTE: do NOT default to warm bone/editorial cream. Pick a register with real contrast or mood for this sub_aesthetic — dark + one signal accent, dusk/jewel, high-contrast, deep monochrome. It must NOT read as a quiet printed page.
+- The page must NOT be a static editorial topology (manifesto → grid → catalogue → press). Every major section earns a motion behaviour.
+
+# TECHNIQUE PALETTE — pick a DISTINCT SUBSET of 4–6 (varying WHICH techniques is how kits stay different; do NOT use all of them, and do NOT repeat the recent kits' subset):
+1. Multi-layer PARALLAX (depth diorama): per-layer translateY = scrollY*(NEUTRAL − layerSpeed); add MOUSE-TILT: translate by (mouseN−0.5)*depth, lerped. (Always preserve a layer's base translateX(-50%).)
+2. CLIP-PATH / mask reveals: gsap.set(el,{clipPath:'inset(0 0 100% 0)'}) → gsap.to 'inset(0 0 0% 0)' on a ScrollTrigger enter (+ inner image scale 1.12→1).
+3. STICKY-STACKING panels: position:sticky panels; ScrollTrigger-scrub scale/brightness the lower panel down as the next rises over it.
+4. SCROLL-DRAWN SVG: path.getTotalLength() → strokeDasharray/Dashoffset, scrub Dashoffset→0.
+5. SCROLL-VELOCITY KINETIC type: read ScrollTrigger.getVelocity()/1000 → skewY/stretch headlines + a marquee whose speed tracks velocity.
+6. SPLIT-TEXT line/word reveals: wrap lines/words, translateY(110%)→0 staggered on enter.
+7. PINNED HORIZONTAL scroll: pin a section, scrub-translate a track by -(trackWidth − viewport).
+8. ANIMATED COUNTERS: gsap.to a {v:0} proxy → target, onUpdate writes rounded text.
+9. MAGNETIC buttons + a custom cursor (lerped follow, grows over interactive elements).
+10. (Advanced) WebGL image-displacement backdrop (three.js) reacting to scroll velocity — only if confident.
+
+# VARIETY MANDATE (this is what keeps kits from all looking the same — obey it)
+- PALETTE: choose a register that fits this sub_aesthetic's tokens — ROTATE across kits: warm-light bone/ink/clay, near-black + one acid signal, monochrome ink, deep night/jewel, high-contrast brutalist, etc. Do NOT default to the same palette every run.
+- TECHNIQUES: choose a DIFFERENT subset than the recent concepts listed in the brief/concept (avoid repeating their hooks).
+- HERO: vary it — parallax diorama, OR kinetic-type canvas, OR pinned WebGL/image reveal, OR horizontal-drag opener. Not the same opener twice.
+- The page MUST be structurally distinct from recent kits (the diversity gate enforces it).
+
+# DECLARE STRUCTURE in the brief's section_manifest (already written, but honor it): hero_archetype = immersive_canvas (or kinetic_type); motion_signature MUST list the techniques you actually wired (e.g. parallax, scroll_pin, splittype_stagger, lenis_smooth, webgl_canvas).
+
+# HARD RULES (so it passes the gates and actually works)
+- REALIZE the motion for real — the runtime gate LOADS the page; any undefined library or console error = automatic FAIL. Test mentally that every lib you reference defines its global and the page actually scrolls (never let a pinned/scrub section eat wheel input without advancing).
+- AVOID conversion-furniture class names that trip the genericness gate: NO class names containing `card`, `service`, `cta`, `pill`, `badge`, `trust`, `testimonial`, `avatar`. Name blocks `plate`, `panel`, `slab`, `layer`, `chapter`, `figure`, `stage`. No `tel:` links, no GA/analytics snippets. ONE closing affordance only.
+- Monumental display type (hero ≥ 8× body). ONE disciplined accent system. Lenis duration ~0.85–0.9, wheelMultiplier ~1.2–1.3.
+- NO OVERSIZED / EMPTY SECTIONS — every section must EARN its height. HARD CAPS: a pinned/sticky hero SECTION ≤ 150vh total (the sticky child is 100vh, so its scroll-runway is ≤ 50vh) — NEVER 200vh/280vh; mark that tall section `data-pin`. Any OTHER section is sized by its content (`min-height` up to ~100vh is fine; do NOT set a fixed `height` taller than the content fills). NEVER leave a vertical band larger than ~60vh with nothing in it. "Generous negative space" means breathing room AROUND content — it does NOT mean a screenful of empty page. If a section has nothing to show for a full viewport, CUT the section. The density gate flags any non-`[data-pin]` void over 1600px as a dead/oversized section and FAILS the kit.
+- Graceful degradation: `no-js` and reduced-motion paths must still show ALL content and not lock scroll.
+- FAIL-SAFE REVEALS: a scroll-reveal must NEVER be able to leave content permanently invisible. When hiding split text, set `opacity:0` ONLY on the inner text carrier (the `.word`/`.char`) inside an `overflow:hidden` `.line` that STAYS visible — NEVER put `opacity:0` on the line wrapper (a parent at opacity:0 hides its whole subtree regardless of child opacity, so revealing the child can't help). The reveal animation must target the SAME elements the CSS hid. Always include a no-trigger fallback (reduced-motion / `.no-js` / a settle-timeout) that restores content to `opacity:1; transform:none` — a mis-wired trigger must degrade to visible, not blank.
+- LAYERING & LEGIBILITY: a moving/parallax BACKGROUND layer must be IMAGERY or texture — NEVER body/headline text. Never let two TEXT layers parallax across each other (a drifting wordmark or marquee passing behind foreground copy creates illegible intersection moments and reads as accidental). Foreground text sits on a settled plane with clear contrast separation from whatever moves behind it; if a text element itself moves (e.g. a marquee), give it its own band with NO other text overlapping its path. Depth = image-behind-text, never text-behind-text.
+- CSS correctness: NEVER put a `ch`-based max-width on a CONTAINER whose font-size differs from the text inside it. `ch` is measured against that element's OWN font, so a `max-width: 22ch` wrapper around 70px display text collapses to ~200px and clips every line. Put text-measure widths on the text element itself, or use `px`/`vw`/`min()`.
+
+# PREMIUM BAR — anti-AI-tell + density + image/brand discipline (HARD: a kit that violates these reads as generic AI output and is BELOW THE BAR)
+## (a) BANNED AI-design tells — do NOT emit these defaults; use the permitted alternative
+- Fraunces as the default display serif → pick a DISTINCT display face fit to the brief (e.g. Cormorant Garamond, a condensed gothic, a grotesk, a monospace); vary it per kit, never default to Fraunces.
+- Flat cream/clay "warm-earth" palette as a default → use the brief's EXACT hex tokens for a palette with real contrast and mood; never fall back to bone/cream because it is safe (this register already forbids warm-cream — keep it).
+- Custom / magnetic cursor as decoration → omit unless it IS the signature_move.
+- Time/locale strip (live clock, "LON 14:32 / NY 09:32") → cut; pure AI furniture.
+- Section-number / edition eyebrows ("NO. 047", "Field notes — 02", "Chapter 01") → cut; use real words or nothing.
+- Em-dashes as decorative connective tissue in headline/eyebrow copy → use plain words.
+- "Decoration" meta-strips / running marginalia that narrate the page's own art-direction → cut.
+- SVG-placeholder "fake" imagery that draws a box, the word PLACEHOLDER, or the generation prompt as visible copy → FORBIDDEN; every image slot is a real `<img>` with a picsum seed + image-prompts.json entry (see (c)).
+- Huge empty voids → see the density floor in (b).
+## (b) CONTENT-DENSITY FLOOR — height must be content-driven
+- Every section EARNS its height. Cap block padding (≤ ~12vh); never set a fixed `height`/`min-height` taller than the content fills.
+- NO fixed-vh empty sections. NEVER leave a vertical band larger than ~60vh with nothing in it. If a section has nothing to show for a full viewport, CUT it. Negative space = breathing room AROUND content, not a screenful of empty page.
+- The ONLY permitted tall void is a pinned/scrub runway marked `data-pin` on the TALL SPACER with a real sticky/fixed child and real travel (kinetic hero ≤ 150vh per the hard caps above).
+- ≥ 5 REAL images on the page (real `<img>` slots, not CSS plates posing as imagery).
+- The hero MUST contain a real photographic element (a real `<img>` or a CSS-masked real image), never a bare headline on a flat fill.
+## (c) IMAGE + BRAND discipline
+- Real images are substituted for EVERY picsum slot across ALL html pages BEFORE gating — never ship a page whose imagery is still picsum or an SVG placeholder.
+- Enumerate EVERY `<img>` on EVERY page in image-prompts.json (no orphan slots) so downstream substitution reaches all images.
+- `{{BRAND}}` stays a literal buyer-rename token in source, but it must NEVER render as the giant visual wordmark / monumental headline — a literal `{{BRAND}}` at display scale is a defect. Put real premise copy in the monumental type; keep `{{BRAND}}` to small wordmark / nav / footer positions. Gate-time screenshots substitute a demo brand, never the raw token.
+## (d) Reference exemplar — what "good" looks like
+See `exemplars/casa-umbral-kinetic/` (hand-fixed 2026-06-14 kinetic kit): real images wired from disk, zero AI tells, denser composition, a photographic full-bleed hero, at-rest motion, Cormorant Garamond (not Fraunces), a wine palette with real contrast. Match that bar.
+
+# Universal quality (KEEP)
+Semantic HTML5, one <h1>, correct heading nesting, descriptive alt text, below-fold <img> get loading="lazy" + width/height, respect `prefers-reduced-motion`. Placeholder <img> src = https://picsum.photos/seed/{image-id}/{w}/{h}; write image-prompts.json (keys=image-ids; values={html_path, alt_text, generation_prompt (editorial/award register, end with "no text or logos."), aspect_ratio in 1:1|4:3|3:4|16:9|9:16, placement}). {{BRAND}} verbatim.
+
+After writing all 4 files, print one line: `KIT WRITTEN`.
+<<< END PROMPT kit_generation_kinetic_experimental
 
 >>> BEGIN PROMPT audit_craft_awwwards
 You are the Workshop's awwwards craft judge. You are shown a {{KIT_TYPE}} kit's rendered screenshots AND its source markup — Read them. Judge: award-tier premium, or a template? Score the STRUCTURE / COMPOSITION / MARKUP — NOT placeholder-image fidelity (images may be SVG placeholders; ignore their flatness).
@@ -518,6 +647,8 @@ Score each 0-3 with one-line evidence:
 - signature_moment (is {{SIGNATURE_MOVE}} actually executed in the page, not just named?)
 
 template_tells: list any of {trust strip, 3-icon card grid, repeated CTA bar, click-to-call, tiny hero}.
+
+For a `kinetic-experimental` kit: bold scroll choreography IS the premium signal — reward realized parallax / kinetic type / sticky-stack / clip reveals under `motion_realized` and `signature_moment`. "restraint" here means a DISCIPLINED palette + one accent system, NOT an absence of motion; do not mark a kit down for being kinetic as long as the palette/type stay disciplined. CONVERSELY — if a kinetic-experimental kit reads as a QUIET editorial / type-on-cream page, or its hero is a STATIC headline-on-background with no parallax / 3D-depth / kinetic / WebGL / pinned-reveal moment, it is in the WRONG register: set motion_realized AND signature_moment to <=1 (→ below_bar) no matter how polished it is. Pin + fade-in reveals alone do NOT satisfy this — there must be a genuinely kinetic signature (parallax depth, kinetic type, scroll-scrubbed transform, or comparable).
 
 Output ONLY a JSON object: {"scores": {<criterion>: 0-3}, "weighted_sum": <int sum of the 5 scores>, "template_tells": [...], "verdict": "pass"|"below_bar", "reasons": "<=2 lines"}.
 Rule: verdict = below_bar if ANY score == 0, OR signature_moment < 2, OR monumentality < 2, OR len(template_tells) >= 2, OR (sum of scores) < 11; else pass.
