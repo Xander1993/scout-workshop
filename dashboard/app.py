@@ -21,11 +21,18 @@ from typing import Any
 
 import aiofiles
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RUNS_DIR = REPO_ROOT / "workshop" / "runs"
+# The refinery/third-system worktree (sw-garage) writes its experimental runs
+# into its own workshop/runs. Must stay in sync with refinery_daily.ROOTS so
+# the dashboard shows the same queue the refinery walks.
+RUNS_ROOTS = (
+    RUNS_DIR,
+    Path("/home/deployer/sw-garage/workshop/runs"),
+)
 TELEMETRY_FILE = REPO_ROOT / "state" / "quality_floor_telemetry.jsonl"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
@@ -38,6 +45,33 @@ app = FastAPI(title="Workshop Floor", version="1.4.0-pre")
 RUN_SLUG_RE = re.compile(
     r"^(?P<ts>\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}Z)-(?P<vertical>[a-z0-9]+)-(?P<aesthetic>[a-z0-9-]+)$"
 )
+
+
+def find_run_dir(slug: str) -> Path | None:
+    """Resolve a run slug across all runs roots (first root wins)."""
+    for root in RUNS_ROOTS:
+        d = root / slug
+        if d.is_dir():
+            return d
+    return None
+
+
+def read_refinery_report(run_dir: Path) -> dict[str, Any] | None:
+    """Compact view of the refinery (third system) result, or None if the
+    refinery has not run on this kit yet."""
+    rpath = run_dir / "refinery" / "refinery_report.json"
+    if not rpath.exists():
+        return None
+    try:
+        r = json.loads(rpath.read_text(errors="replace"))
+    except (ValueError, OSError):
+        return None
+    return {
+        "verdict": r.get("verdict"),
+        "serious_history": r.get("serious_history") or [],
+        "changed_files": len(r.get("changed_files") or []),
+        "aborted": r.get("aborted") or "",
+    }
 
 
 def read_register_verdict(run_dir: Path) -> dict[str, Any] | None:
@@ -98,6 +132,10 @@ def parse_run_dir(run_dir: Path) -> dict[str, Any] | None:
     reg = read_register_verdict(run_dir)
     summary["register_verdict"] = reg
     summary["flagged"] = bool(reg and reg["flagged"])
+
+    # Refinery (third system) result + fixed-copy preview availability
+    summary["refinery"] = read_refinery_report(run_dir)
+    summary["has_kit_fixed"] = (run_dir / "kit-fixed" / "index.html").exists()
 
     # Parse audit.md
     audit_path = run_dir / "audit.md"
@@ -182,14 +220,18 @@ def _infer_register(vertical: str, aesthetic: str) -> str:
 
 
 def list_runs() -> list[dict[str, Any]]:
-    if not RUNS_DIR.exists():
-        return []
+    dirs: dict[str, Path] = {}
+    for root in RUNS_ROOTS:
+        if not root.exists():
+            continue
+        for d in root.iterdir():
+            if d.is_dir():
+                dirs.setdefault(d.name, d)  # first root wins on collision
     results = []
-    for d in sorted(RUNS_DIR.iterdir(), key=lambda p: p.name, reverse=True):
-        if d.is_dir():
-            r = parse_run_dir(d)
-            if r:
-                results.append(r)
+    for name in sorted(dirs, reverse=True):
+        r = parse_run_dir(dirs[name])
+        if r:
+            results.append(r)
     return results
 
 
@@ -204,6 +246,9 @@ def compute_stats(runs: list[dict[str, Any]]) -> dict[str, Any]:
     register_pass_count = sum(
         1 for r in runs if (r.get("register_verdict") or {}).get("passed"))
     flagged_count = sum(1 for r in runs if r.get("flagged"))
+    refined_count = sum(1 for r in runs
+                        if (r.get("refinery") or {}).get("verdict")
+                        in ("clean", "improved"))
     avg_warnings = sum(r.get("warnings_count", 0) for r in runs) / total
     densities = Counter(r.get("density", "unknown") for r in runs)
     registers = Counter(r.get("register", "unknown") for r in runs)
@@ -218,6 +263,7 @@ def compute_stats(runs: list[dict[str, Any]]) -> dict[str, Any]:
         "register_count": register_count,
         "register_pass_count": register_pass_count,
         "flagged_count": flagged_count,
+        "refined_count": refined_count,
         "ship_rate_pct": int(((pass_count + warn_count) / total) * 100),
         "avg_warnings_per_run": round(avg_warnings, 1),
         "total_warnings": total_warnings,
@@ -262,8 +308,8 @@ def api_runs(
 
 @app.get("/api/runs/{slug}")
 def api_run_detail(slug: str) -> dict[str, Any]:
-    run_dir = RUNS_DIR / slug
-    if not run_dir.exists() or not run_dir.is_dir():
+    run_dir = find_run_dir(slug)
+    if run_dir is None:
         raise HTTPException(status_code=404, detail=f"run {slug} not found")
     summary = parse_run_dir(run_dir)
     if not summary:
@@ -282,19 +328,112 @@ def api_stats() -> dict[str, Any]:
 
 
 @app.get("/api/screenshot/{slug}/{filename}")
-def api_screenshot(slug: str, filename: str) -> FileResponse:
+def api_screenshot(slug: str, filename: str, w: int = 0) -> FileResponse:
     # Sanitize: must match expected pattern and stay inside runs dir
     if not RUN_SLUG_RE.match(slug):
         raise HTTPException(status_code=400, detail="malformed slug")
     if not re.match(r"^[a-z0-9_-]+\.(png|jpg|jpeg|webp)$", filename):
         raise HTTPException(status_code=400, detail="malformed filename")
-    candidate = (RUNS_DIR / slug / "kit" / "screenshots" / filename).resolve()
+    run_dir = find_run_dir(slug)
+    if run_dir is None:
+        raise HTTPException(status_code=404, detail=f"run {slug} not found")
+    candidate = (run_dir / "kit" / "screenshots" / filename).resolve()
     # Path traversal defense
-    if not str(candidate).startswith(str(RUNS_DIR.resolve())):
+    if not str(candidate).startswith(str(run_dir.resolve())):
         raise HTTPException(status_code=403, detail="path traversal blocked")
     if not candidate.exists():
         raise HTTPException(status_code=404, detail="screenshot not found")
+    if w and 80 <= w <= 1600:
+        try:
+            from PIL import Image
+            tdir = Path("/tmp/sw-thumbs"); tdir.mkdir(parents=True, exist_ok=True)
+            thumb = tdir / ("%s__%s__%d.jpg" % (slug, filename, w))
+            if (not thumb.exists()) or thumb.stat().st_mtime < candidate.stat().st_mtime:
+                im = Image.open(candidate)
+                if im.mode in ("RGBA", "P", "LA"): im = im.convert("RGB")
+                rh = max(1, int(im.height * (w / im.width)))
+                im = im.resize((w, rh), Image.LANCZOS)
+                if im.height > w * 4: im = im.crop((0, 0, w, w * 4))
+                im.save(thumb, "JPEG", quality=78, optimize=True)
+            return FileResponse(thumb, media_type="image/jpeg")
+        except Exception:
+            pass
     return FileResponse(candidate)
+
+
+# ---- live kit preview -------------------------------------------------------
+# Serve each run's kit/ as a live, interactive site so the dashboard can open the
+# real page (motion + scroll), not just its screenshots. Read-only static serving,
+# path-traversal-guarded to the run's kit/ directory.
+
+
+def _no_kit_placeholder(slug: str, sub: str) -> Response:
+    """A readable HTML page for runs that produced no kit/ (e.g. generation
+    errored before writing HTML). Beats a raw {"detail": "..."} JSON 404 when a
+    tab is opened directly. Status stays 404 — the resource genuinely is absent."""
+    label = "refined kit" if sub == "kit-fixed" else "kit"
+    html = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>No {label} — {slug}</title>
+<style>
+  html,body{{height:100%;margin:0}}
+  body{{display:grid;place-items:center;background:#14100c;color:#e8ddc8;
+       font:400 16px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;padding:2rem}}
+  .box{{max-width:46rem;text-align:center}}
+  h1{{font-size:1.1rem;letter-spacing:.04em;color:#c98a3a;margin:0 0 1rem}}
+  code{{color:#b9a98a;word-break:break-all}}
+  a{{color:#e07b4f}}
+</style></head><body><div class="box">
+  <h1>No {label} for this run</h1>
+  <p>This run did not produce output — generation likely errored before writing
+     <code>{sub}/index.html</code>.</p>
+  <p>Run: <code>{slug}</code></p>
+  <p>Check <code>run.log</code> in the run directory for the failure reason,
+     or <a href="/">return to the Workshop Floor</a>.</p>
+</div></body></html>"""
+    return Response(content=html, media_type="text/html", status_code=404)
+
+
+def _serve_kit_file(slug: str, sub: str, file_path: str) -> Response:
+    if not RUN_SLUG_RE.match(slug):
+        raise HTTPException(status_code=400, detail="malformed slug")
+    run_dir = find_run_dir(slug)
+    if run_dir is None:
+        raise HTTPException(status_code=404, detail=f"run {slug} not found")
+    kit_root = (run_dir / sub).resolve()
+    if not kit_root.is_dir():
+        # Run produced no kit (failed generation). Degrade gracefully.
+        return _no_kit_placeholder(slug, sub)
+    candidate = (kit_root / (file_path or "index.html")).resolve()
+    if not str(candidate).startswith(str(kit_root)):     # path traversal defense
+        raise HTTPException(status_code=403, detail="path traversal blocked")
+    if candidate.is_dir():
+        candidate = candidate / "index.html"
+    if not candidate.exists():
+        raise HTTPException(status_code=404, detail="not found")
+    return FileResponse(candidate)
+
+
+@app.get("/live/{slug}")
+def live_root_redirect(slug: str) -> RedirectResponse:
+    # Trailing slash so the kit's RELATIVE asset paths (assets/css/…) resolve under /live/<slug>/.
+    return RedirectResponse(url=f"/live/{slug}/")
+
+
+@app.get("/live/{slug}/{file_path:path}")
+def live_kit(slug: str, file_path: str = "") -> Response:
+    return _serve_kit_file(slug, "kit", file_path)
+
+
+@app.get("/live-fixed/{slug}")
+def live_fixed_root_redirect(slug: str) -> RedirectResponse:
+    return RedirectResponse(url=f"/live-fixed/{slug}/")
+
+
+@app.get("/live-fixed/{slug}/{file_path:path}")
+def live_fixed_kit(slug: str, file_path: str = "") -> Response:
+    # The refinery's kit-fixed/ copy — original kit/ is never touched.
+    return _serve_kit_file(slug, "kit-fixed", file_path)
 
 
 # ---- static -----------------------------------------------------------------

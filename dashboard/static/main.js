@@ -70,9 +70,9 @@ function renderHeroLatest() {
   card.removeAttribute("hidden");
   const img = $("#hero-latest-img");
   if (latest.screenshot_files?.includes("home-desktop.png")) {
-    img.src = `/api/screenshot/${latest.slug}/home-desktop.png`;
+    img.src = `/api/screenshot/${latest.slug}/home-desktop.png?w=900`;
   } else if (latest.screenshot_files?.length) {
-    img.src = `/api/screenshot/${latest.slug}/${latest.screenshot_files[0]}`;
+    img.src = `/api/screenshot/${latest.slug}/${latest.screenshot_files[0]}?w=900`;
   }
   $("#hero-latest-ts").textContent = formatTs(latest.ts);
   $("#hero-latest-slug").textContent = `${latest.vertical} · ${latest.aesthetic.replaceAll("-", " ")}`;
@@ -96,6 +96,7 @@ function renderMarquee() {
     { num: Object.keys(s.aesthetics || {}).length, label: "aesthetics tried" },
     { num: s.warn_count, label: "warned" },
     { num: s.pass_count, label: "passed clean" },
+    { num: s.refined_count ?? 0, label: "kits refined" },
   ];
   // Duplicate the sequence for seamless scrolling
   const html = (items.map(itemHtml).join("") + '<span class="mq-sep">//</span>').repeat(2);
@@ -144,10 +145,18 @@ function renderRuns() {
 }
 function runCardHtml(r) {
   const hasHome = r.screenshot_files?.includes("home-desktop.png");
-  const imgSrc = hasHome ? `/api/screenshot/${r.slug}/home-desktop.png`
-               : r.screenshot_files?.length ? `/api/screenshot/${r.slug}/${r.screenshot_files[0]}`
+  const imgSrc = hasHome ? `/api/screenshot/${r.slug}/home-desktop.png?w=540`
+               : r.screenshot_files?.length ? `/api/screenshot/${r.slug}/${r.screenshot_files[0]}?w=540`
                : "";
   const cleanAesthetic = r.aesthetic.replaceAll("-", " ");
+  // A run only has a live preview if generation actually wrote kit/index.html.
+  // Failed runs (e.g. "corpus too thin") have no kit — linking to /live/ there
+  // returns a raw 404, so render the title as plain text instead of a dead link.
+  const hasKit = r.bytes_index_html > 0;
+  const titleHtml = hasKit
+    ? `<a class="run-card-slug run-card-live" href="/live/${r.slug}/" target="_blank" rel="noopener"
+         title="Open live site ↗" onclick="event.stopPropagation()">${cleanAesthetic}<span class="live-arrow" aria-hidden="true"> ↗</span></a>`
+    : `<span class="run-card-slug run-card-nokit" title="No kit — this run produced no output">${cleanAesthetic}<span class="nokit-tag" aria-hidden="true"> · no kit</span></span>`;
   return `<article class="run-card" data-slug="${r.slug}">
     <div class="run-card-image">
       ${imgSrc ? `<img loading="lazy" src="${imgSrc}" alt="">` : ""}
@@ -158,11 +167,13 @@ function runCardHtml(r) {
         <span>${formatTsShort(r.ts)}</span>
         <span>${r.vertical}</span>
       </div>
-      <div class="run-card-slug">${cleanAesthetic}</div>
+      ${titleHtml}
       <div class="run-card-chips">
         <span class="chip size-sm register-${r.register}">${REG_LABELS[r.register] || r.register}</span>
         ${r.audit_status ? `<span class="chip size-sm status-${r.audit_status}">${STATUS_LABELS[r.audit_status]}</span>` : ""}
         ${r.register_verdict ? `<span class="chip size-sm ${r.flagged ? "verdict-flagged" : "verdict-pass"}" title="${escapeHtml((r.register_verdict.reasons || []).join("; "))}">${r.flagged ? "⚑ FLAGGED" : "★ PREMIUM"}</span>` : ""}
+        ${r.refinery ? `<span class="chip size-sm refinery-${r.refinery.verdict}" title="${escapeHtml(r.refinery.aborted || `serious: ${r.refinery.serious_history.join("→")}`)}">🔧 ${r.refinery.verdict.toUpperCase()}</span>` : ""}
+        ${r.has_kit_fixed ? `<a class="chip size-sm chip-fixed" href="/live-fixed/${r.slug}/" target="_blank" rel="noopener" title="Open refined version ↗" onclick="event.stopPropagation()">FIXED ↗</a>` : ""}
         ${r.warnings_count > 0 ? `<span class="chip size-sm">${r.warnings_count}<span style="opacity:.6"> W</span></span>` : ""}
       </div>
     </div>
@@ -237,6 +248,19 @@ async function openDetail(slug) {
         </div>
       </div>
     </div>
+
+    ${data.refinery ? `
+    <div class="detail-box" style="margin-top:2rem">
+      <h4>REFINERY · ${data.refinery.verdict.toUpperCase()}</h4>
+      <p>serious findings per pass: ${data.refinery.serious_history.join(" → ") || "—"} · files changed: ${data.refinery.changed_files}${data.refinery.aborted ? `<br>⚠ ${escapeHtml(data.refinery.aborted)}` : ""}</p>
+      ${data.has_kit_fixed ? `<p style="margin-top:.6rem"><a href="/live-fixed/${data.slug}/" target="_blank" rel="noopener">open fixed version ↗</a> &nbsp;·&nbsp; <a href="/live/${data.slug}/" target="_blank" rel="noopener">original ↗</a></p>` : ""}
+    </div>` : ""}
+
+    ${data.has_kit_fixed && !data.refinery ? `
+    <div class="detail-box" style="margin-top:2rem">
+      <h4>REFINED · AWWWARDS REBUILD</h4>
+      <p><a href="/live-fixed/${data.slug}/" target="_blank" rel="noopener">open the refined version ↗</a> &nbsp;·&nbsp; <a href="/live/${data.slug}/" target="_blank" rel="noopener">original (slop) ↗</a></p>
+    </div>` : ""}
 
     ${warnings.length ? `
     <div class="detail-box" style="margin-top:2rem">
