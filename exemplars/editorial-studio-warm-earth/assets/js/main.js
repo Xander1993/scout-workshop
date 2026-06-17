@@ -72,7 +72,7 @@
 
     // Seam settle on load: the rammed seam compresses from a slightly open
     // pour into its true vertical, the bicolor wordmark resolving as it lands.
-    // Desktop only — on mobile the seam collapses to a full-bleed wall (CSS).
+    // Desktop only. On mobile the seam collapses to a full-bleed wall (CSS).
     if (hasGsap && !reduce && window.innerWidth > 760) {
       const seam = { x: 46.5 };
       window.gsap.to(seam, {
