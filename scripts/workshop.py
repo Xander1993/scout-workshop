@@ -51,6 +51,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import fcntl
+import hashlib
 import json
 import logging
 import os
@@ -1261,18 +1262,19 @@ def run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots
                        f"void={rm.get('max_vertical_void_px')}/h{rm.get('page_height_px')})")
     sig = diversity_gate.signature(manifest, rm, concept)
     repeat = False
-    if manifest_ok:  # never compare/record a degenerate all-None signature
+    if manifest_ok:  # never compare a degenerate all-None signature
         repeat = diversity_gate.is_repeat(sig, diversity_gate.priors(register_family),
                                           QF["diversity_reject_below"])
         if repeat:
             reasons.append("structural repeat of a recent kit")
-        diversity_gate.record(sig, register_family)
     craft = craft_judge.run(run_dir, kit_dir, kit_type, concept, shots,
                             run_claude=run_claude, load_prompt_template=load_prompt_template,
                             extract_json=_extract_json_object)
     if craft.get("verdict") != "pass":
         reasons.append(f"craft below_bar: {craft.get('reasons', '')}")
     passed = manifest_ok and det_ok and not repeat and craft.get("verdict") == "pass"
+    if passed:  # only PASSED kits enter the diversity store (no polluting from flagged runs)
+        diversity_gate.record(sig, register_family)
     v = {"passed": passed, "reasons": reasons, "rm": rm, "craft": craft, "sig": sig}
     (run_dir / "verdict.json").write_text(
         json.dumps({k: v[k] for k in ("passed", "reasons", "rm", "craft")}, indent=2), encoding="utf-8")
@@ -1294,6 +1296,28 @@ def _finalize_awwwards_verdict(run_dir, v, kit_type):
     run_dir.rename(flagged)
     log.warning("FLAGGED below_bar — %s (%s)", flagged, "; ".join(v["reasons"]))
     return flagged
+
+
+def _kit_tree_hash(kit_dir: Path) -> str:
+    """Stable content hash of every file under a kit dir (sorted by relative path).
+    Used to detect a retry that produced an identical kit, independent of the
+    model's raw stdout framing."""
+    h = hashlib.sha256()
+    for f in sorted(p for p in Path(kit_dir).rglob("*") if p.is_file()):
+        h.update(str(f.relative_to(kit_dir)).encode("utf-8"))
+        h.update(b"\0")
+        h.update(f.read_bytes())
+        h.update(b"\0")
+    return h.hexdigest()
+
+
+def _oneshot_rc(best: Optional[dict]) -> int:
+    """Process exit code for a gated oneshot: 0 only when a kit cleared the bar.
+    A flagged (below-bar) or missing kit returns nonzero so register_weekly does
+    not mistake it for a ship and keeps trying the next pair."""
+    if best is None:
+        return 1
+    return 0 if best.get("passed") else 2
 
 
 def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
@@ -1353,10 +1377,13 @@ def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
             if best is None:
                 return 1
             break
-        raw = (run_dir / "raw_kit_output.txt").read_text(encoding="utf-8")
-        if best is not None and raw == best.get("_raw"):
-            log.info("retry produced byte-identical output — stopping")
+        kit_hash = _kit_tree_hash(kit_dir)
+        is_final = attempt == QF["retry"]["max"]
+        if best is not None and kit_hash == best.get("_kit_hash") and not is_final:
+            log.info("retry produced an identical kit tree — stopping")
             break
+        # on the final retry, fall through (below) to rerun imagegen so a duplicate
+        # kit still gets fresh images before the last gate.
         try:
             from generate_kit_images import generate_kit_images as _gen_imgs  # noqa: WPS433
             _gen_imgs(kit_dir, run_dir, image_prefix_override=directives["photography_prefix"])
@@ -1372,7 +1399,7 @@ def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
             log.warning("screenshots non-fatal: %s", e)
         v = run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots)
         v["concept"] = concept
-        v["_raw"] = raw
+        v["_kit_hash"] = kit_hash
         best = v
         log.info("attempt %d verdict: passed=%s reasons=%s", attempt, v["passed"], v["reasons"])
         if v["passed"]:
@@ -1380,7 +1407,7 @@ def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
 
     final_dir = _finalize_awwwards_verdict(run_dir, best, kit_type)
     log.info("DONE — %s", final_dir)
-    return 0
+    return _oneshot_rc(best)
 
 
 # ─────────────────────────────────────────────────────────────────────
