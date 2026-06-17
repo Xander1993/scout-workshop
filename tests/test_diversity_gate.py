@@ -25,8 +25,45 @@ def test_signature_buckets():
     m = {"hero_archetype": "monumental_wordmark", "sections": ["manifesto", "work_grid"]}
     sig = dg.signature(m, {"hero_scale_ratio": 77.3}, {"hook_name": "Carved Wordmark"})
     assert sig["archetype"] == "monumental_wordmark"
-    assert sig["type_scale_bucket"] == "xl"
+    assert sig["type_scale_bucket"] == "xl3"
     assert sig["sections"] == ["manifesto", "work_grid"]
+
+
+def test_xl_subbuckets_discriminate():
+    m = {"hero_archetype": "x", "sections": ["a"]}
+
+    def tsb(hsr):
+        return dg.signature(m, {"hero_scale_ratio": hsr}, {})["type_scale_bucket"]
+
+    # The old single "xl" (hsr>=12) is now sub-banded so monumental kits at very
+    # different scales are not treated as the same type-scale.
+    assert tsb(13) == "xl1"
+    assert tsb(24) == "xl2"
+    assert tsb(50) == "xl3"
+    assert tsb(13) != tsb(50)
+    # two kits in the same band still collapse
+    assert tsb(13) == tsb(18)
+    # lower bands unchanged
+    assert tsb(8) == "l"
+    assert tsb(5) == "m"
+    assert tsb(2) == "s"
+
+
+def test_semantic_concept_bucket():
+    m = {"hero_archetype": "x", "sections": ["a"]}
+
+    def cb(hook):
+        return dg.signature(m, {"hero_scale_ratio": 13}, {"hook_name": hook})["concept_bucket"]
+
+    # Trivial wording variants of the SAME concept collapse to one bucket
+    # (case, punctuation, word order, stopwords) — the old exact-string hash
+    # treated these as distinct.
+    base = cb("Carved Wordmark")
+    assert cb("carved wordmark.") == base
+    assert cb("Wordmark, carved") == base
+    assert cb("The Carved Wordmark") == base
+    # genuinely different concepts stay distinct
+    assert cb("Liquid Mercury Scroll") != base
 
 
 def test_store_roundtrip(tmp_path, monkeypatch):

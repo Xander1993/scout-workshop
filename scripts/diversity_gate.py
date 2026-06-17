@@ -8,7 +8,22 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
+
+# Concept-bucket stopwords: drop these so word order / articles / connectives
+# don't make two phrasings of the SAME signature move look like distinct concepts.
+_CONCEPT_STOP = frozenset(
+    {"the", "a", "an", "of", "and", "or", "in", "on", "with", "for", "to", "as", "by"}
+)
+
+
+def _norm_concept(hook: str) -> str:
+    """Semantic-ish concept key: lowercase, drop punctuation + stopwords, sort the
+    remaining unique tokens so case / punctuation / word-order variants collapse."""
+    toks = re.findall(r"[a-z0-9]+", (hook or "").lower())
+    toks = sorted({t for t in toks if t not in _CONCEPT_STOP})
+    return " ".join(toks)
 
 
 def _dl(a: list, b: list) -> int:
@@ -36,13 +51,27 @@ def _dl(a: list, b: list) -> int:
 def signature(manifest: dict, render_m: dict, concept: dict) -> dict:
     sections = manifest.get("sections") or []
     hsr = render_m.get("hero_scale_ratio", 0)
-    bucket = "xl" if hsr >= 12 else "l" if hsr >= 6 else "m" if hsr >= 4 else "s"
+    # Sub-band the monumental (>=12) range: collapsing every huge hero into one
+    # "xl" bucket let two very differently-scaled monumental kits read as the same
+    # type-scale. The lower bands (l/m/s) are unchanged.
+    if hsr >= 36:
+        bucket = "xl3"
+    elif hsr >= 20:
+        bucket = "xl2"
+    elif hsr >= 12:
+        bucket = "xl1"
+    elif hsr >= 6:
+        bucket = "l"
+    elif hsr >= 4:
+        bucket = "m"
+    else:
+        bucket = "s"
     hook = (concept or {}).get("hook_name") or (concept or {}).get("signature_move", "")
     return {
         "archetype": manifest.get("hero_archetype"),
         "sections": list(sections),
         "type_scale_bucket": bucket,
-        "concept_bucket": hashlib.sha256(hook.encode()).hexdigest()[:8],
+        "concept_bucket": hashlib.sha256(_norm_concept(hook).encode()).hexdigest()[:8],
     }
 
 
