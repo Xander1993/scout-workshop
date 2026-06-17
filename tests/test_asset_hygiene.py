@@ -1,0 +1,86 @@
+import sys, pathlib
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
+import asset_hygiene as ah
+
+
+def _img(p):
+    # a 1x1 transparent PNG so a referenced "real" image exists on disk
+    p.write_bytes(bytes.fromhex(
+        "89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4"
+        "890000000a49444154789c6300010000050001"))
+
+
+def test_clean_kit_passes(tmp_path):
+    _img(tmp_path / "hero.png")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body><h1>Atelier Voss</h1>'
+        '<img src="hero.png" alt="studio"></body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert r["ok"], r
+    assert r["violations"] == [], r
+
+
+def test_unsubstituted_token_fails(tmp_path):
+    (tmp_path / "contact.html").write_text(
+        '<!doctype html><html><body>'
+        '<a href="mailto:studio@{{BRAND}}.studio">write</a></body></html>',
+        encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("{{BRAND}}" in v for v in r["violations"]), r
+
+
+def test_picsum_url_fails(tmp_path):
+    (tmp_path / "work.html").write_text(
+        '<!doctype html><html><body>'
+        '<img src="https://picsum.photos/seed/plate/1800/1100"></body></html>',
+        encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("picsum" in v.lower() for v in r["violations"]), r
+
+
+def test_placeholder_text_svg_file_fails(tmp_path):
+    (tmp_path / "plate.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">'
+        '<text x="32" y="48">PLACEHOLDER</text></svg>', encoding="utf-8")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body>'
+        '<img src="plate.svg" alt="proof"></body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("plate.svg" in v for v in r["violations"]), r
+
+
+def test_inline_placeholder_svg_fails(tmp_path):
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body><figure>'
+        '<svg viewBox="0 0 100 100"><text x="5" y="20">PLACEHOLDER</text></svg>'
+        '</figure></body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("PLACEHOLDER" in v.upper() for v in r["violations"]), r
+
+
+def test_all_pages_scanned(tmp_path):
+    # a defect on a NON-index page (services) must still fail the kit
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body><h1>ok</h1></body></html>', encoding="utf-8")
+    (tmp_path / "services.html").write_text(
+        '<!doctype html><html><body>'
+        '<img src="https://picsum.photos/seed/x/800/600"></body></html>',
+        encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("services.html" in v for v in r["violations"]), r
+
+
+def test_data_uri_and_remote_real_images_pass(tmp_path):
+    # data: URIs and a normal remote https image (not picsum) are not placeholders
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body>'
+        '<img src="data:image/png;base64,iVBORw0KGgo=">'
+        '<img src="https://images.example.com/hero.jpg"></body></html>',
+        encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert r["ok"], r

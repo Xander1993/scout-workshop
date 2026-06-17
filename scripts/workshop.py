@@ -1260,6 +1260,22 @@ def run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots
         reasons.append(f"genericness/density (hero={rm.get('hero_scale_ratio')}, "
                        f"tells={rm.get('template_tells')}, "
                        f"void={rm.get('max_vertical_void_px')}/h{rm.get('page_height_px')})")
+    # Static asset-hygiene gate (fail-CLOSED): scan every page and block any kit
+    # that ships an unsubstituted {{TOKEN}}, a picsum placeholder URL, or a
+    # PLACEHOLDER-text image. A gate error blocks the kit (fail-closed) rather
+    # than letting a broken-image kit slip through.
+    hygiene_ok = False
+    hygiene = {"ok": False, "violations": ["hygiene gate did not run"]}
+    try:
+        import asset_hygiene  # noqa: WPS433 (lazy)
+        hygiene = asset_hygiene.check_assets(kit_dir)
+        hygiene_ok = hygiene["ok"]
+        if not hygiene_ok:
+            reasons.append(f"asset hygiene: {hygiene['violations'][:6]}")
+    except Exception as e:  # noqa: BLE001 — fail CLOSED
+        log.warning("asset_hygiene error (fail-closed): %s", e)
+        hygiene = {"ok": False, "violations": [f"gate error: {e}"]}
+        reasons.append(f"asset hygiene gate error: {e}")
     sig = diversity_gate.signature(manifest, rm, concept)
     repeat = False
     if manifest_ok:  # never compare a degenerate all-None signature
@@ -1272,12 +1288,15 @@ def run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots
                             extract_json=_extract_json_object)
     if craft.get("verdict") != "pass":
         reasons.append(f"craft below_bar: {craft.get('reasons', '')}")
-    passed = manifest_ok and det_ok and not repeat and craft.get("verdict") == "pass"
+    passed = (manifest_ok and det_ok and hygiene_ok
+              and not repeat and craft.get("verdict") == "pass")
     if passed:  # only PASSED kits enter the diversity store (no polluting from flagged runs)
         diversity_gate.record(sig, register_family)
-    v = {"passed": passed, "reasons": reasons, "rm": rm, "craft": craft, "sig": sig}
+    v = {"passed": passed, "reasons": reasons, "rm": rm, "craft": craft, "sig": sig,
+         "hygiene": hygiene}
     (run_dir / "verdict.json").write_text(
-        json.dumps({k: v[k] for k in ("passed", "reasons", "rm", "craft")}, indent=2), encoding="utf-8")
+        json.dumps({k: v[k] for k in ("passed", "reasons", "rm", "craft", "hygiene")},
+                   indent=2), encoding="utf-8")
     _append_awwwards_telemetry(run_dir, kit_type, register_family, v)
     return v
 
