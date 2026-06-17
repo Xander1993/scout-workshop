@@ -124,7 +124,7 @@ html,body{
 /* ====================================================
    HERO — full-bleed photographic parallax
    ==================================================== */
-.stage{position:relative;height:100vh;background:var(--ink)}
+.stage{position:relative;height:200vh;background:var(--ink)}
 .stage__pin{position:sticky;top:0;height:100vh;overflow:hidden;isolation:isolate}
 
 .hero{position:absolute;inset:0;will-change:transform}
