@@ -89,7 +89,10 @@ KITS_REMOTE = "git@github.com:Xander1993/camelotflows-kits.git"
 
 LOCKFILE = "/var/lock/workshop.lock"
 HTTP_PORT = int(os.environ.get("WORKSHOP_HTTP_PORT", "8200"))
-CLAUDE_MODEL = "claude-opus-4-7"
+CLAUDE_MODEL = "claude-opus-4-8"
+# Standing directive: every pipeline claude call runs at max effort (max effort =
+# maximum thinking budget). Overrides the per-call effort hints below.
+CLAUDE_EFFORT = "xhigh"  # log label only; thinking budget is set via --settings effortLevel:xhigh (Claude.ai/Max OAuth rejects --effort max)
 CLAUDE_TIMEOUT_S = 1800
 CLAUDE_RETRY_BACKOFF_S = 60
 PUSH_RETRY_BACKOFFS_S = (5, 30, 120)
@@ -384,7 +387,7 @@ def run_claude(
     timeout_s: int = CLAUDE_TIMEOUT_S,
     permission_mode: str = "acceptEdits",
 ) -> str:
-    """Invoke `claude --print --model claude-opus-4-7 --effort <effort> …`
+    """Invoke `claude --print --model claude-opus-4-8 --effort max …`
     with `prompt` on stdin. Returns stdout.
 
     Retries once with CLAUDE_RETRY_BACKOFF_S on TimeoutExpired or non-zero exit.
@@ -397,7 +400,7 @@ def run_claude(
     cmd = [
         "claude", "--print",
         "--model", CLAUDE_MODEL,
-        "--effort", effort,
+        "--settings", '{"effortLevel":"xhigh"}',  # xhigh thinking; --effort max is rejected for Claude.ai/Max OAuth
         "--permission-mode", permission_mode,
         "--tools", tools,
         "--output-format", "text",
@@ -406,8 +409,8 @@ def run_claude(
     ]
     last_exc: Optional[BaseException] = None
     for attempt in (1, 2):
-        log.info("claude --print effort=%s attempt=%d (timeout=%ds, tools=%r)",
-                 effort, attempt, timeout_s, tools)
+        log.info("claude --print model=%s effort=%s attempt=%d (timeout=%ds, tools=%r)",
+                 CLAUDE_MODEL, CLAUDE_EFFORT, attempt, timeout_s, tools)
         try:
             r = subprocess.run(
                 cmd, input=prompt,
@@ -602,6 +605,10 @@ KIT_REQUIRED_FILES_BY_KIT_TYPE = {
                          "assets/css/style.css", "assets/js/main.js", "image-prompts.json"),
     "single-product": ("index.html",
                        "assets/css/style.css", "assets/js/main.js", "image-prompts.json"),
+    # kinetic-experimental = 1-page, motion-led (parallax/scroll-choreography);
+    # same file shape as single-product, different generation prompt + register.
+    "kinetic-experimental": ("index.html",
+                             "assets/css/style.css", "assets/js/main.js", "image-prompts.json"),
 }
 
 
@@ -1132,6 +1139,35 @@ def _telegram_send_media_group(files: list[tuple[str, Path]], caption: str) -> N
 # v1.5 Awwwards register — additive oneshot (no cron, no gates, no delivery)
 # ─────────────────────────────────────────────────────────────────────
 
+def _recent_concepts(sub_aesthetic: str, exclude_dir: Path, n: int = 8) -> list[str]:
+    """Hook-names + brand premises of recently-shipped kits for this sub-aesthetic
+    (newest first), so the concept director can avoid repeating a theme/territory
+    ACROSS runs — not just within one run. Without this the {{RECENT_CONCEPTS}} slot
+    is almost always "(none)" and every kit drifts back to whatever motif the
+    aesthetic most readily suggests. Theme-agnostic: it reports the actual prior
+    concepts and lets the prompt steer away from them."""
+    found: list[str] = []
+    for d in sorted(RUNS_DIR.glob(f"*-{sub_aesthetic}-*"),
+                    key=lambda p: p.name, reverse=True):
+        if not d.is_dir() or d == exclude_dir:
+            continue
+        cj = d / "concept.json"
+        if not cj.exists():
+            continue
+        try:
+            c = json.loads(cj.read_text(encoding="utf-8", errors="replace"))
+        except (ValueError, OSError):
+            continue
+        name = (c.get("hook_name") or "").strip()
+        if not name:
+            continue
+        premise = (c.get("brand_premise") or "").strip()
+        found.append(f"{name} — {premise}" if premise else name)
+        if len(found) >= n:
+            break
+    return found
+
+
 def run_design_concept(sub_aesthetic, kit_type, hero_archetype, refs, recent, run_dir):
     """Commit the kit to ONE bespoke signature idea → concept.json."""
     template = load_prompt_template("design_concept")
@@ -1271,10 +1307,32 @@ def run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots
         reasons.append(f"genericness/density (hero={rm.get('hero_scale_ratio')}, "
                        f"tells={rm.get('template_tells')}, "
                        f"void={rm.get('max_vertical_void_px')}/h{rm.get('page_height_px')})")
+    # Runtime assets gate: execute the page and fail it if any referenced JS library
+    # never loaded (hallucinated SRI hash / wrong CDN version → dead motion). Fail-OPEN
+    # on a gate error so a Playwright hiccup can never flag a genuinely good kit.
+    assets = {"ok": True, "failed_resources": [], "undefined_libs": []}
+    try:
+        import assets_gate  # noqa: WPS433 (lazy)
+        assets = assets_gate.check_runtime(kit_dir)
+        if not assets["ok"]:
+            reasons.append(f"broken assets: undefined_libs={assets['undefined_libs']} "
+                           f"failed={assets['failed_resources'][:4]}")
+    except Exception as e:  # noqa: BLE001 — a gate error must not flag a good kit
+        log.warning("assets_gate error (fail-open): %s", e)
+    assets_ok = assets.get("ok", True)
+    # Kinetic at-rest motion assertion: a kinetic-experimental kit MUST visibly move on
+    # load (no scroll/interaction). assets_gate captures two at-rest frames; at_rest_motion
+    # is False only when they are identical (dead motion). None (probe unavailable) → fail
+    # OPEN. Only kinetic kits are held to this — editorial/single-product may sit still.
+    motion_ok = True
+    if kit_type == "kinetic-experimental" and assets.get("at_rest_motion") is False:
+        motion_ok = False
+        reasons.append(f"kinetic kit has no at-rest motion (static on load, "
+                       f"motion_delta={assets.get('motion_delta')})")
     # Static asset-hygiene gate (fail-CLOSED): scan every page and block any kit
     # that ships an unsubstituted {{TOKEN}}, a picsum placeholder URL, or a
-    # PLACEHOLDER-text image. A gate error blocks the kit (fail-closed) rather
-    # than letting a broken-image kit slip through.
+    # PLACEHOLDER-text image. Unlike the runtime assets gate this fails CLOSED —
+    # a gate error blocks the kit rather than letting a broken-image kit ship.
     hygiene_ok = False
     hygiene = {"ok": False, "violations": ["hygiene gate did not run"]}
     try:
@@ -1299,14 +1357,14 @@ def run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots
                             extract_json=_extract_json_object, density=rm)
     if craft.get("verdict") != "pass":
         reasons.append(f"craft below_bar: {craft.get('reasons', '')}")
-    passed = (manifest_ok and det_ok and hygiene_ok
+    passed = (manifest_ok and det_ok and assets_ok and motion_ok and hygiene_ok
               and not repeat and craft.get("verdict") == "pass")
     if passed:  # only PASSED kits enter the diversity store (no polluting from flagged runs)
         diversity_gate.record(sig, register_family)
     v = {"passed": passed, "reasons": reasons, "rm": rm, "craft": craft, "sig": sig,
-         "hygiene": hygiene}
+         "assets": assets, "hygiene": hygiene}
     (run_dir / "verdict.json").write_text(
-        json.dumps({k: v[k] for k in ("passed", "reasons", "rm", "craft", "hygiene")},
+        json.dumps({k: v[k] for k in ("passed", "reasons", "rm", "craft", "assets", "hygiene")},
                    indent=2), encoding="utf-8")
     _append_awwwards_telemetry(run_dir, kit_type, register_family, v)
     return v
@@ -1353,7 +1411,7 @@ def _oneshot_rc(best: Optional[dict]) -> int:
 def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
     """Generate ONE awwwards kit end-to-end, gated (retry once → ship flagged)."""
     if kit_type not in KIT_REQUIRED_FILES_BY_KIT_TYPE:
-        log.error("unknown kit_type %r (use editorial-studio|single-product)", kit_type)
+        log.error("unknown kit_type %r (use editorial-studio|single-product|kinetic-experimental)", kit_type)
         return 1
     cfg = get_awwwards_config(sub_aesthetic)  # raises KeyError on unknown sub_aesthetic
     if cfg.get("vault_pending"):
@@ -1378,13 +1436,25 @@ def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
     log.info("retrieved %d premium refs (top: %s)", len(refs), refs[0]["payload"].get("title"))
     hero = refs[0]["payload"].get("hero_archetype", "monumental_wordmark")
     topo = refs[0]["payload"].get("section_topology", [])
+    # kinetic-experimental is motion-led, not reference-structure-led. ROTATE the
+    # kinetic hero archetype so kinetic kits diversify across the signature space:
+    # the diversity gate weights hero_archetype 0.35, so forcing ONE archetype made
+    # every kinetic kit a "structural repeat". Alternate by the count of prior kinetic
+    # runs (refs are still retrieved for art-direction/palette, not structure).
+    if kit_type == "kinetic-experimental":
+        _kinetic_archs = ("immersive_canvas", "kinetic_type")
+        _n_prior = len([p for p in RUNS_DIR.glob("*-kinetic-experimental*") if p != run_dir])
+        hero = _kinetic_archs[_n_prior % len(_kinetic_archs)]
+        log.info("kinetic hero archetype (rotated): %s (prior kinetic runs=%d)", hero, _n_prior)
 
     from quality_floor_config import QUALITY_FLOOR as QF  # noqa: WPS433 (lazy)
     register_family = cfg["register_family"]
     best = None
     for attempt in range(QF["retry"]["max"] + 1):
         perturb = (attempt == 0)
-        recent = []
+        # cross-run history: prior concepts shipped for this aesthetic, so the
+        # concept director won't keep returning to the same theme across runs.
+        recent = _recent_concepts(sub_aesthetic, run_dir)
         if attempt > 0:
             if (time.monotonic() - t0) >= QF["run_budget_s"]:
                 log.warning("run budget (%ds) exhausted — skipping retry, shipping flagged",
@@ -1394,7 +1464,8 @@ def run_awwwards_oneshot(sub_aesthetic: str, kit_type: str) -> int:
                         if r["payload"].get("hero_archetype") != hero), None)
             if alt is not None:
                 hero = alt["payload"].get("hero_archetype", hero)
-            recent = [(best.get("concept") or {}).get("hook_name", "")] if best else []
+            if best:
+                recent = [(best.get("concept") or {}).get("hook_name", "")] + recent
             log.info("retry: archetype=%s, palette perturbation OFF", hero)
         directives = awwwards_render.render_directives(sub_aesthetic, seed, perturb=perturb)
         try:
