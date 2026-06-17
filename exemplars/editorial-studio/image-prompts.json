@@ -1,0 +1,86 @@
+{
+  "press-room": {
+    "html_path": "index.html › .hero__media--back img",
+    "alt_text": "A letterpress print studio at first light, a cast-iron proofing press under a tall window.",
+    "generation_prompt": "Cinematic editorial photograph inside a working letterpress print studio at first light: a cast-iron flatbed proofing press, deep black ink on the rollers catching warm raking light from a tall arched window, dust motes in the air, bone-cream paper proofs faintly pinned to the plaster wall behind, deep shadows, large-format film grain, no people, no readable text, no logos.",
+    "aspect_ratio": "16:9",
+    "placement": "Hero — back parallax layer (studio room)."
+  },
+  "press-bed": {
+    "html_path": "index.html › .hero__media--front img",
+    "alt_text": "Close detail of an inked flatbed press bed, black ink glistening on steel.",
+    "generation_prompt": "Close foreground editorial photograph of an inked flatbed letterpress bed and steel cylinder, glossy deep-black printing ink catching a single hard warm light from camera-left, a hairline of vermillion registration-red ink at one edge, oiled steel, paper-cream sheet just entering the frame at the bottom, dramatic chiaroscuro, deep shadow filling the upper frame, large-format film grain, no people, no text, no logos.",
+    "aspect_ratio": "16:9",
+    "placement": "Hero — front parallax layer (press bed, masked at top)."
+  },
+  "paper-stack": {
+    "html_path": "index.html › .manifesto__fig img",
+    "alt_text": "A stack of freshly pulled cream proofs with deckled edges on a worktable.",
+    "generation_prompt": "Editorial still life: a neat stack of freshly pulled letterpress proofs on warm cream 120gsm deckled paper, single black ink impression faintly visible, side raking studio light revealing paper grain and the soft relief of the impression, a dark wood worktable, deep shadow on the right, restrained palette of bone paper and ink black with one small vermillion red marker slip, large-format film grain, vertical composition, no people, no readable text, no logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Manifesto figure (light editorial block)."
+  },
+  "compose": {
+    "html_path": "index.html › .parcel:nth(1)",
+    "alt_text": "Hands setting metal type into a composing stick.",
+    "generation_prompt": "Editorial photograph, close: a pair of hands setting individual pieces of metal type into a brass composing stick over an open California job case full of lead sorts, warm directional studio light, deep shadow, oiled metal and worn wood, restrained palette of steel grey, bone and ink black, large-format film grain, intimate craft mood, no readable text, no logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Process card 1 — The Stick (compose)."
+  },
+  "ink": {
+    "html_path": "index.html › .parcel:nth(2)",
+    "alt_text": "Black printing ink being rolled out on a glass slab with a brayer.",
+    "generation_prompt": "Editorial photograph, close overhead: glossy deep-black letterpress printing ink being rolled out into an even film on a glass slab with a rubber brayer, the ink catching a hard warm light into bright specular highlights, a small smear of vermillion registration-red ink at the corner of the slab, dark studio surround, large-format film grain, tactile and high-contrast, no people in frame except a forearm, no readable text, no logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Process card 2 — The Stone (ink)."
+  },
+  "pull": {
+    "html_path": "index.html › .parcel:nth(3)",
+    "alt_text": "A freshly printed sheet being lifted from the press bed.",
+    "generation_prompt": "Editorial photograph: a freshly printed cream sheet being lifted by two hands from a letterpress bed, the single-ink impression crisp and dark on warm paper, soft warm raking light from a studio window, deep shadow behind, the press tympan and frisket visible at the edge, restrained palette of bone paper, steel and ink black, large-format film grain, a quiet decisive moment, no readable text, no logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Process card 3 — The Bed (pull)."
+  },
+  "edition": {
+    "html_path": "index.html › .plate:nth(1)",
+    "alt_text": "A hand-bound quarterly edition with a single-ink letterpress cover.",
+    "generation_prompt": "Editorial still life of a hand-bound quarterly edition resting on a dark wood table, warm cream deckled-paper cover with a single deep-black letterpress impression and one thin vermillion-red rule, the spine sewn with linen thread, soft directional studio light, deep shadow, large-format film grain, restrained museum-quality composition, vertical framing, no readable text, no logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Specimen plate 1 — The Quarterly."
+  },
+  "typecase": {
+    "html_path": "index.html › .plate--tall:nth(2)",
+    "alt_text": "An open type case filled with metal sorts in their compartments.",
+    "generation_prompt": "Editorial overhead photograph of an open wooden California job case densely filled with metal type sorts in their many compartments, worn brass and lead, warm raking light raking across the grid casting tiny shadows in each box, deep tonal contrast, a single vermillion-red wax marker resting in one compartment, large-format film grain, tall vertical composition, restrained palette, no readable text, no logos.",
+    "aspect_ratio": "9:16",
+    "placement": "Specimen plate 2 — The Type Case (tall)."
+  },
+  "dryingline": {
+    "html_path": "index.html › .plate--wide:nth(3)",
+    "alt_text": "Freshly printed proofs hanging to dry on a line across the studio.",
+    "generation_prompt": "Editorial photograph of freshly printed cream proofs pegged to a drying line strung across a dim letterpress studio, single-ink impressions facing the camera, warm backlight from a window behind making the paper glow, deep shadow framing the edges, the press a dark silhouette below, large-format film grain, wide horizontal composition, atmospheric, no readable text, no logos.",
+    "aspect_ratio": "16:9",
+    "placement": "Specimen plate 3 — The Drying Line (wide)."
+  },
+  "flywheel": {
+    "html_path": "index.html › .plate:nth(4)",
+    "alt_text": "Detail of the heavy flywheel and gears of a cast-iron press.",
+    "generation_prompt": "Editorial photograph, close: the heavy cast-iron flywheel and oiled gear train of an antique letterpress, deep black metal with worn highlights, a single hard warm light raking across the curves, deep shadow, a faint smear of vermillion-red ink on the rim, large-format film grain, sculptural and monumental, vertical composition, no readable text, no logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Specimen plate 4 — The Flywheel."
+  },
+  "spread-proofs": {
+    "html_path": "index.html › .spreads figure:nth(1)",
+    "alt_text": "Several letterpress proofs laid out overhead on a worktable.",
+    "generation_prompt": "Editorial overhead photograph of several letterpress proofs laid out on a dark wood worktable, warm cream paper with single-ink impressions and faint hairline vermillion registration crosses at the corners, a brass composing stick and a few loose metal sorts beside them, warm directional light, deep shadow, large-format film grain, horizontal composition, restrained palette, no readable text, no logos.",
+    "aspect_ratio": "16:9",
+    "placement": "Spreads band tile 1."
+  },
+  "spread-dusk": {
+    "html_path": "index.html › .spreads figure:nth(2)",
+    "alt_text": "The letterpress studio at dusk lit by a single lamp.",
+    "generation_prompt": "Editorial photograph of a letterpress print studio at dusk, lit by a single warm work-lamp over the press, the rest of the room falling into deep blue-black shadow, paper proofs glowing faintly on the wall, the cast-iron press a dark monumental form, atmospheric and cinematic, large-format film grain, horizontal composition, no people, no readable text, no logos.",
+    "aspect_ratio": "16:9",
+    "placement": "Spreads band tile 2."
+  }
+}
