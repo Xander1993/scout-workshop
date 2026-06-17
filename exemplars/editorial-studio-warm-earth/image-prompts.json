@@ -1,0 +1,86 @@
+{
+  "rammed-earth-hero-wall": {
+    "html_path": "index.html",
+    "alt_text": "A towering rammed-earth wall in low raking light, deep sediment strata running its full height.",
+    "generation_prompt": "Editorial architectural photograph, tall vertical full-height plate. A towering rammed-earth wall fills the frame floor to ceiling, raked by hard low afternoon light so the compressed sediment strata cast deep relief. High-contrast tonal study: deep umber shadow (#1C140D) on the shaded flank, warm burnt-sienna body (#A8472A) in the light, clay-taupe mid-tones (#857658), restrained bone-cream rim (#E0D2B8). Strong chiaroscuro, one third of the frame falling into near-black shadow. Tactile material gravity in the manner of Marvell Tile & Stone and Silent House editorial work. Medium format, 50mm equivalent, f/8, no people, no props, no clutter. Award-tier composition, museum-grade restraint. No text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "hero right plate on index.html (full-height vertical)"
+  },
+  "rammed-earth-wall-01": {
+    "html_path": "index.html",
+    "alt_text": "A monumental sun-warmed rammed-earth wall, horizontal sediment strata catching low afternoon light.",
+    "generation_prompt": "Editorial architectural photograph, full-bleed cinematic plate. A monumental rammed-earth wall fills the frame in restrained composition, low afternoon sun raking across its compressed sediment strata. Tonal palette of paper-cream ground (#F0E9D6) at the seam of sky and burnt-sienna wall body (#B25C3C), clay-taupe undertones (#9C8E73), bone-cream highlights (#E8D9C3), umber shadow (#2D241A). Tactile material study in the manner of Marvell Tile & Stone editorial work; the wall reads as a single warm monolith with one subtle vertical seam at center. Medium format, 50mm equivalent, f/8, no people, no props, no clutter. Award-tier composition, museum-grade restraint. No text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "full_bleed_plate, first sienna horizon plate on index.html"
+  },
+  "work-opening-plate": {
+    "html_path": "work.html",
+    "alt_text": "A long rammed-earth wall ending in a deep doorway, the seam between two pours running floor to lintel.",
+    "generation_prompt": "Editorial architectural photograph, full-bleed cinematic plate. A long rammed-earth wall in warm afternoon light terminates in a deep oak-framed doorway; a clean vertical seam between two consecutive pours runs floor to lintel, exactly bisecting the composition. Warm-earth palette: paper-cream ground (#F0E9D6), burnt-sienna wall body (#B25C3C), bone-cream highlight on a dust-soft floor (#E8D9C3), umber shadow (#2D241A), clay-taupe mid-tone (#9C8E73). Silent House compositional discipline — asymmetric, monumental, no human figures, no decoration. Medium format, 35mm equivalent, f/8. No text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "full_bleed_plate, opening plate on work.html"
+  },
+  "work-tile-01": {
+    "html_path": "work.html",
+    "alt_text": "A weighty rammed-earth wall raked by low afternoon light, sediment bands clearly visible.",
+    "generation_prompt": "Editorial architectural plate, 4:5 vertical. Konya Reading Room — a single rammed-earth wall raked by low afternoon light, horizontal sediment bands visible. Warm-earth palette: cream paper ground (#F0E9D6), burnt-sienna wall (#B25C3C), bone-cream highlights (#E8D9C3), umber shadows (#2D241A). Studio Namma viewport-filling discipline; no people, no props. Medium format, 80mm equivalent, f/8. No text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "work_grid cell 01 (left half — cream-dominant pair)"
+  },
+  "work-tile-01b": {
+    "html_path": "work.html",
+    "alt_text": "The same wall photographed in shadow, terracotta surface compressed into a single field.",
+    "generation_prompt": "Editorial architectural plate, 4:5 vertical. Konya Reading Room — the same rammed-earth wall photographed in deep shadow, the terracotta surface compressed into a single warm field. Tonal palette: burnt-sienna body (#B25C3C), umber shadow (#2D241A), faint clay-taupe undertone (#9C8E73). Silent and monumental, no people, no props. Medium format, 80mm equivalent, f/8. No text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "work_grid cell 01 (right half — sienna-dominant pair)"
+  },
+  "work-tile-02": {
+    "html_path": "work.html",
+    "alt_text": "A study of formwork timber laid out on a workshop floor before a pour.",
+    "generation_prompt": "Editorial still-life plate, 4:5 vertical. Mouldwork Atlas — bone-cream pine formwork planks laid out in a quiet workshop on a paper-cream concrete floor, before a rammed-earth pour. Warm-earth palette: paper-cream ground (#F0E9D6), clay-taupe timber (#9C8E73), bone-cream highlights (#E8D9C3), one faint burnt-sienna stain (#B25C3C). Marvell Tile & Stone material restraint. No people. Medium format, 50mm equivalent, f/8. No text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "work_grid cell 02 (left half — cream-dominant pair)"
+  },
+  "work-tile-02b": {
+    "html_path": "work.html",
+    "alt_text": "Detail of the formwork seam after pour, the warm earth tight against the boards.",
+    "generation_prompt": "Editorial architectural macro plate, 4:5 vertical. Detail of a rammed-earth pour just demoulded, the warm earth pressed tight against the timber form, a single fine vertical seam visible at center. Burnt-sienna body (#B25C3C), umber shadow (#2D241A), bone-cream board ghost (#E8D9C3). Quiet, tactile, monumental. No people, no props. Medium format, 100mm equivalent, f/8. No text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "work_grid cell 02 (right half — sienna-dominant pair)"
+  },
+  "work-tile-03": {
+    "html_path": "work.html",
+    "alt_text": "A courtyard of pressed-earth panels, the noon sun flattening their tonal range.",
+    "generation_prompt": "Editorial architectural plate, 4:5 vertical. Anatolian Field House — a small courtyard enclosed by pressed-earth panels, the noon sun flattening their tonal range. Warm-earth palette: paper-cream sky (#F0E9D6), burnt-sienna panels (#B25C3C), bone-cream paving (#E8D9C3), clay-taupe shadow (#9C8E73). Asymmetric, monumental, no people, no props. Medium format, 35mm equivalent, f/9. No text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "work_grid cell 03 (left half — cream-dominant pair)"
+  },
+  "work-tile-03b": {
+    "html_path": "work.html",
+    "alt_text": "The same courtyard at dusk, the panels reading as a single warm mass.",
+    "generation_prompt": "Editorial architectural plate, 4:5 vertical. Anatolian Field House at dusk — the pressed-earth panels read as a single warm mass against an umber sky. Burnt-sienna body (#B25C3C), umber shadow (#2D241A), faint bone-cream rim light (#E8D9C3). Silent, monumental, no people. Medium format, 35mm equivalent, f/8. No text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "work_grid cell 03 (right half — sienna-dominant pair)"
+  },
+  "work-tile-04": {
+    "html_path": "work.html",
+    "alt_text": "Pages of the field journal laid out on a cream studio table.",
+    "generation_prompt": "Editorial flat-lay plate, 4:5 vertical. Field Journal IX — open and folded volumes of a quarterly architectural journal laid out on a paper-cream studio table. Soft top-light. Warm-earth palette: paper-cream ground (#F0E9D6), umber ink (#2D241A), burnt-sienna section markers (#B25C3C), bone-cream paper highlights (#E8D9C3), clay-taupe shadow (#9C8E73). Restrained, archival, no hands, no props. Medium format, 80mm equivalent, f/8. No text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "work_grid cell 04 (left half — cream-dominant pair)"
+  },
+  "work-tile-04b": {
+    "html_path": "work.html",
+    "alt_text": "A single open spread of the journal, ink and earth crops aligned to a vertical seam.",
+    "generation_prompt": "Editorial flat-lay plate, 4:5 vertical. A single open spread of the field journal, the gutter aligned with a clean vertical seam in the photograph itself; left page shows a cream rammed-earth specimen, right page a burnt-sienna crop. Warm-earth palette: paper-cream paper (#F0E9D6), burnt-sienna plate (#B25C3C), bone-cream margin (#E8D9C3), umber detail (#2D241A). Quiet, museum-grade. No text or logos, no hands.",
+    "aspect_ratio": "4:3",
+    "placement": "work_grid cell 04 (right half — sienna-dominant pair)"
+  },
+  "contact-courtyard-01": {
+    "html_path": "contact.html",
+    "alt_text": "A quiet inner courtyard of pressed earth at golden hour — a single oak door deep-set in a sienna wall.",
+    "generation_prompt": "Editorial architectural photograph, full-bleed cinematic plate. A quiet inner courtyard at golden hour — a single deep-set oak door is centered in a long burnt-sienna rammed-earth wall, paper-cream paving at the threshold. Asymmetric monumental composition, Silent House discipline. Warm-earth palette: paper-cream paving (#F0E9D6), burnt-sienna wall (#B25C3C), bone-cream rim light (#E8D9C3), umber door shadow (#2D241A), clay-taupe accents (#9C8E73). Medium format, 35mm equivalent, f/8, no people, no clutter. No text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "full_bleed_plate, threshold plate on contact.html"
+  }
+}

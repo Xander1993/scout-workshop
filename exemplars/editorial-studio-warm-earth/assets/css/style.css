@@ -1,0 +1,466 @@
+/* ============================================================
+   MARN — Rammed Seam
+   Warm-earth editorial studio. One idea: the seam.
+   ============================================================ */
+
+:root{
+  --color-bg:#EDE4CF;
+  --color-fg:#241C13;
+  --color-accent:#A8472A;
+  --color-support-1:#857658;
+  --color-support-2:#E0D2B8;
+  --color-dark:#1C140D;
+
+  --seam-x:50%;                 /* live seam position, scroll-driven */
+  --seam-width:24px;
+  --display:"Cormorant Garamond","EB Garamond",Georgia,serif;
+  --sans:"Inter","Helvetica Neue",Arial,sans-serif;
+  --measure:62ch;
+  --gutter:clamp(1.25rem,3vw,2.5rem);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:hidden}
+
+body{
+  margin:0;
+  background:var(--color-bg);
+  color:var(--color-fg);
+  font-family:var(--sans);
+  font-size:clamp(1rem,1.05vw,1.125rem);
+  line-height:1.6;
+  letter-spacing:0;
+  overflow-x:hidden;
+}
+
+img,svg{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
+
+.vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* ---------- header (no CTA furniture) ---------- */
+.site-head{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.25rem var(--gutter);
+  mix-blend-mode:difference;
+  color:#EDE4CF;
+  font-family:var(--sans);
+  font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;
+  pointer-events:none;
+}
+.site-head a,.site-head .brand{pointer-events:auto}
+.site-head .brand{font-weight:600;letter-spacing:.22em}
+.site-head nav{display:flex;gap:1.75rem}
+.site-head nav a{opacity:.85;transition:opacity .3s}
+.site-head nav a:hover,.site-head nav a[aria-current="page"]{opacity:1}
+
+/* ---------- hero / rammed seam ---------- */
+.hero{
+  position:relative;
+  height:100vh;                 /* content-driven: one viewport, no dead runway */
+}
+.hero-sticky{
+  position:relative;
+  height:100vh;width:100%;
+  overflow:hidden;
+}
+.hero-plates{position:absolute;inset:0;display:flex}
+.hero-plate{height:100%;position:relative;overflow:hidden}
+.hero-plate--left{background:var(--color-bg);width:var(--seam-x)}
+.hero-plate--right{background:var(--color-dark);width:calc(100% - var(--seam-x))}
+/* real rammed-earth wall fills the right plate, anchored right so the
+   seam compression reads as the cream pushing the wall away */
+.hero-plate--right img{
+  position:absolute;top:0;right:0;height:100%;width:100vw;max-width:none;
+  object-fit:cover;object-position:center;
+  filter:saturate(.92) contrast(1.04) brightness(.84);
+}
+
+/* rammed-earth seam, sediment stratification, scroll-compressed */
+.hero-seam{
+  position:absolute;top:0;bottom:0;
+  left:var(--seam-x);transform:translateX(-50%);
+  width:var(--seam-width);
+  background:
+    repeating-linear-gradient(0deg,
+      rgba(28,20,13,.20) 0px,rgba(28,20,13,.20) 1px,
+      transparent 1px,transparent 6px),
+    repeating-linear-gradient(0deg,
+      #7c3e2c 0px,#7c3e2c 7px,
+      #a25638 7px,#a25638 13px,
+      #c0694c 13px,#c0694c 19px,
+      #9c4f37 19px,#9c4f37 26px,
+      #a8472a 26px,#a8472a 34px,
+      #8e4630 34px,#8e4630 42px);
+  box-shadow:inset 0 0 0 1px rgba(28,20,13,.18),0 0 28px rgba(28,20,13,.14);
+}
+
+.hero-stage{
+  position:absolute;inset:0;
+  display:grid;grid-template-rows:1fr auto;
+  padding:9vh var(--gutter) 6vh;
+  pointer-events:none;
+}
+.hero-stage > *{pointer-events:auto}
+
+.hero-headline-wrap{
+  position:relative;
+  align-self:center;
+  width:100%;
+  text-align:center;
+}
+.hero-h1{
+  font-family:var(--display);
+  font-weight:500;
+  font-size:clamp(3.5rem,16vw,12rem);
+  line-height:.92;
+  letter-spacing:-0.02em;
+  margin:0;
+  position:relative;
+  white-space:nowrap;
+  display:inline-block;
+}
+.hero-h1 .anchor{visibility:hidden}     /* preserves layout box */
+.hero-h1 .layer{
+  position:absolute;inset:0;
+  display:block;
+  pointer-events:none;
+}
+.hero-h1 .layer--ink{
+  color:var(--color-fg);
+  clip-path:inset(0 calc(100% - var(--seam-x)) 0 0);
+}
+.hero-h1 .layer--cream{
+  color:var(--color-bg);
+  clip-path:inset(0 0 0 var(--seam-x));
+}
+
+.hero-meta{
+  display:flex;align-items:end;
+}
+.hero-cta{
+  display:inline-flex;align-items:center;
+  padding:.6rem 0;
+  color:var(--color-fg);
+  font-size:.82rem;letter-spacing:.22em;text-transform:uppercase;
+  border-bottom:1px solid currentColor;
+  will-change:transform;
+}
+.hero-subhead{
+  position:absolute;right:var(--gutter);bottom:6vh;
+  max-width:28ch;font-size:.95rem;line-height:1.55;
+  text-align:right;
+  color:var(--color-bg);
+  font-family:var(--sans);
+}
+
+/* ---------- manifesto — quiet stratum 1 ---------- */
+.manifesto{
+  padding:12vh var(--gutter);
+  background:var(--color-bg);
+  position:relative;
+}
+.manifesto::before{
+  content:"";position:absolute;top:12vh;bottom:12vh;
+  left:var(--gutter);width:1px;background:var(--color-accent);opacity:.75;
+}
+.manifesto-inner{
+  max-width:var(--measure);
+  margin-left:max(var(--gutter),16vw);
+  font-family:var(--display);
+  font-size:clamp(1.5rem,2.4vw,2.15rem);
+  line-height:1.42;letter-spacing:-0.01em;
+  color:var(--color-fg);
+}
+.manifesto-inner p{margin:0 0 1.6rem}
+.manifesto-inner p:last-child{margin:0}
+.manifesto-inner p:first-of-type::first-letter{
+  font-family:var(--display);
+  font-size:6.4em;line-height:.82;
+  float:left;padding:.05em .12em 0 0;
+  color:var(--color-accent);font-weight:600;
+}
+.manifesto .label{
+  font-family:var(--sans);
+  font-size:.72rem;font-weight:500;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--color-support-1);
+  margin:0 0 2.5rem;display:block;
+}
+
+/* ---------- full-bleed plate — sienna horizon ---------- */
+.plate{
+  position:relative;
+  height:108vh;
+  background:var(--color-accent);
+  overflow:hidden;
+}
+.plate img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;opacity:.92;
+  will-change:transform;
+}
+.plate::before{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(28,20,13,0) 50%,rgba(28,20,13,.55) 100%);
+}
+.plate::after{
+  content:"";position:absolute;left:0;right:0;top:50%;z-index:1;
+  height:1px;background:var(--color-bg);opacity:.30;
+}
+.plate-caption{
+  position:absolute;left:var(--gutter);right:var(--gutter);
+  bottom:8vh;z-index:2;
+  color:var(--color-bg);
+}
+.plate-caption h2{
+  font-family:var(--display);font-weight:500;
+  font-size:clamp(2.5rem,7.5vw,6rem);
+  line-height:.95;letter-spacing:-0.02em;
+  margin:0;max-width:18ch;
+}
+
+/* ---------- compaction sequence — three sediment strata, content-driven ---------- */
+.chapter{position:relative}
+.chapter-sticky{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  background:var(--color-bg);
+}
+.chapter-panel{
+  display:flex;flex-direction:column;justify-content:flex-end;gap:2rem;
+  padding:11vh var(--gutter) 9vh;
+  min-height:54vh;
+}
+.chapter-panel:nth-child(1){background:var(--color-bg);color:var(--color-fg)}
+.chapter-panel:nth-child(2){background:var(--color-support-2);color:var(--color-fg)}
+.chapter-panel:nth-child(3){background:var(--color-accent);color:var(--color-bg)}
+.chapter-panel h3{
+  font-family:var(--display);font-weight:500;
+  font-size:clamp(2rem,3.4vw,3.1rem);
+  line-height:1.02;letter-spacing:-0.02em;
+  margin:0;max-width:16ch;
+}
+.chapter-panel p{
+  max-width:46ch;margin:0;
+  font-size:clamp(1rem,1.25vw,1.2rem);line-height:1.6;opacity:.92;
+}
+
+/* ---------- field index — sediment cross-section ---------- */
+.spec{
+  padding:12vh var(--gutter);
+  background:var(--color-bg);
+}
+.spec-inner{max-width:1240px;margin:0 auto}
+.spec-head{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:2rem;margin-bottom:4vh;
+  border-bottom:1px solid var(--color-fg);padding-bottom:1.5rem;
+}
+.spec-head h2{
+  font-family:var(--display);font-weight:500;
+  font-size:clamp(2rem,5vw,3.5rem);
+  line-height:1;letter-spacing:-0.02em;margin:0;
+}
+.spec-head .meta{font-size:.78rem;letter-spacing:.20em;text-transform:uppercase;color:var(--color-support-1)}
+.spec-table{width:100%;border-collapse:collapse}
+.spec-table tr:nth-child(even){background:var(--color-support-2)}
+.spec-table th,.spec-table td{
+  padding:1.35rem 1.25rem;text-align:left;vertical-align:baseline;
+}
+.spec-table th{
+  width:24%;font-weight:500;
+  font-size:.78rem;letter-spacing:.20em;text-transform:uppercase;
+  color:var(--color-accent);
+}
+.spec-table td{font-family:var(--display);font-size:clamp(1.15rem,1.7vw,1.5rem);line-height:1.4}
+.spec-table td .ord{
+  font-family:var(--sans);font-size:.74rem;letter-spacing:.04em;text-transform:none;
+  color:var(--color-support-1);display:block;margin-top:.4rem;
+}
+
+/* ---------- monolith — settled wordmark (deliberate dark block) ---------- */
+.monolith{
+  background:var(--color-dark);
+  padding:14vh var(--gutter) 12vh;
+  min-height:84vh;
+  display:flex;flex-direction:column;justify-content:center;
+  text-align:center;
+  position:relative;
+}
+.monolith h2{
+  font-family:var(--display);font-weight:500;
+  font-size:clamp(5rem,26vw,20rem);
+  line-height:.82;letter-spacing:-0.03em;
+  color:var(--color-bg);
+  margin:0;
+}
+.monolith h2::first-letter{color:var(--color-accent)}
+.monolith .horizon{
+  margin-top:8vh;height:1px;background:var(--color-bg);opacity:.30;
+}
+
+/* ---------- studio statement — right-aligned negative space ---------- */
+.statement{
+  background:var(--color-bg);
+  padding:13vh var(--gutter);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6rem;
+}
+.statement .col-left{
+  font-family:var(--sans);font-size:.78rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--color-support-1);
+}
+.statement .col-right{
+  font-family:var(--display);
+  font-size:clamp(1.6rem,2.7vw,2.3rem);
+  line-height:1.4;letter-spacing:-0.01em;
+  max-width:38ch;justify-self:end;text-align:right;
+}
+.statement .col-right p{margin:0 0 1.4rem}
+.statement .col-right p:last-child{margin:0}
+.statement-link{
+  color:var(--color-accent);
+  border-bottom:1px solid currentColor;
+  padding-bottom:.1em;
+  transition:opacity .3s;
+}
+.statement-link:hover{opacity:.7}
+
+/* ---------- work grid (work.html) — split cells ---------- */
+.work-head{
+  padding:16vh var(--gutter) 8vh;
+  background:var(--color-bg);
+  display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end;
+}
+.work-head h1{
+  font-family:var(--display);font-weight:500;
+  font-size:clamp(3.5rem,13vw,9rem);
+  line-height:.9;letter-spacing:-0.02em;margin:0;
+}
+.work-head .lede{
+  max-width:38ch;justify-self:end;
+  font-size:1rem;line-height:1.6;color:var(--color-fg);
+}
+.work-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.work-cell{
+  position:relative;
+  aspect-ratio:4/5;
+  display:grid;grid-template-columns:1fr 1fr;
+  overflow:hidden;
+}
+.work-cell .half{position:relative;overflow:hidden}
+.work-cell .half--cream{background:var(--color-bg)}
+.work-cell .half--sienna{background:var(--color-accent)}
+.work-cell img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;filter:saturate(.9);
+}
+.work-cell:nth-child(odd) .half--cream img{opacity:.20;mix-blend-mode:multiply}
+.work-cell:nth-child(odd) .half--sienna img{opacity:.96}
+.work-cell:nth-child(even) .half--cream img{opacity:.96}
+.work-cell:nth-child(even) .half--sienna img{opacity:.22;mix-blend-mode:multiply}
+.work-cell::after{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(28,20,13,0) 55%,rgba(28,20,13,.62) 100%);
+}
+.work-cell .caption{
+  position:absolute;left:1.75rem;right:1.75rem;bottom:1.4rem;
+  z-index:2;
+}
+.work-cell .caption h2{
+  font-family:var(--display);font-weight:500;
+  font-size:clamp(1.45rem,2.4vw,2.15rem);
+  line-height:1;letter-spacing:-0.01em;margin:0;
+  color:var(--color-bg);
+}
+
+/* ---------- contact ---------- */
+.contact-hero{
+  padding:16vh var(--gutter) 8vh;
+  background:var(--color-bg);
+  display:grid;grid-template-columns:1fr;gap:4vh;
+}
+.contact-hero h1{
+  font-family:var(--display);font-weight:500;
+  font-size:clamp(3rem,12vw,9rem);
+  line-height:.88;letter-spacing:-0.02em;margin:0;
+  max-width:14ch;
+}
+.contact-hero .lede{max-width:46ch;font-size:1.05rem;line-height:1.6}
+.contact-grid{
+  padding:9vh var(--gutter);
+  background:var(--color-bg);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:3rem;
+  border-top:1px solid rgba(28,20,13,.15);
+}
+.contact-col h3{
+  font-family:var(--sans);font-weight:500;
+  font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--color-accent);margin:0 0 1.2rem;
+}
+.contact-col .line{
+  font-family:var(--display);font-size:clamp(1.25rem,1.8vw,1.6rem);
+  line-height:1.35;margin:0 0 .4rem;
+}
+.contact-col .line.dim{
+  color:var(--color-support-1);
+  font-family:var(--sans);font-size:.92rem;line-height:1.5;
+}
+
+/* ---------- footer ---------- */
+.site-foot{
+  background:var(--color-dark);color:var(--color-bg);
+  padding:6vh var(--gutter) 3vh;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;
+  font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
+}
+.site-foot .seam-rule{
+  grid-column:1/-1;height:1px;background:var(--color-accent);opacity:.6;margin-bottom:4vh;
+}
+.site-foot .right{text-align:right;color:var(--color-support-1)}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  :root{--seam-x:50%}
+  .plate img{transform:none!important}
+}
+
+/* ---------- small screens ---------- */
+@media (max-width:760px){
+  .site-head{padding:1rem var(--gutter);font-size:.66rem;letter-spacing:.12em}
+  .site-head .brand{letter-spacing:.16em}
+  .site-head nav{gap:.95rem}
+  /* mobile hero: full-bleed wall + scrim, cream type (the seam straddle is a desktop signature) */
+  :root{--seam-x:0%}
+  .hero-plate--left{display:none}
+  .hero-seam{display:none}
+  .hero-sticky::after{content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(180deg,rgba(28,20,13,.34) 0%,rgba(28,20,13,.18) 38%,rgba(28,20,13,.74) 100%)}
+  .hero-stage{z-index:2;padding:14vh var(--gutter) 8vh}
+  .hero-headline-wrap{text-align:left}
+  .hero-h1{font-size:clamp(2.6rem,15vw,6rem);white-space:normal;text-align:left}
+  .hero-cta{color:var(--color-bg)}
+  .hero-subhead{position:static;margin-top:1.5rem;max-width:34ch;text-align:left;color:var(--color-bg)}
+  .manifesto-inner{margin-left:1.25rem;font-size:1.3rem}
+  .plate{height:84vh}
+  .chapter-sticky{grid-template-columns:1fr}
+  .chapter-panel{min-height:0;padding:9vh var(--gutter)}
+  .statement{grid-template-columns:1fr;gap:2rem}
+  .statement .col-right{text-align:left;justify-self:start}
+  .work-head{grid-template-columns:1fr;gap:1.5rem}
+  .work-head .lede{justify-self:start}
+  .work-grid{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr 1fr;gap:2rem}
+  .site-foot{grid-template-columns:1fr;gap:.75rem}
+  .site-foot .right{text-align:left}
+}
+
+@media (max-width:480px){
+  .contact-grid{grid-template-columns:1fr}
+}

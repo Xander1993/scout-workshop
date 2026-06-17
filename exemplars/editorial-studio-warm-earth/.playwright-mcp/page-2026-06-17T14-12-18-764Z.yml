@@ -1,0 +1,68 @@
+- generic [active] [ref=e1]:
+  - banner:
+    - link "MARN" [ref=e2] [cursor=pointer]:
+      - /url: ./index.html
+    - navigation "Primary":
+      - link "Index" [ref=e3] [cursor=pointer]:
+        - /url: ./index.html
+      - link "Field" [ref=e4] [cursor=pointer]:
+        - /url: ./work.html
+      - link "Correspondence" [ref=e5] [cursor=pointer]:
+        - /url: ./contact.html
+  - main [ref=e6]:
+    - region "Write to the studio." [ref=e7]:
+      - heading "Write to the studio." [level=1] [ref=e8]
+      - paragraph [ref=e9]: Letters are answered on Fridays from the studio in Konya. Commissions open one quarter ahead of each new volume. Subscriptions ship from the moulding shed when the ink has set.
+    - region "A studio at the back of the plateau." [ref=e10]:
+      - img "A quiet inner courtyard of pressed earth at golden hour, a single oak door deep-set in a sienna wall." [ref=e11]
+      - heading "A studio at the back of the plateau." [level=2] [ref=e13]
+    - region "Studio contact lines" [ref=e14]:
+      - generic [ref=e15]:
+        - heading "Letters" [level=3] [ref=e16]
+        - paragraph [ref=e17]: studio@marn.earth
+        - paragraph [ref=e18]: Replies issued on Fridays.
+      - generic [ref=e19]:
+        - heading "Studio" [level=3] [ref=e20]
+        - paragraph [ref=e21]:
+          - text: Sokak 4, Sille,
+          - text: Konya, Türkiye
+        - paragraph [ref=e22]: Open by appointment, Wednesday to Saturday.
+      - generic [ref=e23]:
+        - heading "Commissions" [level=3] [ref=e24]
+        - paragraph [ref=e25]: commissions@marn.earth
+        - paragraph [ref=e26]: One quarter lead, no exceptions.
+      - generic [ref=e27]:
+        - heading "Field Journal" [level=3] [ref=e28]
+        - paragraph [ref=e29]: subscribe@marn.earth
+        - paragraph [ref=e30]: Four volumes a year, surface mail.
+    - region "Agenda" [ref=e31]:
+      - generic [ref=e32]:
+        - generic [ref=e33]:
+          - heading "Agenda" [level=2] [ref=e34]
+          - generic [ref=e35]: Winter 2026, three engagements remaining
+        - table [ref=e36]:
+          - rowgroup [ref=e37]:
+            - row "October Sediment glossary, the next volume Field journal, dispatch" [ref=e38]:
+              - rowheader "October" [ref=e39]
+              - cell "Sediment glossary, the next volume Field journal, dispatch" [ref=e40]:
+                - text: Sediment glossary, the next volume
+                - generic [ref=e41]: Field journal, dispatch
+            - row "November Plateau commission, private residence Sille, in construction" [ref=e42]:
+              - rowheader "November" [ref=e43]
+              - cell "Plateau commission, private residence Sille, in construction" [ref=e44]:
+                - text: Plateau commission, private residence
+                - generic [ref=e45]: Sille, in construction
+            - row "December Conversation at İstanbul Tasarım Bienali Public, by invitation" [ref=e46]:
+              - rowheader "December" [ref=e47]
+              - cell "Conversation at İstanbul Tasarım Bienali Public, by invitation" [ref=e48]:
+                - text: Conversation at İstanbul Tasarım Bienali
+                - generic [ref=e49]: Public, by invitation
+    - region "A note" [ref=e50]:
+      - generic [ref=e51]: A note
+      - generic [ref=e52]:
+        - paragraph [ref=e53]: We do not pitch. We do not court. A wall finds its reader the way a seam finds its true line, slowly, and only once.
+        - paragraph [ref=e54]: Write when the brief is settled.
+  - contentinfo [ref=e55]:
+    - generic [ref=e57]: © MARN 2026
+    - generic [ref=e58]: studio@marn.earth
+    - generic [ref=e59]: A field journal, published quarterly

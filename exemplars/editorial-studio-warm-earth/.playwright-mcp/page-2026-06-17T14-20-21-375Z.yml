@@ -1,0 +1,106 @@
+- generic [active] [ref=e1]:
+  - banner:
+    - link "MARN" [ref=e2] [cursor=pointer]:
+      - /url: ./index.html
+    - navigation "Primary":
+      - link "Index" [ref=e3] [cursor=pointer]:
+        - /url: ./index.html
+      - link "Field" [ref=e4] [cursor=pointer]:
+        - /url: ./work.html
+      - link "Correspondence" [ref=e5] [cursor=pointer]:
+        - /url: ./contact.html
+  - main [ref=e6]:
+    - region [ref=e7]:
+      - generic [ref=e8]:
+        - generic:
+          - heading [level=1] [ref=e14]:
+            - generic:
+              - generic: B
+              - generic: u
+              - generic: i
+              - generic: l
+              - generic: t
+              - generic: s
+              - generic: l
+              - generic: o
+              - generic: w
+              - generic: .
+            - generic:
+              - generic: B
+              - generic: u
+              - generic: i
+              - generic: l
+              - generic: t
+              - generic: s
+              - generic: l
+              - generic: o
+              - generic: w
+              - generic: .
+          - link "Read the field journal" [ref=e16] [cursor=pointer]:
+            - /url: ./work.html
+          - paragraph [ref=e17]: A soil-architecture practice composing monumental brand work in clay-thick type, restraint, and one warm seam.
+    - region "Manifesto" [ref=e18]:
+      - generic [ref=e19]:
+        - heading "Manifesto" [level=2] [ref=e20]
+        - paragraph [ref=e21]: "Earth, well-rammed, outlasts the hand that rammed it. We do not decorate. We compact, pressing the brief downward through tonal strata until only the seam remains: a slow, warm vertical that carries every page that follows."
+        - paragraph [ref=e22]: Every project here is the same wall, lit from a different hour. Material, type, seam. Nothing else.
+    - region "A wall is a horizon, set on its edge." [ref=e23]:
+      - img "A monumental sun-warmed rammed-earth wall, horizontal sediment strata catching low afternoon light." [ref=e24]
+      - heading "A wall is a horizon, set on its edge." [level=2] [ref=e26]
+    - region "Compaction sequence" [ref=e27]:
+      - generic [ref=e28]:
+        - article [ref=e29]:
+          - heading "Soil is read, not chosen." [level=3] [ref=e30]
+          - paragraph [ref=e31]: "A site is a sentence already written. The studio's first move is to listen for its grain: sand, silt, clay, the ratio of each weighed in the palm before any drawing is made."
+        - article [ref=e32]:
+          - heading "Formwork holds the argument." [level=3] [ref=e33]
+          - paragraph [ref=e34]: "We design the mould as carefully as the wall. Tolerances are kept monumental: a single seam, set true, that the eye reads as composure rather than detail."
+        - article [ref=e35]:
+          - heading "The wall composes itself." [level=3] [ref=e36]
+          - paragraph [ref=e37]: Once tamped, earth resolves. The bicolor mosaic of moisture and mineral compresses into a single warm monolith, and the seam, the mark of our hand, quiets into the surface.
+    - region "Field index" [ref=e38]:
+      - generic [ref=e39]:
+        - generic [ref=e40]:
+          - heading "Field index" [level=2] [ref=e41]
+          - generic [ref=e42]: Volume nine, Compaction
+        - table [ref=e43]:
+          - rowgroup [ref=e44]:
+            - row "Atlas Rammed-earth tolerances Plate index, 24 folios" [ref=e45]:
+              - rowheader "Atlas" [ref=e46]
+              - cell "Rammed-earth tolerances Plate index, 24 folios" [ref=e47]:
+                - text: Rammed-earth tolerances
+                - generic [ref=e48]: Plate index, 24 folios
+            - row "Essay The seam, a vertical literature 6,400 words" [ref=e49]:
+              - rowheader "Essay" [ref=e50]
+              - cell "The seam, a vertical literature 6,400 words" [ref=e51]:
+                - text: The seam, a vertical literature
+                - generic [ref=e52]: 6,400 words
+            - row "Report Mould-makers of the plateau Photographs, in colour" [ref=e53]:
+              - rowheader "Report" [ref=e54]
+              - cell "Mould-makers of the plateau Photographs, in colour" [ref=e55]:
+                - text: Mould-makers of the plateau
+                - generic [ref=e56]: Photographs, in colour
+            - row "Talk On compaction as a moral act In conversation with H. Aydın" [ref=e57]:
+              - rowheader "Talk" [ref=e58]
+              - cell "On compaction as a moral act In conversation with H. Aydın" [ref=e59]:
+                - text: On compaction as a moral act
+                - generic [ref=e60]: In conversation with H. Aydın
+            - row "Glossary Sediment terms, A to M Reference, illustrated" [ref=e61]:
+              - rowheader "Glossary" [ref=e62]
+              - cell "Sediment terms, A to M Reference, illustrated" [ref=e63]:
+                - text: Sediment terms, A to M
+                - generic [ref=e64]: Reference, illustrated
+    - region "MARN" [ref=e65]:
+      - heading "MARN" [level=2] [ref=e66]
+    - region "Studio statement" [ref=e68]:
+      - generic [ref=e69]: Studio statement
+      - generic [ref=e70]:
+        - paragraph [ref=e71]: "We work with three materials and one ideology: clay, type, and time. The studio publishes a quarterly field journal because a wall deserves a reader, not a buyer."
+        - paragraph [ref=e72]: Founded on the plateau, 2018. Two architects, one editor, one mason.
+        - paragraph [ref=e73]:
+          - link "Read the field journal" [ref=e74] [cursor=pointer]:
+            - /url: ./work.html
+  - contentinfo [ref=e75]:
+    - generic [ref=e77]: © MARN 2026
+    - generic [ref=e78]: studio@marn.earth
+    - generic [ref=e79]: A field journal, published quarterly

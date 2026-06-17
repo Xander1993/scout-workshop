@@ -1,0 +1,76 @@
+- generic [active] [ref=e1]:
+  - banner:
+    - link "MARN" [ref=e2] [cursor=pointer]:
+      - /url: ./index.html
+    - navigation "Primary":
+      - link "Index" [ref=e3] [cursor=pointer]:
+        - /url: ./index.html
+      - link "Field" [ref=e4] [cursor=pointer]:
+        - /url: ./work.html
+      - link "Correspondence" [ref=e5] [cursor=pointer]:
+        - /url: ./contact.html
+  - main [ref=e6]:
+    - region "Field" [ref=e7]:
+      - heading "Field" [level=1] [ref=e8]
+      - paragraph [ref=e9]: Selected walls, mouldworks, and journal volumes from the plateau. Each cell of the grid splits on the same vertical the hero seam describes. Read across, then down.
+    - region "The seam, kept honest." [ref=e10]:
+      - img "A long rammed-earth wall ending in a deep doorway, the seam between two pours running floor to lintel." [ref=e11]
+      - heading "The seam, kept honest." [level=2] [ref=e13]
+    - region "Selected projects" [ref=e14]:
+      - article [ref=e15]:
+        - img "A weighty rammed-earth wall raked by low afternoon light, sediment bands clearly visible." [ref=e17]
+        - img "The same wall photographed in shadow, terracotta surface compressed into a single field." [ref=e19]
+        - heading "Konya Reading Room" [level=2] [ref=e21]
+      - article [ref=e22]:
+        - img "A study of formwork timber laid out on a workshop floor before a pour." [ref=e24]
+        - img "Detail of the formwork seam after pour, the warm earth tight against the boards." [ref=e26]
+        - heading "Mouldwork Atlas" [level=2] [ref=e28]
+      - article [ref=e29]:
+        - img "A courtyard of pressed-earth panels, the noon sun flattening their tonal range." [ref=e31]
+        - img "The same courtyard at dusk, the panels reading as a single warm mass." [ref=e33]
+        - heading "Anatolian Field House" [level=2] [ref=e35]
+      - article [ref=e36]:
+        - img "Pages of the field journal laid out on a cream studio table." [ref=e38]
+        - img "A single open spread of the journal, ink and earth crops aligned to a vertical seam." [ref=e40]
+        - heading "The Field Journal" [level=2] [ref=e42]
+    - region "Catalogue" [ref=e43]:
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - heading "Catalogue" [level=2] [ref=e46]
+          - generic [ref=e47]: Full collection, 2018 to 2026
+        - table [ref=e48]:
+          - rowgroup [ref=e49]:
+            - row "2018 Strata of the village wall Karaman" [ref=e50]:
+              - rowheader "2018" [ref=e51]
+              - cell "Strata of the village wall Karaman" [ref=e52]:
+                - text: Strata of the village wall
+                - generic [ref=e53]: Karaman
+            - row "2020 Konya Reading Room Konya" [ref=e54]:
+              - rowheader "2020" [ref=e55]
+              - cell "Konya Reading Room Konya" [ref=e56]:
+                - text: Konya Reading Room
+                - generic [ref=e57]: Konya
+            - row "2022 Mouldwork atlas, 1:1 Workshop" [ref=e58]:
+              - rowheader "2022" [ref=e59]
+              - cell "Mouldwork atlas, 1:1 Workshop" [ref=e60]:
+                - text: Mouldwork atlas, 1:1
+                - generic [ref=e61]: Workshop
+            - row "2023 Anatolian field house Sille" [ref=e62]:
+              - rowheader "2023" [ref=e63]
+              - cell "Anatolian field house Sille" [ref=e64]:
+                - text: Anatolian field house
+                - generic [ref=e65]: Sille
+            - row "2026 Compaction The plateau" [ref=e66]:
+              - rowheader "2026" [ref=e67]
+              - cell "Compaction The plateau" [ref=e68]:
+                - text: Compaction
+                - generic [ref=e69]: The plateau
+    - region "Closing" [ref=e70]:
+      - generic [ref=e71]: Closing
+      - generic [ref=e72]:
+        - paragraph [ref=e73]: We publish on a quarter, never sooner, never later. The next volume is set in a moulding shed on the high plateau, drying as you read this.
+        - paragraph [ref=e74]: The next volume arrives in October.
+  - contentinfo [ref=e75]:
+    - generic [ref=e77]: © MARN 2026
+    - generic [ref=e78]: studio@marn.earth
+    - generic [ref=e79]: A field journal, published quarterly
