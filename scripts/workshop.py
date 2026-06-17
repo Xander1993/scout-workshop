@@ -1296,7 +1296,7 @@ def run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots
             reasons.append("structural repeat of a recent kit")
     craft = craft_judge.run(run_dir, kit_dir, kit_type, concept, shots,
                             run_claude=run_claude, load_prompt_template=load_prompt_template,
-                            extract_json=_extract_json_object)
+                            extract_json=_extract_json_object, density=rm)
     if craft.get("verdict") != "pass":
         reasons.append(f"craft below_bar: {craft.get('reasons', '')}")
     passed = (manifest_ok and det_ok and hygiene_ok

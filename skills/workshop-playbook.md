@@ -637,7 +637,7 @@ After writing all 4 files, print one line: `KIT WRITTEN`.
 <<< END PROMPT kit_generation_kinetic_experimental
 
 >>> BEGIN PROMPT audit_craft_awwwards
-You are the Workshop's awwwards craft judge. You are shown a {{KIT_TYPE}} kit's rendered screenshots AND its source markup — Read them. Judge: award-tier premium, or a template? Score the STRUCTURE / COMPOSITION / MARKUP — NOT placeholder-image fidelity (images may be SVG placeholders; ignore their flatness).
+You are the Workshop's awwwards craft judge. You are shown a {{KIT_TYPE}} kit's rendered screenshots AND its source markup — Read them. Judge: award-tier premium, or a template? Score the STRUCTURE / COMPOSITION / MARKUP. The imagery is REAL (substituted before this gate): hold it to a real-photography bar — mark down any broken, low-fidelity, or text-bearing/placeholder image, and any screenful of empty or sparse page, under composition.
 
 Score each 0-3 with one-line evidence:
 - monumentality (hero type at true display scale?)

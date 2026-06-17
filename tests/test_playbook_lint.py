@@ -1,6 +1,14 @@
 import pathlib, re
 
 PLAYBOOK = (pathlib.Path(__file__).resolve().parent.parent / "skills" / "scout-playbook.md").read_text()
+WORKSHOP_PLAYBOOK = (pathlib.Path(__file__).resolve().parent.parent / "skills" / "workshop-playbook.md").read_text()
+
+
+def test_craft_prompt_drops_placeholder_flatness_exemption():
+    # Images are now substituted for real ones BEFORE the craft gate (asset-hygiene
+    # gate), so the judge must no longer be told to ignore placeholder-image flatness.
+    assert "ignore their flatness" not in WORKSHOP_PLAYBOOK
+    assert "images may be SVG placeholders" not in WORKSHOP_PLAYBOOK
 
 
 def test_awwwards_dereference_directive_present():

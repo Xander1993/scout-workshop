@@ -54,6 +54,39 @@ def test_enforce_floor_passes_clean_premium():
         "motion_realized": 3, "signature_moment": 3}}) == "pass"
 
 
+def test_enforce_floor_vetoes_empty_page_density():
+    # Clean craft scores, but the deterministic density signal says the rendered
+    # page is mostly empty / under-inked / hero-overflowing → density veto, so the
+    # craft verdict can no longer read "pass" on a structurally empty page.
+    base = {"template_tells": [], "scores": {
+        "monumentality": 3, "restraint": 3, "composition": 3,
+        "motion_realized": 3, "signature_moment": 3}}
+    assert cj._enforce_floor({**base, "density": {"void_ratio": 0.9}}) == "below_bar"
+    assert cj._enforce_floor({**base, "density": {"ink_coverage": 0.01}}) == "below_bar"
+    assert cj._enforce_floor({**base, "density": {"hero_vh_ratio": 3.0}}) == "below_bar"
+
+
+def test_enforce_floor_passes_with_healthy_density():
+    base = {"template_tells": [], "scores": {
+        "monumentality": 3, "restraint": 3, "composition": 3,
+        "motion_realized": 3, "signature_moment": 3}}
+    assert cj._enforce_floor({**base, "density": {
+        "void_ratio": 0.4, "ink_coverage": 0.2, "hero_vh_ratio": 1.3}}) == "pass"
+    # absent density (e.g. render_metrics failed) must not spuriously veto
+    assert cj._enforce_floor(base) == "pass"
+
+
+def test_run_threads_density_into_verdict(tmp_path):
+    fake = ('{"scores":{"monumentality":3,"restraint":3,"composition":3,'
+            '"motion_realized":3,"signature_moment":3},"verdict":"pass","template_tells":[]}')
+    v = cj.run(tmp_path, tmp_path / "kit", "editorial-studio", {}, ["/s/home.png"],
+               run_claude=lambda p, **k: fake,
+               load_prompt_template=lambda n: "x",
+               extract_json=lambda s: s,
+               density={"void_ratio": 0.95})
+    assert v["verdict"] == "below_bar"
+
+
 def test_bad_json_falls_back_to_below_bar(tmp_path):
     v = cj.run(tmp_path, tmp_path / "kit", "editorial-studio", {}, ["/s/home.png"],
                run_claude=lambda p, **k: "not json",

@@ -21,17 +21,27 @@ def _enforce_floor(v: dict) -> str:
     tells = v.get("template_tells") or []
     vals = [scores.get(k, 0) for k in _CRAFT_KEYS]
     v["weighted_sum"] = sum(vals)
+    # Deterministic density veto: the craft judge was structurally blind to emptiness
+    # (it only saw the model's self-reported scores), so a mostly-empty page could read
+    # "pass". Wire the render-metric density signals in as a HARD veto so the craft
+    # verdict can never say pass on a void/under-inked/hero-overflowing page. Absent
+    # density (render_metrics failed) leaves the safe defaults → no spurious veto.
+    dens = v.get("density") or {}
+    density_veto = (dens.get("void_ratio", 0) > QF["void_ratio_max"]
+                    or dens.get("ink_coverage", 1.0) < QF["ink_coverage_min"]
+                    or dens.get("hero_vh_ratio", 0) > QF["hero_vh_max"])
     veto = (not scores
             or any(s == 0 for s in vals)
             or scores.get("signature_moment", 0) < QF["craft_signature_min"]
             or scores.get("monumentality", 0) < QF["craft_monumentality_min"]
             or len(tells) >= QF["craft_tells_veto_at"]
-            or sum(vals) < QF["craft_weighted_min"])
+            or sum(vals) < QF["craft_weighted_min"]
+            or density_veto)
     return "below_bar" if veto else "pass"
 
 
 def run(run_dir, kit_dir, kit_type, concept, screenshots, *,
-        run_claude, load_prompt_template, extract_json) -> dict:
+        run_claude, load_prompt_template, extract_json, density=None) -> dict:
     run_dir = Path(run_dir)
     if not screenshots:  # screenshots are load-bearing for the visual judge
         v = {"verdict": "below_bar", "reasons": "no-screenshots", "scores": {}, "template_tells": []}
@@ -50,7 +60,9 @@ def run(run_dir, kit_dir, kit_type, concept, screenshots, *,
         v = {"verdict": "below_bar", "reasons": f"judge JSON parse failed: {e}",
              "scores": {}, "template_tells": []}
     # Recompute the §13 verdict from scores in code — never trust the model's
-    # self-reported verdict (it can contradict its own rule).
+    # self-reported verdict (it can contradict its own rule). The deterministic
+    # density signal is folded in as a HARD veto (see _enforce_floor).
+    v["density"] = density or {}
     v["verdict"] = _enforce_floor(v)
     (run_dir / "craft_verdict.json").write_text(json.dumps(v, indent=2), encoding="utf-8")
     return v
