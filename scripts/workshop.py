@@ -1245,17 +1245,28 @@ def run_quality_gate(run_dir, kit_dir, kit_type, register_family, concept, shots
         reasons.append(f"no manifest: {e}")
     rm = {}
     try:
-        rm = render_metrics.render_metrics(kit_dir)
+        rm = render_metrics.render_metrics_all(kit_dir)
     except Exception as e:  # noqa: BLE001
         reasons.append(f"render_metrics failed: {e}")
     # A void is a broken/sparse gap and is ALWAYS gated — a gap this large is never
     # intentional negative space (both real premium kits measure <=1300px). The
     # earlier page-height carve-out made the void signal inert on tall pages, which
     # is exactly the page class (long premium AND padded-generic) it must police.
-    void_bad = rm.get("max_vertical_void_px", 0) > QF["vertical_void_max_px"].get(kit_type, 2400)
+    # Density vetoes (worst case across all pages/viewports, via render_metrics_all):
+    # the single-gap ceiling AND a proportional void ratio AND a screenshot ink-coverage
+    # floor AND a hero overflow ceiling. Each is a one-sided broken-page guard calibrated
+    # so real premium kits clear it comfortably.
+    void_bad = (rm.get("max_vertical_void_px", 0) > QF["vertical_void_max_px"].get(kit_type, 2400)
+                or rm.get("void_ratio", 0) > QF["void_ratio_max"])
+    ink_bad = rm.get("ink_coverage", 1.0) < QF["ink_coverage_min"]
+    hero_over = rm.get("hero_vh_ratio", 0) > QF["hero_vh_max"]
+    if void_bad or ink_bad or hero_over:
+        reasons.append(f"density veto (void_ratio={rm.get('void_ratio')}, "
+                       f"ink={rm.get('ink_coverage')}, hero_vh={rm.get('hero_vh_ratio')})")
     det_ok = (rm.get("hero_scale_ratio", 0) >= QF["hero_scale_min"]
+              and not hero_over
               and len(rm.get("template_tells", [])) <= QF["template_tells_max"]
-              and not void_bad)
+              and not void_bad and not ink_bad)
     if not det_ok:
         reasons.append(f"genericness/density (hero={rm.get('hero_scale_ratio')}, "
                        f"tells={rm.get('template_tells')}, "
