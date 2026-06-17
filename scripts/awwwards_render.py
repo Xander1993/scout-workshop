@@ -9,6 +9,7 @@ signature concept) carries premium. Per design §11/§14 palette is a tie-breake
 from __future__ import annotations
 import colorsys
 import hashlib
+import re
 import sys
 from pathlib import Path
 
@@ -77,6 +78,10 @@ def render_directives(sub_aesthetic: str, seed: int, perturb: bool = True) -> di
 _KIT_TYPE_RTYPES = {
     "single-product": {"product_marketing"},
     "editorial-studio": {"studio_site", "agency_portfolio", "product_marketing"},
+    # kinetic-experimental draws art-direction from ANY premium source — it's
+    # motion-led, so structure is not inherited from refs (see _KIT_TYPE_HEROES
+    # omission below: no hero constraint, any archetype may inform palette/mood).
+    "kinetic-experimental": {"studio_site", "agency_portfolio", "product_marketing"},
 }
 # A kit-type also constrains the HERO archetype it may inherit. reference_type
 # (e.g. product_marketing) is too coarse — a product-marketing site can still be
@@ -109,6 +114,56 @@ def art_direction_query(sub_aesthetic: str, kit_type: str) -> str:
             "restraint, scroll choreography, signature concept")
 
 
+def structural_tokens(ref: dict) -> set[str]:
+    """Structural fingerprint of a reference: the fields that carry premium /
+    diversity (hero archetype + section topology + signature concept words).
+    Palette/colour deliberately excluded — it's a tie-breaker, not structure."""
+    toks: set[str] = set()
+    hero = ref.get("hero_archetype")
+    if hero:
+        toks.add(f"hero:{hero}")
+    for sec in (ref.get("section_topology") or []):
+        if sec:
+            toks.add(f"sec:{sec}")
+    sig = ref.get("signature_idea") or ref.get("signature_concept") or ""
+    for word in re.findall(r"[a-z0-9]+", sig.lower()):
+        toks.add(f"sig:{word}")
+    return toks
+
+
+def _jaccard(a: set[str], b: set[str]) -> float:
+    union = a | b
+    return len(a & b) / len(union) if union else 0.0
+
+
+def mmr_select(scored: list[tuple[dict, float]], k: int, lambda_: float = 0.7) -> list[dict]:
+    """Maximal Marginal Relevance de-dup over a relevance-scored candidate list.
+
+    `scored` is [(ref, relevance_score), ...] with reranker scores already in
+    0..1. Greedily picks k refs balancing relevance against STRUCTURAL similarity
+    to the already-picked set, so a thin reranked pool can't hand the brief k
+    near-identical references (same hero + topology + concept). The first pick is
+    always the most relevant ref; later picks are penalised by their max
+    structural overlap with prior picks."""
+    if not scored:
+        return []
+    remaining = list(scored)
+    selected: list[dict] = []
+    sel_tokens: list[set[str]] = []
+    while remaining and len(selected) < k:
+        best_i, best_score = 0, None
+        for i, (ref, rel) in enumerate(remaining):
+            toks = structural_tokens(ref)
+            max_sim = max((_jaccard(toks, st) for st in sel_tokens), default=0.0)
+            score = lambda_ * rel - (1.0 - lambda_) * max_sim
+            if best_score is None or score > best_score:
+                best_i, best_score = i, score
+        ref, _rel = remaining.pop(best_i)
+        selected.append(ref)
+        sel_tokens.append(structural_tokens(ref))
+    return selected
+
+
 def retrieve_awwwards_refs(sub_aesthetic: str, kit_type: str, vault_index: dict, k: int = 4) -> list[dict]:
     """Semantic retrieval over the corpus, kit_type-filtered, reranked. Returns
     [{payload, note_path, image_path}], best first. Skips refs lacking
@@ -135,8 +190,13 @@ def retrieve_awwwards_refs(sub_aesthetic: str, kit_type: str, vault_index: dict,
         f"{' '.join(r.get('techniques') or [])}"
         for r in filtered
     ]
-    reranked = sl.rerank(q, docs, top_n=min(k, len(docs)))
-    ordered = [filtered[r["index"]] for r in reranked]
+    # Rerank a WIDER pool than k (recover the full filtered candidate set, capped
+    # for cost), then MMR-select k so a thin pool can't yield k near-duplicate
+    # refs. Widening also grows the effective pool the selector draws from.
+    rerank_n = min(max(k * 3, 8), len(docs))
+    reranked = sl.rerank(q, docs, top_n=rerank_n)
+    scored = [(filtered[r["index"]], float(r.get("relevance_score", 0.0))) for r in reranked]
+    ordered = mmr_select(scored, k)
     out = []
     for r in ordered:
         if not r.get("hero_archetype"):

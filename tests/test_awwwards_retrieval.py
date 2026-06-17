@@ -33,3 +33,44 @@ def test_art_direction_query_is_not_conversion():
     q = ar.art_direction_query("sun-baked", "single-product").lower()
     assert "monumental" in q and "premium" in q
     assert "cta" not in q and "click-to-call" not in q
+
+
+def _ref(hero, topo, sig=""):
+    return {"hero_archetype": hero, "section_topology": topo, "signature_idea": sig}
+
+
+def test_structural_tokens_excludes_palette():
+    r = _ref("monumental_wordmark", ["hero", "ledger"], "tide ledger")
+    toks = ar.structural_tokens({**r, "palette": {"accent": "#FF0000"}})
+    assert "hero:monumental_wordmark" in toks
+    assert {"sec:hero", "sec:ledger"} <= toks
+    assert {"sig:tide", "sig:ledger"} <= toks
+    assert not any(t.startswith("palette") or "#" in t for t in toks)
+
+
+def test_mmr_first_pick_is_most_relevant():
+    a = _ref("split_editorial", ["a"], "alpha")
+    b = _ref("monumental_wordmark", ["b"], "beta")
+    out = ar.mmr_select([(a, 0.4), (b, 0.9)], k=1)
+    assert out == [b]
+
+
+def test_mmr_dedups_structural_near_duplicates():
+    # Three refs: top two are structurally identical, the third is distinct but
+    # slightly lower relevance. MMR must surface the distinct ref over the dup.
+    dup1 = {**_ref("monumental_wordmark", ["hero", "ledger", "grid"], "tide"), "title": "one"}
+    dup2 = {**_ref("monumental_wordmark", ["hero", "ledger", "grid"], "tide"), "title": "two"}
+    diff = {**_ref("split_editorial", ["hero", "manifesto"], "ember"), "title": "three"}
+    out = ar.mmr_select([(dup1, 0.95), (dup2, 0.92), (diff, 0.80)], k=2)
+    assert out[0] is dup1            # most relevant first
+    assert diff in out               # diverse pick beats the near-duplicate
+    assert dup2 not in out           # structural near-duplicate suppressed
+
+
+def test_mmr_respects_k_and_empty():
+    assert ar.mmr_select([], k=4) == []
+    a = _ref("a", ["x"], "one")
+    b = _ref("b", ["y"], "two")
+    c = _ref("c", ["z"], "three")
+    out = ar.mmr_select([(a, 0.9), (b, 0.8), (c, 0.7)], k=2)
+    assert len(out) == 2 and a in out
