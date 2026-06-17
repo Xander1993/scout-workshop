@@ -1,0 +1,85 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=e3]:
+    - generic [ref=e4]: SOLANO
+    - link "Reserve a piece" [ref=e5] [cursor=pointer]:
+      - /url: "#callout"
+  - main [ref=e6]:
+    - region "A single sun-cured vessel and its cast shadow" [ref=e7]:
+      - figure [ref=e8]:
+        - img "A single sun-cured terracotta vessel standing on warm flagstone against a sunlit courtyard wall, its long shadow cast across the stone." [ref=e9]
+      - generic:
+        - heading "Cast a longer shadow." [level=1]
+        - paragraph: One vessel. One sun. The shadow it throws is the only signature SOLANO makes.
+    - region "SOLANO" [ref=e10]:
+      - paragraph [ref=e12]:
+        - generic [ref=e13]: S
+        - generic [ref=e14]: O
+        - generic [ref=e15]: L
+        - generic [ref=e16]: A
+        - generic [ref=e17]: "N"
+        - generic [ref=e18]: O
+      - paragraph [ref=e19]: SOLANO
+    - region "The sun overhead." [ref=e20]:
+      - generic [ref=e21]:
+        - heading "The sun overhead." [level=2] [ref=e22]
+        - paragraph [ref=e23]: The shadow gathers under the foot, brief and exact. The vessel becomes a sundial of itself, patient and unsigned, waiting for the day to write.
+        - img "Close detail of the vessel rim; light raking across a single firing scar." [ref=e25]
+    - region "An object that earns its shadow." [ref=e26]:
+      - generic [ref=e27]:
+        - heading "An object that earns its shadow." [level=2] [ref=e29]
+        - generic [ref=e30]:
+          - paragraph [ref=e31]: Every piece is photographed in the same courtyard, on the same flagstone, at four o'clock. The shadow is not a styling decision. It is the only thing SOLANO promises in writing.
+          - paragraph [ref=e32]: Sun-cured ceramic. Hand-thrown in a single batch of forty. Numbered on the underside in graphite. Never glaze, never ink.
+      - figure [ref=e33]:
+        - img "The four o'clock sun burning low over the courtyard wall." [ref=e34]
+    - region "Spec, in the shadow." [ref=e35]:
+      - generic [ref=e37]:
+        - heading "Spec, in the shadow." [level=2] [ref=e38]
+        - generic [ref=e39]:
+          - generic [ref=e40]:
+            - term [ref=e41]: Material
+            - definition [ref=e42]: Sun-cured red earthenware, single batch No. 04
+          - generic [ref=e43]:
+            - term [ref=e44]: Edition
+            - definition [ref=e45]: 40 pieces, numbered in graphite
+          - generic [ref=e46]:
+            - term [ref=e47]: Height
+            - definition [ref=e48]: 264 mm, plus or minus 2 mm
+          - generic [ref=e49]:
+            - term [ref=e50]: Diameter
+            - definition [ref=e51]: 180 mm at the shoulder
+          - generic [ref=e52]:
+            - term [ref=e53]: Mass
+            - definition [ref=e54]: 1.84 kg
+          - generic [ref=e55]:
+            - term [ref=e56]: Finish
+            - definition [ref=e57]: Unglazed exterior, burnished interior
+          - generic [ref=e58]:
+            - term [ref=e59]: Cured
+            - definition [ref=e60]: 96 hours, open courtyard, 38 °C peak
+          - generic [ref=e61]:
+            - term [ref=e62]: Photographed
+            - definition [ref=e63]: Same flagstone, late afternoon
+    - region "We do not sign our work. The sun does." [ref=e64]:
+      - heading "We do not sign our work. The sun does." [level=2] [ref=e66]:
+        - generic [ref=e67]: We
+        - generic [ref=e68]: do
+        - generic [ref=e69]: not
+        - generic [ref=e70]: sign
+        - generic [ref=e71]: our
+        - generic [ref=e72]: work.
+        - generic [ref=e73]: The
+        - generic [ref=e74]: sun
+        - generic [ref=e75]: does.
+    - region "Acquire" [ref=e76]:
+      - generic [ref=e77]:
+        - paragraph [ref=e78]: The next batch opens at noon on Saturday. Forty vessels, one courtyard.
+        - paragraph [ref=e79]:
+          - link "Reserve a piece" [ref=e80] [cursor=pointer]:
+            - /url: "#reserve"
+            - generic [ref=e81]: Reserve a piece
+  - contentinfo [ref=e82]:
+    - paragraph [ref=e83]: SOLANO · Courtyard No. 4
+    - paragraph [ref=e84]: © SOLANO. The shadow is the signature.
