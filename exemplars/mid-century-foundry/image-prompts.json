@@ -1,0 +1,163 @@
+{
+  "brass-hero": {
+    "html_path": "index.html",
+    "alt_text": "A one-piece solid-brass desk lamp, raked side light catching the cast grain.",
+    "generation_prompt": "A single one-piece solid-brass desk lamp standing against a near-black ground, hard raking side light grazing the cast surface so the grain and tool marks read across the metal, warm terracotta reflection pooling along one edge, monumental restrained composition with generous negative space, fine film grain, editorial product monograph, no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "hero pinned plate — image masked inside the wordmark and parallaxing behind the type"
+  },
+  "brass-whole": {
+    "html_path": "index.html",
+    "alt_text": "The complete brass desk lamp on a dark plinth: a single curved stem rising from a heavy disc base into a hand-spun shade.",
+    "generation_prompt": "The complete brass desk lamp seen whole on a low dark plinth, a single curved stem rising from a heavy cast disc base into a hand-spun shade, dramatic single-source light from the left, deep shadow, cinematic full-bleed editorial spread, warm-earth palette against near-black, no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "full-bleed reveal plate — the object released from the letters"
+  },
+  "brass-pour": {
+    "html_path": "index.html",
+    "alt_text": "Molten brass poured into a bonded sand mould on the foundry floor.",
+    "generation_prompt": "Molten brass being poured from a glowing crucible into a bonded sand mould on a dim foundry floor, sparks scattering at the lip, intense orange heat against deep shadow, documentary craft photograph, warm-earth tones, shallow depth of field, no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "two-plate band — left figure"
+  },
+  "brass-hand": {
+    "html_path": "index.html",
+    "alt_text": "A hand draw-filing the seam line of a freshly cast brass stem.",
+    "generation_prompt": "A maker's hand draw-filing the seam line of a freshly cast brass stem clamped in a vice, fine brass swarf curling away, warm focused work light, shallow focus, tactile documentary craft photograph, warm-earth palette, no text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "two-plate band — right figure"
+  },
+  "brass-detail": {
+    "html_path": "index.html",
+    "alt_text": "Extreme close-up of the brass shade's hand-spun lathe rings, warm reflections pooling in the metal.",
+    "generation_prompt": "Extreme close-up of a hand-spun brass shade, concentric lathe rings running across the surface with warm reflections pooling between them, soft raking light, shallow depth of field, abstract tactile material study, warm-earth tones, no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "chapter pinned plate — masked inside the word FORM, parallaxing behind the type"
+  },
+  "brass-cast": {
+    "html_path": "index.html",
+    "alt_text": "The raw casting fresh from the mould, sprues still attached.",
+    "generation_prompt": "A raw brass casting fresh from the sand mould with sprues and feeders still attached, matte unfinished surface dusted with fine sand, single warm light, deep shadow, vertical product study, warm-earth palette, no text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "work grid — tall tile"
+  },
+  "brass-base": {
+    "html_path": "index.html",
+    "alt_text": "The heavy disc base seen from above, weight and balance in solid metal.",
+    "generation_prompt": "The heavy cast-brass disc base of the lamp seen from above on a dark surface, weight and balance evident in the solid metal, soft circular highlight tracing the rim, restrained overhead composition, warm-earth tones, fine grain, no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "work grid — wide tile"
+  },
+  "brass-shade": {
+    "html_path": "index.html",
+    "alt_text": "The hand-spun shade in close detail, concentric lathe rings catching light.",
+    "generation_prompt": "Close square study of the hand-spun brass shade, concentric lathe rings catching a soft warm light along the curve, gentle gradient from bright lip to shadowed interior, tactile editorial detail, warm-earth palette, no text or logos.",
+    "aspect_ratio": "1:1",
+    "placement": "work grid — square tile"
+  },
+  "brass-lit": {
+    "html_path": "index.html",
+    "alt_text": "The finished lamp lit on a dark desk, a single warm pool of light on brass.",
+    "generation_prompt": "The finished brass lamp switched on atop a dark desk in a dim room, casting a single warm 2700K pool of light onto the metal and the surface below, intimate cinematic mood, deep surrounding shadow, warm-earth palette, no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "work grid — wide column tile"
+  },
+  "foundry-floor": {
+    "html_path": "index.html",
+    "alt_text": "",
+    "generation_prompt": "A dim brass foundry floor at dusk, moulds and tools resting in deep shadow with a single warm light source far off, atmospheric and quiet, intended as a low-opacity dark background plate behind a closing statement, fine film grain, warm-earth tones, no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "closing statement plate — faint dark background"
+  },
+  "work-hero": {
+    "html_path": "work.html",
+    "alt_text": "The finished brass lamp standing alone on a wide concrete floor, a long shadow in low light.",
+    "generation_prompt": "The finished brass lamp standing alone on a wide warm concrete floor, a long raking shadow stretching across the frame in low directional light, monumental yet quiet composition with generous empty space, cinematic editorial photograph, warm-earth palette, no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "work page hero — parallax background plate"
+  },
+  "proc-pour": {
+    "html_path": "work.html",
+    "alt_text": "Brass poured glowing into a sand mould, sparks scattering at the lip.",
+    "generation_prompt": "Glowing molten brass pouring into a sand mould, bright sparks scattering at the lip against a dark foundry interior, intense orange light raking across the scene, vertical documentary craft photograph, warm-earth tones, shallow depth of field, no text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "process grid — tall tile (01)"
+  },
+  "proc-cool": {
+    "html_path": "work.html",
+    "alt_text": "The casting cooling in black sand, heat shimmer rising off the metal.",
+    "generation_prompt": "A fresh brass casting cooling half-buried in black moulding sand, faint heat shimmer rising off the dull-glowing metal, low warm light, deep shadow, atmospheric documentary still, warm-earth palette, no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "process grid — wide tile (02)"
+  },
+  "proc-spin": {
+    "html_path": "work.html",
+    "alt_text": "The shade taking shape on a spinning lathe under a steady hand.",
+    "generation_prompt": "A brass shade taking shape on a metal-spinning lathe under a steady hand pressing a forming tool, motion blur in the spinning blank, warm workshop light, focused craft moment, shallow focus, warm-earth tones, no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "process grid — wide tile (03)"
+  },
+  "proc-file": {
+    "html_path": "work.html",
+    "alt_text": "Draw-filing the stem seam, fine brass swarf curling away from the blade.",
+    "generation_prompt": "Hands draw-filing the seam of a brass stem held in a vice, fine brass swarf curling away from the file, warm raking work light, intimate vertical craft study, shallow depth of field, warm-earth palette, no text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "process grid — tall tile (04)"
+  },
+  "proc-lacquer": {
+    "html_path": "work.html",
+    "alt_text": "A thin lacquer drawn evenly across the polished brass surface.",
+    "generation_prompt": "A thin clear lacquer being drawn evenly across a polished brass surface with a soft pad, the metal catching a smooth warm reflection, close square composition, calm controlled light, tactile editorial detail, warm-earth tones, no text or logos.",
+    "aspect_ratio": "1:1",
+    "placement": "process grid — square tile (05)"
+  },
+  "proc-lit": {
+    "html_path": "work.html",
+    "alt_text": "The completed lamp lit on a dark desk, a single warm pool of light on brass.",
+    "generation_prompt": "The completed brass lamp lit on a dark desk, throwing a single warm 2700K pool of light across the metal and surface, intimate cinematic mood, deep surrounding shadow, warm-earth palette, fine grain, no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "process grid — wide column tile (06)"
+  },
+  "cast-macro": {
+    "html_path": "work.html",
+    "alt_text": "Macro of cast brass grain, the surface still raw from the mould.",
+    "generation_prompt": "Macro of raw cast-brass surface still rough from the mould, granular texture and faint sand impressions catching soft raking light, abstract tactile material field, warm-earth tones, shallow depth of field, no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "chapter pinned plate — masked inside the word CAST, parallaxing behind the type"
+  },
+  "contact-hero": {
+    "html_path": "contact.html",
+    "alt_text": "The brass lamp lit on a worktable in the foundry at dusk, tools resting beside it.",
+    "generation_prompt": "The brass lamp switched on atop a worktable in the foundry at dusk, hand tools resting beside it in warm pooled light, the rest of the room falling into shadow, intimate cinematic editorial photograph, warm-earth palette, no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "contact page hero — parallax background plate"
+  },
+  "desk-object": {
+    "html_path": "contact.html",
+    "alt_text": "The brass lamp on a plain oak desk beside an open book, warm and lit.",
+    "generation_prompt": "The brass lamp on a plain oak desk beside an open book, switched on and casting a warm intimate glow over the pages, soft domestic evening light, restrained editorial still life, warm-earth palette, shallow depth of field, no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "two-plate band — left figure"
+  },
+  "foundry-door": {
+    "html_path": "contact.html",
+    "alt_text": "The open door of the foundry, furnace glow inside against the evening.",
+    "generation_prompt": "The open door of a small brass foundry seen from outside at dusk, warm furnace glow spilling from the dark interior against the blue evening, quiet atmospheric documentary photograph, vertical composition, warm-earth tones, no text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "two-plate band — right figure"
+  },
+  "ship-crate": {
+    "html_path": "contact.html",
+    "alt_text": "The finished brass lamp nested in a fitted wooden crate lined with felt, ready to ship.",
+    "generation_prompt": "The finished brass lamp nested in a fitted wooden crate lined with soft grey felt, lid open, ready to ship, even soft daylight, calm overhead-ish editorial composition, warm-earth palette against pale wood, fine grain, no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "full-bleed reveal plate — crated and ready to leave"
+  },
+  "studio-light": {
+    "html_path": "contact.html",
+    "alt_text": "",
+    "generation_prompt": "A dim foundry interior at night lit only by a single warm worklamp far across the room, deep shadow and quiet atmosphere, intended as a low-opacity dark background plate behind a closing statement, fine film grain, warm-earth tones, no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "closing statement plate — faint dark background"
+  }
+}
