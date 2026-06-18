@@ -1,11 +1,11 @@
 /* =========================================================
-   {{BRAND}} — Sunstruck Relief
+   Riwaq, Sunstruck Relief
    The whole page is subordinate to one idea:
    a serif headline carved from a live-rendered sun-cast shadow.
    ========================================================= */
 
 :root{
-  /* EXACT palette from brief — verbatim */
+  /* exact palette from brief, verbatim */
   --color-bg:#E7DCC4;
   --color-fg:#1A1814;
   --color-accent:#B8462C;
@@ -21,7 +21,7 @@
   --rail:clamp(1rem,2.4vw,2rem);
   --measure:62ch;
 
-  /* sundial state — written by JS; sane default at dawn */
+  /* sundial state, written by JS; sane default at dawn */
   --sun:0;
 }
 
@@ -72,9 +72,9 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
 }
 
 /* ---------- generic plate ---------- */
-.plate{position:relative;width:100%;overflow:hidden}
+.plate{position:relative;width:100%;margin:0;overflow:hidden}
 
-/* ---------- I. HERO — sunstruck relief ---------- */
+/* ---------- hero, sunstruck relief ---------- */
 .plate--hero{
   background:var(--color-bg);
   min-height:100vh;
@@ -122,23 +122,6 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
   width:1px;height:1px;overflow:hidden;
 }
 
-.hero__rail{
-  position:absolute;
-  top:0;right:0;bottom:0;
-  display:flex;flex-direction:column;justify-content:space-between;
-  padding:6.5rem var(--rail) 3rem;
-  font-family:var(--mono);
-  font-size:.7rem;letter-spacing:.22em;
-  text-transform:uppercase;
-  color:var(--color-fg);
-  opacity:.78;pointer-events:none;
-  z-index:3;
-  text-align:right;
-}
-.hero__rail dl{margin:0;display:grid;grid-template-columns:auto;gap:1.6rem}
-.hero__rail dt{opacity:.5;margin-bottom:.35rem;font-size:.6rem;letter-spacing:.28em}
-.hero__rail dd{margin:0;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:.14em}
-
 .hero__corner{
   position:absolute;
   font-family:var(--mono);
@@ -148,7 +131,6 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
   z-index:3;pointer-events:none;
 }
 .hero__corner--tl{top:4.6rem;left:var(--rail)}
-.hero__corner--bl{bottom:6rem;left:var(--rail)}
 
 .hero__standfirst{
   position:absolute;
@@ -169,7 +151,7 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
 }
 .hero__standfirst.is-on{opacity:.92;transform:translateY(0)}
 
-/* ---------- II. MANIFESTO (midday) ---------- */
+/* ---------- manifesto (midday) ---------- */
 .plate--manifesto{
   background:var(--color-support-1);
   display:grid;
@@ -256,7 +238,7 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
 .magnetic:hover{color:var(--color-accent);border-color:var(--color-accent)}
 .magnetic:hover .arrow{transform:translateX(.5em)}
 
-/* ---------- III. SPEC TABLE (late afternoon raking light) ---------- */
+/* ---------- spec table (late afternoon raking light) ---------- */
 .plate--spec{
   background:var(--color-support-2);
   color:var(--color-bg);
@@ -335,7 +317,7 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
   font-size:1.1em;letter-spacing:-.005em;
 }
 
-/* ---------- IV. WORK GRID (golden hour, single-light frieze) ---------- */
+/* ---------- work grid (golden hour, single-light frieze) ---------- */
 .plate--work{
   background:var(--color-bg);
   padding:14vh 0 0;
@@ -409,7 +391,7 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
   font-size:.95rem;letter-spacing:-.005em;text-transform:none;
 }
 
-/* ---------- V. STUDIO STATEMENT (twilight) ---------- */
+/* ---------- studio statement (twilight) ---------- */
 .plate--statement{
   background:var(--color-support-2);
   color:var(--color-bg);
@@ -455,7 +437,7 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
 .statement__meta dt{opacity:.55;margin-bottom:.4rem;font-size:.62rem;letter-spacing:.28em}
 .statement__meta dd{margin:0;font-weight:600;letter-spacing:.14em}
 
-/* ---------- VI. WORDMARK CLOSER (sunset) ---------- */
+/* ---------- wordmark closer (sunset) ---------- */
 .plate--wordmark{
   background:var(--color-fg);
   color:var(--color-support-2);
@@ -540,7 +522,7 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
 .index-list{list-style:none;margin:0;padding:0;width:100%}
 .index-list li{border-top:1px solid rgba(26,24,20,.18)}
 .index-list li:last-child{border-bottom:1px solid rgba(26,24,20,.18)}
-.index-list a{
+.index-list .row{
   display:grid;
   grid-template-columns:6ch 1fr auto auto;
   gap:1.4rem;
@@ -549,12 +531,10 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
   font-family:var(--mono);
   font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;
   color:var(--color-fg);
-  transition:background .5s ease,color .5s ease,padding-left .5s ease;
+  transition:background .5s ease;
 }
-.index-list a:hover{
-  background:var(--color-fg);
-  color:var(--color-bg);
-  padding-left:calc(var(--gutter) + .8rem);
+.index-list .row:hover{
+  background:linear-gradient(90deg,rgba(184,70,44,.1) 0%,rgba(184,70,44,0) 78%);
 }
 .index-list .num{font-variant-numeric:tabular-nums;opacity:.55}
 .index-list .ttl{
@@ -565,7 +545,6 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
   font-weight:400;line-height:1.1;
 }
 .index-list .ttl em{font-style:italic;color:var(--color-accent)}
-.index-list a:hover .ttl em{color:var(--color-bg)}
 .index-list .meta{opacity:.6;letter-spacing:.2em}
 .index-list .yr{opacity:.55;font-variant-numeric:tabular-nums}
 
@@ -671,9 +650,7 @@ button{font:inherit;background:none;border:0;color:inherit;cursor:pointer}
     grid-template-rows:auto auto;gap:.4rem 1rem;
   }
   .index-list .meta,.index-list .yr{grid-column:2;opacity:.55;font-size:.64rem}
-  .hero__rail{padding:5.5rem 1.2rem 2rem;font-size:.64rem}
   .hero__standfirst{right:1.2rem;left:1.2rem;bottom:1.5rem;font-size:.95rem}
-  .hero__corner--bl{display:none}
   .spec__table th,.spec__table td{padding:1rem 1rem}
   .spec__table .num{display:none}
 }

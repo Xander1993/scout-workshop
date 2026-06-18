@@ -1,7 +1,7 @@
 /* =========================================================
-   {{BRAND}} — Sunstruck Relief controller
+   Riwaq, Sunstruck Relief controller
    Live-renders the hero headline as sun-cast shadow on stone.
-   Scroll advances the sun ~one minute per pixel until it sets.
+   Scroll advances the sun about one minute per pixel until it sets.
    Graceful degradation: if GSAP/Lenis/SplitType fail to load,
    the canvas hero still runs from vanilla scroll events.
    If canvas itself is unavailable, .hero__static fallback shows.
@@ -72,8 +72,7 @@
       ctx.fillRect(0,0,W,H);
 
       // raking-light vignette across plate (one chromatic event)
-      var vx = (1 - Math.cos(Math.PI * p)) * 0.5; // 0 → 1 → 0 in light terms not needed; use linear
-      var sunX = (1 - p) * W * 0.15 + p * W * 0.85; // east → west
+      var sunX = (1 - p) * W * 0.15 + p * W * 0.85; // east to west
       var rake = ctx.createRadialGradient(sunX, H * (0.18 + p*0.5), W*0.05, sunX, H*0.5, W*0.85);
       rake.addColorStop(0, hexA(ACCENT, 0.18 * (1 - Math.abs(p-0.5)*1.6)));
       rake.addColorStop(0.6, hexA(ACCENT, 0));
@@ -81,15 +80,14 @@
       ctx.fillRect(0,0,W,H);
 
       // ---- text geometry
-      var pad = Math.max(24, W * 0.06);
+      var pad = Math.max(20, W * 0.05);
       var availW = W - pad*2;
-      // fit two lines into ~availW
-      var fontSize = Math.min(H * 0.38, availW * 0.10);
-      var trial = fontSize;
-      ctx.font = '600 ' + trial + 'px "Cormorant Garamond",Georgia,serif';
+      // size the longest line to FILL the available width (monumental), capped by height
+      var trial = 100;
+      ctx.font = '700 ' + trial + 'px "Cormorant Garamond",Georgia,serif';
       var maxLine = Math.max(ctx.measureText(rows[0]).width, ctx.measureText(rows[1]).width);
-      var scale = Math.min(1, availW / maxLine);
-      fontSize = trial * scale;
+      var fillSize = trial * (availW / maxLine);
+      var fontSize = Math.min(fillSize, H * 0.42);
       ctx.font = '700 ' + fontSize + 'px "Cormorant Garamond",Georgia,serif';
       ctx.textBaseline = "alphabetic";
 
@@ -139,7 +137,7 @@
       // path: two lines
       ctx.beginPath();
       // We can't directly add text to path in all browsers; use a fillText pass into an offscreen mask
-      // Approach: draw text twice — first a lit gradient, then a fine umber edge on the shadow side
+      // Approach: draw text twice, first a lit gradient, then a fine umber edge on the shadow side
       var gradAngle = Math.PI * (0.5 + azimuthN * 0.9); // light direction across letterform
       var gx0 = sunX, gy0 = topY - lineH*0.6;
       var gx1 = gx0 - Math.cos(gradAngle) * W, gy1 = gy0 + Math.sin(gradAngle) * H;
@@ -159,7 +157,7 @@
       ctx.fillText(rows[0], pad, topY);
       ctx.fillText(rows[1], pad, topY + lineH);
 
-      // umber edge along shadow side — gives carved-stone bevel
+      // umber edge along shadow side, gives carved-stone bevel
       ctx.globalAlpha = (0.65 - dissolve*0.55) * (1 - altitude*0.6);
       ctx.fillStyle = SUPPORT2;
       var bevX = -azimuthN * fontSize * 0.04;
@@ -167,7 +165,7 @@
       ctx.fillText(rows[0], pad + bevX, topY + bevY);
       ctx.fillText(rows[1], pad + bevX, topY + lineH + bevY);
 
-      // highlight rim on lit side — thin ochre keyline
+      // highlight rim on lit side, thin ochre keyline
       ctx.globalAlpha = (0.45 - dissolve*0.45) * altitude;
       ctx.fillStyle = lerpColor(ACCENT, BG, 0.45);
       var litX =  azimuthN * fontSize * 0.03;
@@ -187,13 +185,6 @@
         ctx.fillText(rows[0], pad, topY);
         ctx.fillText(rows[1], pad, topY + lineH);
         ctx.globalAlpha = 1;
-      }
-
-      // standfirst reveal in last 12%, replaces dissolved headline
-      var stand = document.querySelector("[data-standfirst]");
-      if(stand){
-        if(p > 0.88) stand.classList.add("is-on");
-        else stand.classList.remove("is-on");
       }
 
       // spec table active row
@@ -216,13 +207,6 @@
   }
 
   /* ---------- helpers ---------- */
-  function fmtHour(p){
-    // dawn 06:14 → sunset 19:48
-    var mins = Math.round(lerp(6*60+14, 19*60+48, p));
-    var hh = Math.floor(mins/60), mm = mins%60;
-    return (hh<10?"0":"")+hh+":"+(mm<10?"0":"")+mm;
-  }
-  function lerp(a,b,t){return a + (b-a)*t}
   function smoothstep(a,b,x){
     var t = Math.max(0, Math.min(1, (x-a)/(b-a)));
     return t*t*(3 - 2*t);
@@ -266,7 +250,15 @@
     hero = initHero();
     applyP(0);
 
-    /* Lenis smooth scroll — optional */
+    /* standfirst settles in beneath the relief shortly after load (it lives in
+       the first viewport, so reveal it where it can actually be seen) */
+    var stand = document.querySelector("[data-standfirst]");
+    if(stand){
+      if(reduceMotion) stand.classList.add("is-on");
+      else setTimeout(function(){ stand.classList.add("is-on"); }, 650);
+    }
+
+    /* Lenis smooth scroll, optional */
     var lenis = null;
     if(window.Lenis && !reduceMotion){
       try{
@@ -281,7 +273,7 @@
       } catch(e){ lenis = null; }
     }
 
-    /* GSAP ScrollTrigger — optional, drives sun precisely if present */
+    /* GSAP ScrollTrigger, optional, drives sun precisely if present */
     if(window.gsap && window.ScrollTrigger && !reduceMotion){
       try{
         window.gsap.registerPlugin(window.ScrollTrigger);
@@ -294,7 +286,7 @@
           start: 0, end: "max",
           onUpdate: function(self){ applyP(self.progress); }
         });
-        // SplitType character stagger on hidden h1 — accessibility echo
+        // SplitType character stagger on hidden h1, accessibility echo
         if(window.SplitType){
           try{
             var h1 = document.querySelector("[data-h1-echo]");
