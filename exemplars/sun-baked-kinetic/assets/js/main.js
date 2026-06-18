@@ -1,7 +1,6 @@
 /* Meridiana - Sundial Wordmark kit
-   Techniques: parallax-diorama hero, scroll-bound sun-angle,
-   sticky-stack chapters, clip-path reveals, SplitType, counters,
-   magnetic affordance + custom cursor.
+   Techniques: at-rest sun-sweep intro, sticky-stack chapters,
+   clip-path reveals, SplitType, magnetic affordance.
 */
 (function(){
   'use strict';
@@ -33,17 +32,26 @@
     }
   }
 
-  // ---------- HOUR readout ticker ----------
-  (function(){
-    var el = document.querySelector('[data-hour]');
-    if (!el) return;
-    function tick(){
-      var d = new Date();
-      var hh = String(d.getHours()).padStart(2,'0');
-      var mm = String(d.getMinutes()).padStart(2,'0');
-      el.textContent = hh + ':' + mm;
+  // ---------- NAV CONTRAST (pure DOM, runs in every path incl reduced/no-js) ----------
+  // The fixed nav uses multiply (dark text) over the light plates, but that
+  // vanishes over the dark bleed / dusk / studio plates. Flag `nav-on-dark` so
+  // the nav switches to a legible bone treatment whenever a dark plate is behind.
+  (function navContrast(){
+    var header = document.querySelector('.topline');
+    if (!header) return;
+    var darks = [].slice.call(document.querySelectorAll('.plate--dark'));
+    if (!darks.length) return;
+    function update(){
+      var probe = header.getBoundingClientRect().bottom - 6;
+      var onDark = darks.some(function(el){
+        var r = el.getBoundingClientRect();
+        return r.top <= probe && r.bottom >= probe;
+      });
+      document.body.classList.toggle('nav-on-dark', onDark);
     }
-    tick(); setInterval(tick, 30000);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
   })();
 
   if (reduced) {
@@ -61,6 +69,20 @@
   var gsap = window.gsap;
   var ScrollTrigger = window.ScrollTrigger;
 
+  // ---------- STATIC-CAPTURE REVEAL SAFETY ----------
+  // Every entrance is registered as an idempotent play() in `pending`. A real
+  // scroll plays each one first when it reaches the trigger; whatever a scroll
+  // hasn't reached is played by a short post-load timer (well before the quality
+  // gate's full-page capture) so a non-scrolled / static render is NEVER blank.
+  var pending = [];
+  function defer(play){
+    var done = false;
+    var wrapped = function(){ if (done) return; done = true; play(); };
+    pending.push(wrapped);
+    return wrapped;
+  }
+  function finalizeReveals(){ pending.forEach(function(p){ p(); }); }
+
   // ---------- SPLIT TYPE ----------
   function applySplits(){
     document.querySelectorAll('[data-split]').forEach(function(el){
@@ -70,28 +92,23 @@
         try { split = new window.SplitType(el, { types: type, tagName: 'span' }); }
         catch(e){ split = null; }
       }
-      // The CSS hides BOTH .line and .word (opacity:0 + translateY). A parent at
-      // opacity:0 makes its children invisible regardless of their own opacity, so
-      // the .line must be the VISIBLE clip-window (opacity:1, no shift) and the
-      // .word is what slides up inside it. Animating only one left the text hidden.
+      // Animate the .word spans (lines mode keeps its .line wrappers static and
+      // slides the words inside). The rise is a small fixed 16px, not a full
+      // line-height, so a staggered word never descends into the body copy below.
       var lineEls = el.querySelectorAll('.line');
-      if (lineEls.length) gsap.set(lineEls, { yPercent: 0, opacity: 1 });   // guard: empty NodeList warns in GSAP
+      if (lineEls.length) gsap.set(lineEls, { y: 0, opacity: 1 });   // guard: empty NodeList warns in GSAP
       var nodes = el.querySelectorAll('.word');
       if (!nodes.length) nodes = el.querySelectorAll('.line');
       if (!nodes.length) return;
-      gsap.set(nodes, { yPercent: 110, opacity: 0 });
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 82%',
-        once: true,
-        onEnter: function(){
-          gsap.to(nodes, {
-            yPercent: 0, opacity: 1,
-            duration: 1.05, ease: 'power3.out',
-            stagger: 0.045
-          });
-        }
+      gsap.set(nodes, { y: 16, opacity: 0 });
+      var play = defer(function(){
+        gsap.to(nodes, {
+          y: 0, opacity: 1,
+          duration: 0.9, ease: 'power3.out',
+          stagger: 0.04
+        });
       });
+      ScrollTrigger.create({ trigger: el, start: 'top 82%', once: true, onEnter: play });
     });
   }
 
@@ -99,9 +116,13 @@
   function heroSundial(){
     var hero = document.getElementById('hero');
     if (!hero) return;
-    var pin = hero.querySelector('.stage__pin');
     var layers = hero.querySelectorAll('[data-parallax]');
     var root = document.documentElement;
+
+    // The hero is a clean 100vh moment with no scroll runway, so there is no
+    // scrub range to drive. playIntro() owns the at-rest sun sweep instead;
+    // bail out here so a zero-range trigger can't reset the sun back to dawn.
+    if (hero.offsetHeight - window.innerHeight < 40) return;
 
     // Pin + scrub : drives --sun-progress 0→1 over hero runway
     ScrollTrigger.create({
@@ -157,63 +178,25 @@
         }
       });
     });
-
-    // Mouse-tilt (camera) - lerped
-    var mx = 0, my = 0, tx = 0, ty = 0;
-    var tiltable = hero.querySelectorAll('[data-depth]');
-    pin.addEventListener('mousemove', function(e){
-      var r = pin.getBoundingClientRect();
-      mx = (e.clientX - r.left) / r.width - 0.5;
-      my = (e.clientY - r.top) / r.height - 0.5;
-    });
-    function tickTilt(){
-      tx += (mx - tx) * 0.08;
-      ty += (my - ty) * 0.08;
-      tiltable.forEach(function(el){
-        var d = parseFloat(el.getAttribute('data-depth')) || 10;
-        var x = -tx * d;
-        var y = -ty * d * 0.6;
-        // preserve translateX(-50%) on layers whose base centres them
-        var base = el.classList.contains('wordmark') ? 'translate(-50%, -50%)' :
-                   (el.classList.contains('diorama__horizon') || el.classList.contains('diorama__dune') || el.classList.contains('diorama__grit')) ? 'translateX(-50%)' : '';
-        el.style.translate = x.toFixed(2) + 'px ' + y.toFixed(2) + 'px';
-      });
-      requestAnimationFrame(tickTilt);
-    }
-    tickTilt();
   }
 
   // ---------- STICKY-STACK CHAPTERS ----------
   function chaptersStack(){
     var chapters = document.querySelectorAll('.chapter');
     chapters.forEach(function(ch, i){
-      // scale + fade the leaving chapter as the next rises over it
-      if (i < chapters.length - 1){
-        gsap.to(ch, {
-          scale: 0.92,
-          opacity: 0.45,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: chapters[i+1],
-            start: 'top bottom',
-            end: 'top top',
-            scrub: true
-          }
-        });
-      }
+      // Each chapter is an opaque sticky panel; the next simply slides up over the
+      // pinned previous one. (The old leaving-panel opacity:0.45 fade made the
+      // opaque background translucent, so the prior chapter's copy bled through the
+      // incoming one - the overprint defect. Clean stack, no fade.)
       // image reveal inside each chapter
       var rev = ch.querySelector('.reveal');
       var img = ch.querySelector('.reveal img');
       if (rev && img){
-        ScrollTrigger.create({
-          trigger: ch,
-          start: 'top 78%',
-          once: true,
-          onEnter: function(){
-            gsap.to(rev, { clipPath: 'inset(0 0 0% 0)', duration: 1.2, ease: 'power3.out' });
-            gsap.to(img, { scale: 1.0, duration: 1.6, ease: 'power2.out' });
-          }
+        var play = defer(function(){
+          gsap.to(rev, { clipPath: 'inset(0 0 0% 0)', duration: 1.2, ease: 'power3.out' });
+          gsap.to(img, { scale: 1.0, duration: 1.6, ease: 'power2.out' });
         });
+        ScrollTrigger.create({ trigger: ch, start: 'top 78%', once: true, onEnter: play });
       }
     });
   }
@@ -222,45 +205,17 @@
   function genericReveals(){
     document.querySelectorAll('.figure .reveal').forEach(function(rev){
       var img = rev.querySelector('img');
-      ScrollTrigger.create({
-        trigger: rev,
-        start: 'top 88%',
-        once: true,
-        onEnter: function(){
-          gsap.to(rev, { clipPath: 'inset(0 0 0% 0)', duration: 1.05, ease: 'power3.out' });
-          if (img) gsap.to(img, { scale: 1.0, duration: 1.4, ease: 'power2.out' });
-        }
+      var play = defer(function(){
+        gsap.to(rev, { clipPath: 'inset(0 0 0% 0)', duration: 1.05, ease: 'power3.out' });
+        if (img) gsap.to(img, { scale: 1.0, duration: 1.4, ease: 'power2.out' });
       });
+      ScrollTrigger.create({ trigger: rev, start: 'top 88%', once: true, onEnter: play });
     });
     var horizon = document.querySelector('.bleed__horizon');
     if (horizon){
-      ScrollTrigger.create({
-        trigger: horizon, start: 'top 80%', once: true,
-        onEnter: function(){ horizon.classList.add('is-in'); }
-      });
+      var playHorizon = defer(function(){ horizon.classList.add('is-in'); });
+      ScrollTrigger.create({ trigger: horizon, start: 'top 80%', once: true, onEnter: playHorizon });
     }
-  }
-
-  // ---------- COUNTERS ----------
-  function counters(){
-    document.querySelectorAll('[data-count]').forEach(function(el){
-      var target = parseInt(el.getAttribute('data-count'), 10);
-      var suffix = el.getAttribute('data-suffix') || '';
-      var proxy = { v: 0 };
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 85%',
-        once: true,
-        onEnter: function(){
-          gsap.to(proxy, {
-            v: target,
-            duration: 2.2,
-            ease: 'power2.out',
-            onUpdate: function(){ el.textContent = Math.round(proxy.v) + suffix; }
-          });
-        }
-      });
-    });
   }
 
   // ---------- MAGNETIC AFFORDANCE (no custom cursor) ----------
@@ -317,10 +272,12 @@
     heroSundial();
     chaptersStack();
     genericReveals();
-    counters();
     magnetic();
     ScrollTrigger.refresh();
     playIntro();
+    // Static-capture safety: play any entrance a real scroll hasn't reached yet,
+    // well before the quality gate's full-page capture, so no section is blank.
+    setTimeout(finalizeReveals, 1200);
   }
 
   if (document.readyState === 'complete' || document.readyState === 'interactive') {

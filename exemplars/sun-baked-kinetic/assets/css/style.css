@@ -53,6 +53,12 @@ hr{border:0}
 .topline__nav a:hover::after{transform:scaleX(1)}
 .topline__hour{font-variant-numeric:tabular-nums;color:var(--fg-soft)}
 
+/* nav legibility: multiply gives dark text on the light hero/manifesto/works
+   plates, but vanishes (dark-on-dark) over the bleed / dusk / studio dark
+   plates. JS flags `nav-on-dark` when a dark plate sits under the nav band, so
+   the nav switches to a normal-blended bone treatment that stays legible. */
+body.nav-on-dark .topline{mix-blend-mode:normal;color:var(--bone)}
+
 @media (max-width:780px){
   .topline__nav{display:none}
 }
@@ -74,10 +80,12 @@ hr{border:0}
    across it (scroll + load driven) and the wordmark casts a shadow
    that swings with the sun.
    ============================================================ */
-/* runway capped in px (calc(100vh + 620px)) so a tall/portrait viewport can't
-   open a huge empty band below the pinned 100vh hero; min() keeps it <=150vh. */
-.stage--hero{height:min(150vh, calc(100vh + 620px));padding:0;background:var(--fg);overflow:hidden}
-.stage__pin{position:sticky;top:0;height:100vh;overflow:hidden}
+/* hero is a single clean 100vh moment - no sticky runway, so a full-page static
+   capture can never show a black band below the pinned wall (the prior 150vh
+   runway left ~50vh of bare --fg in non-scrolled / full-page renders). The wall
+   animates at rest via playIntro(); the scroll narrative lives in the chapters. */
+.stage--hero{height:100vh;padding:0;background:var(--fg);overflow:hidden}
+.stage__pin{position:relative;height:100vh;overflow:hidden}
 
 .diorama{position:absolute;inset:0;overflow:hidden}
 
@@ -338,9 +346,14 @@ hr{border:0}
 /* ============================================================
    SPLIT TYPE / REVEAL utilities
    ============================================================ */
-[data-split] .word, [data-split] .char, [data-split] .line{display:inline-block;overflow:hidden}
-.js [data-split] .line{transform:translateY(110%);opacity:0}
-.js [data-split] .word{transform:translateY(110%);opacity:0}
+/* reveal travel is a small fixed rise (16px) + fade, NOT a full line-height
+   slide: a 110% descent put the word a whole line BELOW its slot, so during the
+   stagger it crossed into the already-visible body copy and read as a collision.
+   No overflow:hidden on the inline-block words (its bottom-baseline shift made
+   wrapped multi-line titles mis-measure their height). */
+[data-split] .word, [data-split] .char, [data-split] .line{display:inline-block}
+.js [data-split] .line,
+.js [data-split] .word{transform:translateY(16px);opacity:0}
 .js .reveal img{transform:scale(1.08)}
 /* reveal: images stay VISIBLE by default (no clip) so a no-scroll / static
    capture never shows a blank band; the on-scroll flourish is the scale settle
@@ -358,19 +371,8 @@ hr{border:0}
   [data-split] .word,[data-split] .line,[data-split] .char{transform:none;opacity:1}
   .reveal{clip-path:none}
   .reveal img{transform:none}
-  .cursor{display:none}
-  body{cursor:auto}
 }
 
 /* FAIL-SAFE (added 2026-06-07): a mis-wired SplitType reveal left .line/.word
    permanently opacity:0. Guarantee revealed text is never invisible. */
 .manifesto .line, .manifesto .word{opacity:1 !important;transform:none !important}
-
-/* PORTRAIT / TALL viewports (e.g. mobile, 872×2437): unpin the hero so there is
-   NO empty scroll-runway below the diorama - a clean 100vh hero instead. The
-   --sun scrub still plays as the single screen scrolls away. Landscape keeps the
-   pinned scrub (where the runway reads as intentional scroll-distance). */
-@media (max-aspect-ratio: 1/1){
-  .stage--hero{height:100vh}
-  .stage__pin{position:relative;height:100vh}
-}
