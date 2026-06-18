@@ -32,6 +32,21 @@
   /* settle safety net - if a trigger never fires, never leave content blank */
   var settleTimer = setTimeout(function () { doc.body.classList.add("is-settled"); }, 2600);
 
+  /* ---- NAV SCRIM (runs in EVERY mode, incl. reduced-motion / no-CDN) ----
+     The fixed nav rides the dark hero at the top, but once scrolled it crosses
+     light plates (manifesto/spec/studio) and content; a dark scrim fades in so
+     the bone nav text stays legible and never clashes with the copy under it.
+     Toggled on raw scroll position so it works even when GSAP fails to load. */
+  var navEl = doc.querySelector(".nav");
+  if (navEl) {
+    var syncNav = function () {
+      var y = window.pageYOffset || doc.documentElement.scrollTop || 0;
+      navEl.classList[y > 40 ? "add" : "remove"]("is-scrolled");
+    };
+    window.addEventListener("scroll", syncNav, { passive: true });
+    syncNav();
+  }
+
   /* =========================================================================
      PARALLAX + MOUSE-TILT (hero diorama) - runs on its own rAF.
      Scroll translateY lives on the LAYER; mouse tilt on the INNER node,
@@ -90,7 +105,10 @@
   var roWord = doc.getElementById("roWord");
   function justifyChapter(p) {
     if (chapterBody) {
-      var w = p < 0.5 ? lerp(50, 100, p / 0.5) : lerp(100, 64, (p - 0.5) / 0.5);
+      // breathe the measure within a band that stays a real reading column:
+      // wide enough that the ragged-left paragraph never leaves a dead right
+      // half, narrow enough that the re-wrap still reads as the live engine.
+      var w = p < 0.5 ? lerp(76, 100, p / 0.5) : lerp(100, 84, (p - 0.5) / 0.5);
       chapterBody.style.width = w.toFixed(2) + "%";
       if (roMeasure) roMeasure.textContent = Math.round(w * 0.62);
       if (roWord) roWord.textContent = Math.round(100 + (100 - w) * 1.9);
@@ -216,7 +234,8 @@
     } else {
       gsap.set(words, { yPercent: 110, opacity: 0 });
       play = onceFn(function () {
-        gsap.to(words, { yPercent: 0, opacity: 1, duration: 0.8, ease: "power3.out", stagger: 0.04 });
+        gsap.to(words, { yPercent: 0, opacity: 1, duration: 0.8, ease: "power3.out", stagger: 0.04,
+          onComplete: function () { el.classList.add("is-shown"); } });
       });
     }
     ST.create({ trigger: el, start: "top 84%", once: true, onEnter: play });
@@ -239,6 +258,15 @@
   setTimeout(function () {
     for (var r = 0; r < pendingReveals.length; r++) pendingReveals[r]();
   }, 1100);
+
+  /* capture-safety: lock every split entrance to its shown state ahead of the
+     static full-page capture, so a web-font reflow (which can strand the word
+     wrappers translated below their clipped line box even after the reveal
+     opacity has run) or a still-staggering tween is never captured blank. */
+  setTimeout(function () {
+    var splits = doc.querySelectorAll("[data-split]");
+    for (var s = 0; s < splits.length; s++) splits[s].classList.add("is-shown");
+  }, 1900);
 
   /* ---- animated counters ---- */
   gsap.utils.toArray("[data-count]").forEach(function (el) {

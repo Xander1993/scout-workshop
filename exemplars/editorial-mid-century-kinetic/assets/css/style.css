@@ -51,6 +51,9 @@ html.lenis,html.lenis body{ height:auto; }
 .lenis.lenis-stopped{ overflow:hidden; }
 
 /* ---------- shared ---------- */
+/* anchored sections clear the fixed nav on jump (no content hidden under it) */
+:where(#manifesto,#spec,#work,#studio,#commission){ scroll-margin-top:5rem; }
+
 .plate{ position:relative; padding-inline:var(--gut); }
 .plate--light{ background:var(--bone); color:var(--ink); }
 .plate--dark{ background:var(--ink); color:var(--bone); }
@@ -62,18 +65,7 @@ html.lenis,html.lenis body{ height:auto; }
   letter-spacing:0.34em; text-transform:uppercase; color:var(--muted-dark);
   display:inline-flex; align-items:center; gap:0.7rem;
 }
-.eyebrow::before{ content:""; width:2rem; height:1px; background:var(--oxblood); }
 .plate--light .eyebrow{ color:var(--oxblood); }
-
-/* thin running headline down the left margin - STATIC (never parallaxes) */
-.runline{
-  position:absolute; left:clamp(0.4rem,1.6vw,1.5rem); top:50%;
-  transform-origin:left center; transform:rotate(-90deg) translateX(-50%);
-  font-family:var(--sans); font-size:0.62rem; letter-spacing:0.42em;
-  text-transform:uppercase; color:var(--muted-dark); white-space:nowrap;
-  pointer-events:none; opacity:0.85;
-}
-@media (max-width:820px){ .runline{ display:none; } }
 
 /* justified type baseline - left-anchored so the right margin is the one that moves */
 .justify{
@@ -88,9 +80,19 @@ html.lenis,html.lenis body{ height:auto; }
   position:fixed; inset:0 0 auto 0; z-index:50;
   display:flex; align-items:center; justify-content:space-between;
   padding:1.1rem var(--gut);
-  font-family:var(--sans); mix-blend-mode:difference; color:#fff;
+  font-family:var(--sans); color:var(--bone);
   pointer-events:none;
 }
+/* scroll scrim: at the top the nav rides the dark hero (no scrim needed); once
+   scrolled it always carries a dark band so the bone nav text stays legible over
+   any plate (incl. the light manifesto/spec/studio) and never clashes with the
+   content under it. Replaces the unreliable mix-blend-difference. */
+.nav::before{
+  content:""; position:absolute; inset:0; z-index:-1;
+  background:linear-gradient(180deg,rgba(26,22,17,0.94) 0%,rgba(26,22,17,0.58) 62%,rgba(26,22,17,0) 100%);
+  opacity:0; transition:opacity .4s ease;
+}
+.nav.is-scrolled::before{ opacity:1; }
 .nav a{ pointer-events:auto; }
 .nav__brand{ font-weight:700; letter-spacing:0.16em; text-transform:uppercase; font-size:0.84rem; }
 .nav__set{ display:flex; gap:1.7rem; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; font-weight:600; }
@@ -106,6 +108,9 @@ html.lenis,html.lenis body{ height:auto; }
   position:sticky; top:0; height:100vh; overflow:hidden;
   display:flex; flex-direction:column; justify-content:center;
   padding-inline:var(--gut);
+  /* asymmetric block padding clears the fixed nav so the kicker never tucks
+     under it, while the bottom stays tight so the sub doesn't clip */
+  padding-top:clamp(4.2rem,9vh,6rem); padding-bottom:clamp(1rem,3vh,2rem);
 }
 .hero__layer{ position:absolute; inset:0; will-change:transform; }
 .hero__grid{ z-index:1; }
@@ -136,7 +141,7 @@ html.lenis,html.lenis body{ height:auto; }
 
 .wordmark{
   font-family:var(--serif); font-weight:500;
-  font-size:clamp(3.5rem,16vw,12rem); line-height:0.86;
+  font-size:clamp(3.4rem,14.5vw,10.6rem); line-height:0.86;
   letter-spacing:-0.02em; text-transform:uppercase; color:var(--bone);
 }
 .wordmark .ln{ display:block; overflow:hidden; }
@@ -240,6 +245,15 @@ html.lenis,html.lenis body{ height:auto; }
   /* narrow columns turn justified body copy into rivers - set it ragged-right on phones */
   .hero__sub,.bleed__meta,.chapter__body,.manifesto__line{ text-align:left; text-align-last:left; }
   .hero__kicker{ flex-wrap:wrap; gap:0.45rem 1.2rem; letter-spacing:0.24em; }
+  /* On a phone the offset portrait left a dead band above the centred type and
+     shrank the subject to a sliver behind the wordmark. Promote the facade to a
+     full-bleed backdrop so the first viewport is composed top-to-bottom and the
+     subject actually anchors the hero; the scrim carries legibility for the type. */
+  .hero__photo{ align-items:stretch; justify-content:stretch; }
+  .hero__photo figure{ width:100%; height:100%; aspect-ratio:auto; margin:0; }
+  .hero__scrim{
+    background:linear-gradient(180deg,rgba(26,22,17,0.52) 0%,rgba(26,22,17,0.6) 48%,rgba(26,22,17,0.9) 100%);
+  }
 }
 
 /* =========================================================================
@@ -308,6 +322,31 @@ html.lenis,html.lenis body{ height:auto; }
 .foot strong{ color:var(--bone); font-weight:700; letter-spacing:0.14em; }
 
 /* =========================================================================
+   DESKTOP RIVER GUARD
+   The justify SIGNATURE is reserved for the kinetic monumental lines (the
+   hero wordmark + the [data-justify] scrub titles, all short edge-to-edge
+   lines that fill a measure cleanly) and the ONE labelled engine paragraph
+   (.chapter__body, whose word-space stretch is the demonstrated point).
+   Running narrative copy justified at a wide desktop measure only opens
+   rivers, so the supporting paragraphs + the multi-line manifesto statement
+   set ragged-left at every width. Placed after all element rules so it wins
+   on cascade order over the single-class .justify / element defaults.
+   ========================================================================= */
+.hero__sub,
+.bleed__meta,
+.manifesto__line{ text-align:left; text-align-last:left; }
+
+/* Short display titles drop the justify spread: a 2-3 word .bleed__title /
+   .work__title set flush-both forces giant inter-word gaps, and the bleed
+   line's own copy ("serifs almost meeting") wants tight tracking, not spread.
+   They keep their kinetic width scrub; the few words just stay naturally set.
+   The labelled engine paragraph (.chapter__body) KEEPS justify - its copy and
+   readout are literally about flushing both edges - but its width band is held
+   wide enough (see main.js) that the measure never rivers or dead-rights. */
+.bleed__title,
+.work__title{ text-align:left; text-align-last:left; }
+
+/* =========================================================================
    JS-gated reveal states - DEFAULT (no-js) shows everything.
    Hide ONLY inner carriers inside an overflow:hidden line, never a wrapper.
    ========================================================================= */
@@ -318,6 +357,13 @@ html.lenis,html.lenis body{ height:auto; }
 /* settle fail-safe: force-visible if a trigger never fires */
 .is-settled [data-split] .word,
 .is-settled [data-split] .char{ opacity:1 !important; transform:none !important; }
+
+/* reveal lock: once an entrance has played (or the capture-safety has run) the
+   words are pinned to their shown state with !important so a late web-font
+   reflow can never re-strand them below their clipped line box. CSS !important
+   beats the stale inline GSAP transform that the font race leaves behind. */
+.js [data-split].is-shown .word,
+.js [data-split].is-shown .char{ opacity:1 !important; transform:none !important; }
 
 /* clip reveal media */
 .js .clip-reveal{ clip-path:inset(0 0 100% 0); }
