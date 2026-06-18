@@ -64,12 +64,9 @@
       var ACCENT   = "#B8462C";  // --color-accent   = sun
       var FG       = "#1A1814";  // --color-fg
 
-      // background warmth shift by time-of-day
-      var bgGrad = ctx.createLinearGradient(0, 0, W, H);
-      bgGrad.addColorStop(0, lerpColor(BG, SUPPORT1, 0.25 + p*0.55));
-      bgGrad.addColorStop(1, lerpColor(BG, SUPPORT1, 0.10 + p*0.40));
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0,0,W,H);
+      // NOTE: the canvas is transparent so the real relief-wall photograph
+      // behind it shows through; the headline below casts its shadow onto
+      // that actual stone. We only lay down light/heat, never an opaque field.
 
       // raking-light vignette across plate (one chromatic event)
       var sunX = (1 - p) * W * 0.15 + p * W * 0.85; // east to west
@@ -246,6 +243,27 @@
     if(hero) hero.paint(p);
   }
 
+  var userScrolled = false;
+
+  /* one-shot intro: the sun visibly rises across the relief and settles, so the
+     hero is alive AT REST on load (not a frozen shadow waiting for scroll). */
+  function playIntro(){
+    if(!hero || reduceMotion){ applyP(0); return; }
+    var dur = 2200, t0 = null, peak = 0.34;
+    function frame(ts){
+      if(userScrolled) return;            // hand off the moment the user scrolls
+      if(t0 === null) t0 = ts;
+      var k = Math.min(1, (ts - t0) / dur);
+      // ease out-and-back: rise to peak, settle to dawn (0)
+      var e = Math.sin(Math.PI * k);       // 0 -> 1 -> 0
+      hero.paint(peak * (e*e*(3-2*e)));    // smoothed
+      document.documentElement.style.setProperty("--sun", (peak*e).toFixed(4));
+      if(k < 1 && !userScrolled) requestAnimationFrame(frame);
+      else if(!userScrolled) applyP(0);
+    }
+    requestAnimationFrame(frame);
+  }
+
   function init(){
     hero = initHero();
     applyP(0);
@@ -257,6 +275,18 @@
       if(reduceMotion) stand.classList.add("is-on");
       else setTimeout(function(){ stand.classList.add("is-on"); }, 650);
     }
+
+    /* masthead gains a soft scrim once scrolled, so the nav stays legible over
+       photographs and the dark lower plates (esp. on mobile, no mix-blend). */
+    var masthead = document.querySelector(".masthead");
+    function syncMasthead(){
+      var y = window.scrollY || window.pageYOffset || 0;
+      if(y > 40){ userScrolled = true; }
+      if(masthead) masthead.classList.toggle("is-scrolled", y > 40);
+    }
+    window.addEventListener("scroll", syncMasthead, { passive: true });
+    syncMasthead();
+    playIntro();
 
     /* Lenis smooth scroll, optional */
     var lenis = null;
@@ -284,21 +314,8 @@
         }
         window.ScrollTrigger.create({
           start: 0, end: "max",
-          onUpdate: function(self){ applyP(self.progress); }
+          onUpdate: function(self){ if(self.progress > 0.0008) userScrolled = true; applyP(self.progress); }
         });
-        // SplitType character stagger on hidden h1, accessibility echo
-        if(window.SplitType){
-          try{
-            var h1 = document.querySelector("[data-h1-echo]");
-            if(h1){
-              var split = new window.SplitType(h1, { types: "chars" });
-              window.gsap.from(split.chars, {
-                yPercent: 100, opacity: 0, duration: .9,
-                stagger: .025, ease: "expo.out"
-              });
-            }
-          } catch(e){}
-        }
       } catch(e){
         bindFallbackScroll();
       }

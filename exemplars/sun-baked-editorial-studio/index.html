@@ -29,7 +29,14 @@
   <!-- sunstruck relief (dawn to sunset) -->
   <section class="plate plate--hero" aria-labelledby="hero-h1">
     <div class="hero" data-hero>
-      <div class="hero__grid" aria-hidden="true"></div>
+      <!-- real photographic subject: a carved Marrakech relief wall in raking sun.
+           the live headline below casts its shadow across this actual stone. -->
+      <img
+        class="hero__photo"
+        src="assets/images/sun-baked-relief-wall.png"
+        alt="A deeply carved limestone relief wall in raking late-afternoon Marrakech sun, deep umber shadows lengthening into the foreground."
+        width="1400" height="1050" fetchpriority="high">
+      <div class="hero__scrim" aria-hidden="true"></div>
 
       <!-- live canvas: the headline carved from sun-cast shadow -->
       <canvas
@@ -239,9 +246,6 @@
   crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
 <script
   src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"
-  crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
-<script
-  src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js"
   crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
 
 <script src="assets/js/main.js" defer></script>
