@@ -183,6 +183,20 @@
       .to(el, { width: en + "%", ease: "none" });
   });
 
+  /* ---- reveal fallback registry ----
+     The full-page screenshot capture (and any visitor who never scrolls) sees
+     the page at scroll 0; a below-fold entrance whose ScrollTrigger has not
+     fired would be stranded blank - the manifesto headline and every
+     clip-reveal image. Each entrance plays through an idempotent closure
+     registered here, so a short post-load timer can play whatever a real scroll
+     has not already reached. Content is therefore never captured blank, while a
+     scroll still plays each entrance first whenever it beats the timer. */
+  var pendingReveals = [];
+  function onceFn(run) {
+    var done = false;
+    return function () { if (done) return; done = true; run(); };
+  }
+
   /* ---- SplitType line reveals on [data-split] ---- */
   var hasSplit = typeof window.SplitType !== "undefined";
   gsap.utils.toArray("[data-split]").forEach(function (el) {
@@ -194,25 +208,37 @@
         (st.lines || []).forEach(function (ln) { ln.style.overflow = "hidden"; });
       } catch (e) { words = null; }
     }
+    var play;
     if (!words || !words.length) {
-      gsap.from(el, { autoAlpha: 0, y: 36, duration: 0.9, ease: "power3.out",
-        scrollTrigger: { trigger: el, start: "top 85%" } });
-      return;
+      play = onceFn(function () {
+        gsap.fromTo(el, { autoAlpha: 0, y: 36 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out" });
+      });
+    } else {
+      gsap.set(words, { yPercent: 110, opacity: 0 });
+      play = onceFn(function () {
+        gsap.to(words, { yPercent: 0, opacity: 1, duration: 0.8, ease: "power3.out", stagger: 0.04 });
+      });
     }
-    gsap.set(words, { yPercent: 110, opacity: 0 });
-    gsap.to(words, {
-      yPercent: 0, opacity: 1, duration: 0.8, ease: "power3.out", stagger: 0.04,
-      scrollTrigger: { trigger: el, start: "top 84%" }
-    });
+    ST.create({ trigger: el, start: "top 84%", once: true, onEnter: play });
+    pendingReveals.push(play);
   });
 
   /* ---- clip-path media reveals ---- */
   gsap.utils.toArray(".clip-reveal").forEach(function (el) {
     var img = el.querySelector("img");
-    var tl = gsap.timeline({ scrollTrigger: { trigger: el, start: "top 86%" } });
-    tl.fromTo(el, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 1.0, ease: "power3.inOut" }, 0);
-    if (img) tl.to(img, { scale: 1, duration: 1.25, ease: "power3.out" }, 0);
+    var play = onceFn(function () {
+      var tl = gsap.timeline();
+      tl.fromTo(el, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 1.0, ease: "power3.inOut" }, 0);
+      if (img) tl.to(img, { scale: 1, duration: 1.25, ease: "power3.out" }, 0);
+    });
+    ST.create({ trigger: el, start: "top 86%", once: true, onEnter: play });
+    pendingReveals.push(play);
   });
+
+  /* play any entrance a scroll has not reached, before the settle/static capture */
+  setTimeout(function () {
+    for (var r = 0; r < pendingReveals.length; r++) pendingReveals[r]();
+  }, 1100);
 
   /* ---- animated counters ---- */
   gsap.utils.toArray("[data-count]").forEach(function (el) {
