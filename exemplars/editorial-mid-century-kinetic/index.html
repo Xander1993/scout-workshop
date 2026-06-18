@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stele · Type cut to the measure of a wall</title>
+<meta name="description" content="Stele is an architectural lettering atelier. We cut monumental type to the exact width of a façade, every line re-justified, flush to both edges, always." />
+<script>document.documentElement.classList.remove('no-js');document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;1,6..96,400;1,6..96,500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <a class="nav__brand" href="#top">Stele</a>
+  <nav class="nav__set" aria-label="Primary">
+    <a href="#manifesto">Atelier</a>
+    <a href="#spec">Method</a>
+    <a href="#work">Walls</a>
+    <a href="#commission">Commission</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO; monumental justified wordmark, parallax diorama ============ -->
+  <section class="hero" data-pin aria-label="Type cut to the measure of a wall">
+    <div class="hero__stage">
+
+      <div class="hero__layer hero__grid" aria-hidden="true">
+        <svg viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+          <g>
+            <line x1="0" y1="150" x2="1200" y2="150"/><line x1="0" y1="300" x2="1200" y2="300"/>
+            <line x1="0" y1="450" x2="1200" y2="450"/><line x1="0" y1="600" x2="1200" y2="600"/>
+            <line x1="0" y1="750" x2="1200" y2="750"/>
+            <line x1="150" y1="0" x2="150" y2="900"/><line x1="350" y1="0" x2="350" y2="900"/>
+            <line x1="550" y1="0" x2="550" y2="900"/><line x1="750" y1="0" x2="750" y2="900"/>
+            <line x1="950" y1="0" x2="950" y2="900"/><line x1="1050" y1="0" x2="1050" y2="900"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="hero__layer hero__photo" aria-hidden="true">
+        <figure>
+          <img src="assets/images/measure-facade.png" alt="" width="900" height="1200" />
+        </figure>
+      </div>
+
+      <div class="hero__scrim" aria-hidden="true"></div>
+
+      <div class="hero__type">
+        <p class="hero__kicker"><span>Architectural lettering atelier</span><span class="ox">Set to measure</span></p>
+        <h1 class="wordmark justify" id="wordmark">
+          <span class="ln"><span>Set to every</span></span>
+          <span class="ln"><span>single margin</span></span>
+        </h1>
+        <p class="hero__sub">We cut monumental type to the exact width of a façade. As you scroll, the measure narrows and widens; tracking and word-spacing recompose in real time so every line stays flush to both edges.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MANIFESTO; one statement justified into negative space ============ -->
+  <section class="plate plate--light plate--pad manifesto" id="manifesto">
+    <span class="runline">Every margin held flush</span>
+    <div class="wrap manifesto__inner">
+      <p class="eyebrow">The atelier</p>
+      <h2 class="manifesto__line justify" data-split>
+        A wall is a measure. We set a single line of type to its exact width, then cut it in stone so the letters carry the building&rsquo;s <em>own proportions</em> for a century.
+      </h2>
+      <p class="manifesto__foot"><span>Lettering, drawn to width</span><span>Stone, brass, cast bronze</span></p>
+    </div>
+  </section>
+
+  <!-- ============ FULL-BLEED PLATE; tightest measure, image behind text ============ -->
+  <section class="bleed" aria-label="The tightest measure">
+    <div class="bleed__media clip-reveal" data-clip>
+      <img src="assets/images/measure-incision.png" alt="Macro of a chiselled serif letterform incised into pale limestone under raking light" width="1920" height="1080" loading="lazy" />
+    </div>
+    <div class="bleed__inner">
+      <p class="eyebrow bleed__eyebrow">Tightest measure</p>
+      <h3 class="bleed__title justify" data-justify data-jmin="60" data-jmid="100" data-jend="80">Letters Near Touching</h3>
+      <p class="bleed__meta">At the narrowest column the engine pulls the tracking to its limit; serifs almost meeting, the line reading as one carved mass. This is the proof a face can hold a margin no matter how tight the wall.</p>
+    </div>
+  </section>
+
+  <!-- ============ SCROLL CHAPTER; pinned engine centerpiece, live reflow ============ -->
+  <section class="chapter" data-pin aria-label="The justification engine">
+    <div class="chapter__stage">
+      <p class="eyebrow chapter__label">The engine, working</p>
+      <p class="chapter__body" id="chapterBody">
+        Hold this column at the edge of your eye as you scroll. The <b>measure</b> tightens and the words draw together; it opens and they breathe apart. The line never breaks its margins; it only re-wraps, re-spaces, and re-justifies, frame by frame, the way a setter once nudged metal sorts until both edges ran true.
+      </p>
+      <p class="chapter__readout">
+        <span>Measure&nbsp;<b id="roMeasure">100</b>&nbsp;ch</span>
+        <span>Word-space&nbsp;<b id="roWord">100</b>&nbsp;%</span>
+        <span>Lines flush&nbsp;<b>both edges</b></span>
+      </p>
+      <div class="chapter__track" aria-hidden="true"><i id="chapterFill"></i></div>
+    </div>
+  </section>
+
+  <!-- ============ SPEC TABLE; live typographic metrics, ticking counters ============ -->
+  <section class="plate plate--light plate--pad spec" id="spec">
+    <span class="runline">Set to measure, in numbers</span>
+    <div class="wrap">
+      <div class="spec__head">
+        <h2>The typographic spec</h2>
+        <p class="eyebrow" style="margin:0">Every number the engine watches</p>
+      </div>
+      <div class="spec__rows">
+        <div class="spec__row">
+          <span class="spec__k">Measure</span>
+          <span class="spec__d">Live column width the engine justifies into</span>
+          <span class="spec__v"><span class="num" data-count="42">42</span><small>ch</small></span>
+        </div>
+        <div class="spec__row">
+          <span class="spec__k">Tracking</span>
+          <span class="spec__d">Letter-spacing pulled to the tightest plate</span>
+          <span class="spec__v"><span class="num" data-count="30" data-prefix="−">30</span><small>/1000 em</small></span>
+        </div>
+        <div class="spec__row">
+          <span class="spec__k">Word-space</span>
+          <span class="spec__d">Stretch needed to hold both margins</span>
+          <span class="spec__v"><span class="num" data-count="186">186</span><small>%</small></span>
+        </div>
+        <div class="spec__row">
+          <span class="spec__k">Cut depth</span>
+          <span class="spec__d">How deep we incise the façade letter</span>
+          <span class="spec__v"><span class="num" data-count="32">32</span><small>mm</small></span>
+        </div>
+        <div class="spec__row">
+          <span class="spec__k">Set to date</span>
+          <span class="spec__d">Façades lettered to their own measure</span>
+          <span class="spec__v"><span class="num" data-count="247">247</span><small>walls</small></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WORK GRID; project rows, each title self-justifies ============ -->
+  <section class="plate plate--dark plate--pad work" id="work">
+    <div class="wrap">
+      <div class="spec__head">
+        <h2 style="font-family:var(--serif);font-weight:600;font-size:clamp(1.8rem,5vw,3.6rem)">Walls we have set</h2>
+        <p class="eyebrow" style="margin:0">Each title justified to its own column</p>
+      </div>
+
+      <div class="work__row">
+        <figure class="work__fig clip-reveal" data-clip>
+          <img src="assets/images/measure-concourse.png" alt="Carved frieze lettering spanning a grand stone concourse façade" width="1200" height="900" loading="lazy" />
+        </figure>
+        <div>
+          <h3 class="work__title justify" data-justify data-jmin="62" data-jmid="100" data-jend="78">Grand Concourse Frieze</h3>
+          <p class="work__sub"><span>Limestone, hand-cut</span><span>Central district · 2021</span></p>
+        </div>
+      </div>
+
+      <div class="work__row">
+        <figure class="work__fig clip-reveal" data-clip>
+          <img src="assets/images/measure-ledger.png" alt="Brass ledger lettering inset into a riverside stone wall" width="1200" height="900" loading="lazy" />
+        </figure>
+        <div>
+          <h3 class="work__title justify" data-justify data-jmin="60" data-jmid="100" data-jend="80">Riverside Stone Ledger</h3>
+          <p class="work__sub"><span>Cast brass, flush set</span><span>Harbour quarter · 2022</span></p>
+        </div>
+      </div>
+
+      <div class="work__row">
+        <figure class="work__fig clip-reveal" data-clip>
+          <img src="assets/images/measure-northface.png" alt="Monumental sans lettering raked across a modern atelier north façade" width="1200" height="900" loading="lazy" />
+        </figure>
+        <div>
+          <h3 class="work__title justify" data-justify data-jmin="58" data-jmid="100" data-jend="76">Atelier North Façade</h3>
+          <p class="work__sub"><span>Bronze, patinated</span><span>Foundry row · 2023</span></p>
+        </div>
+      </div>
+
+      <div class="work__row">
+        <figure class="work__fig clip-reveal" data-clip>
+          <img src="assets/images/measure-customs.png" alt="Deep-incised serif name band across a historic customs house pediment" width="1200" height="900" loading="lazy" />
+        </figure>
+        <div>
+          <h3 class="work__title justify" data-justify data-jmin="62" data-jmid="100" data-jend="78">Harbour Customs House</h3>
+          <p class="work__sub"><span>Limestone, restored</span><span>Old port · 2024</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STUDIO STATEMENT; generous measure, editorial calm ============ -->
+  <section class="plate plate--light plate--pad studio" id="studio">
+    <div class="studio__text">
+      <p class="eyebrow">In the studio</p>
+      <h2>Here the measure relaxes, and type returns to its reading pace.</h2>
+      <p>We are draughtsmen first. Before a letter is cut we draw the wall at full size, then set a single line to its width and watch it justify; testing whether the face can hold both margins under wind, shadow, and a hundred years of weather.</p>
+      <p>What leaves the atelier is never a typeface. It is one line, set to one wall, flush to its every margin; a building learning to say its own name in its own proportions.</p>
+    </div>
+    <figure class="studio__fig clip-reveal" data-clip>
+      <img src="assets/images/measure-atelier.png" alt="A lettering draughtsman drawing full-size letterforms at a sunlit studio bench" width="900" height="1200" loading="lazy" />
+    </figure>
+  </section>
+
+  <!-- ============ CALLOUT; closing justified line + single magnetic CTA ============ -->
+  <section class="plate plate--dark callout" id="commission" aria-label="Commission">
+    <h2 class="callout__line justify" data-justify data-jmin="66" data-jmid="100" data-jend="82">Bring us your wall. We will set it <em>to measure.</em></h2>
+    <p class="act">
+      <a class="magnet" href="#top" id="commit">Commission a façade <span class="arw" aria-hidden="true">→</span></a>
+    </p>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span><strong>Stele</strong></span>
+  <span>Architectural lettering atelier · Drawn to width</span>
+  <span>© Stele</span>
+</footer>
+
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js"></script>
+<script defer src="assets/js/main.js"></script>
+</body>
+</html>

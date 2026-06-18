@@ -1,0 +1,51 @@
+{
+  "measure-facade": {
+    "html_path": "index.html › section.hero .hero__photo figure img",
+    "alt_text": "",
+    "generation_prompt": "Editorial architectural photograph, large-format film aesthetic: a tall monumental stone facade seen at a steep raking angle, deep-incised serif lettering running across a frieze, hard low sun carving long shadows into each letter. Warm near-black ground with bone-pale stone and a single oxblood shadow tone, museum-grade restraint, generous negative space above the inscription, fine film grain, awwwards composition, no text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Hero diorama — photographic depth layer behind the wordmark"
+  },
+  "measure-incision": {
+    "html_path": "index.html › section.bleed .bleed__media img",
+    "alt_text": "Macro of a chiselled serif letterform incised into pale limestone under raking light",
+    "generation_prompt": "Extreme macro fine-art photograph: a single chiselled serif letterform incised deep into pale limestone, raking side light pooling oxblood shadow inside the cut, tool marks visible on the stone grain. Warm-earth palette pushed dark — bone stone, ember-shadow, near-black surround. Shallow depth of field, painterly grain, monumental restraint, awwwards register, no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "Full-bleed plate — image behind the tightest-measure title"
+  },
+  "measure-concourse": {
+    "html_path": "index.html › section.work .work__row:nth-of-type(1) figure img",
+    "alt_text": "Carved frieze lettering spanning a grand stone concourse facade",
+    "generation_prompt": "Editorial architectural photograph: a grand civic concourse facade of monumental fluted limestone columns and a deep carved cornice band, low raking sun grazing the stone so the relief reads as long rhythmic shadow, strong horizontal proportions. No legible words or inscriptions — pure carved architectural form. Warm-earth palette in a dark register, bone limestone, taupe shadow, one oxblood accent on a recessed metal door below. Large-format clarity, generous composition, film grain, awwwards-grade, no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "Work grid — Grand Concourse Frieze"
+  },
+  "measure-ledger": {
+    "html_path": "index.html › section.work .work__row:nth-of-type(2) figure img",
+    "alt_text": "Patinated cast-brass inlay band set into a riverside stone wall under low sun",
+    "generation_prompt": "Editorial architectural detail photograph: a wide riverside ashlar stone wall with a flush band of patinated cast-brass geometric inlay and deep-cut reveals, warm late-afternoon side light glinting off the metal and pooling in the joints, soft water reflections rippling across the lower stone. No legible words or inscriptions — abstract brass-and-stone craft detail. Warm-earth palette dark register, bone stone, patinated brass, ember reflection, near-black water. Layered depth, restrained monumental framing, film grain, awwwards composition, no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "Work grid — Riverside Stone Ledger"
+  },
+  "measure-northface": {
+    "html_path": "index.html › section.work .work__row:nth-of-type(3) figure img",
+    "alt_text": "Monumental sans lettering raked across a modern atelier north facade",
+    "generation_prompt": "Editorial architectural photograph: monumental clean lettering raked across a modern concrete-and-glass north facade, cold directional light from one side, strong geometric shadow. Warm-earth palette held dark — bone concrete, taupe glass, a single oxblood reveal at a doorway. Minimal, monumental, large-format clarity, subtle grain, awwwards register, no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "Work grid — Atelier North Facade"
+  },
+  "measure-customs": {
+    "html_path": "index.html › section.work .work__row:nth-of-type(4) figure img",
+    "alt_text": "Deep-incised serif name band across a historic customs house pediment",
+    "generation_prompt": "Editorial architectural photograph: a deep-incised serif name band across the pediment of a historic customs house, weathered stone, warm dusk light pooling in the carved letters. Warm-earth palette in dark register — bone weathered stone, ember dusk wash, near-black sky above. Monumental restraint, painterly film grain, generous sky negative space, awwwards-grade, no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "Work grid — Harbour Customs House"
+  },
+  "measure-atelier": {
+    "html_path": "index.html › section.studio .studio__fig img",
+    "alt_text": "A lettering draughtsman drawing full-size letterforms at a sunlit studio bench",
+    "generation_prompt": "Editorial fine-art interior photograph: a lettering draughtsman drawing full-size letterforms in charcoal on large paper at a sunlit studio bench, proofs and stone samples around, soft window light. Warm-earth palette in a calm light register — bone paper, clay-taupe bench, a single oxblood proof pinned to the wall. Quiet monumental craft mood, large-format film grain, generous negative space, awwwards register, no text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Studio statement — atelier portrait"
+  }
+}
