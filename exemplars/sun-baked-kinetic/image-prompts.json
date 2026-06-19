@@ -1,65 +1,65 @@
 {
-  "sol-dawn": {
-    "html_path": "index.html#chapters",
-    "alt_text": "Pale lime-washed courtyard wall at first light, raking shadow from a wrought-iron grille.",
-    "generation_prompt": "Editorial architectural photograph at first light: a pale lime-washed Andalusian courtyard wall, low raking sun from the east casting a crisp long shadow of a wrought-iron grille across cream plaster. Warm ochre cast, soft film grain, restrained composition, Marvell-tile-stone material register, monumental quiet, deep tonal range, slight haze. no text or logos.",
-    "aspect_ratio": "4:3",
-    "placement": "Chapter 1 — Dawn"
-  },
-  "sol-noon": {
-    "html_path": "index.html#chapters",
-    "alt_text": "Bleached white wall at noon, no shadow, terracotta floor tile in foreground.",
-    "generation_prompt": "Editorial architectural photograph at noon: a bone-white lime-washed wall under flat overhead sun, no cast shadow, terracotta floor tile in the foreground, weightless flat light, the courtyard reading as a page. Muted desaturated palette, Studio Namma editorial restraint, minimal composition, high-key but earthy. no text or logos.",
-    "aspect_ratio": "4:3",
-    "placement": "Chapter 2 — Noon"
-  },
-  "sol-dusk": {
-    "html_path": "index.html#chapters",
-    "alt_text": "Terracotta plaster wall at dusk, long raking shadow from a single olive branch.",
-    "generation_prompt": "Editorial architectural photograph at dusk: a warm terracotta clay-pigment plaster wall, long raking shadow of a single olive branch stretching across the surface, last red light glow, deep amber tones, restrained Andalusian courtyard, monumental composition, cinematic quiet, film grain. no text or logos.",
-    "aspect_ratio": "4:3",
-    "placement": "Chapter 3 — Dusk"
-  },
-  "sol-w1": {
-    "html_path": "index.html#works",
-    "alt_text": "Ochre courtyard wall in Cordoba, half in shadow.",
-    "generation_prompt": "Editorial architectural detail: an ochre clay-pigment courtyard wall in Cordoba, half illuminated by raking afternoon sun, half deep in shadow, hand-troweled surface texture, restrained monumental composition, paper-tone palette with terracotta accent. no text or logos.",
-    "aspect_ratio": "3:4",
-    "placement": "Work grid №211 — Patio Almagra"
-  },
-  "sol-w2": {
-    "html_path": "index.html#works",
-    "alt_text": "Lime-washed colonnade at midday, bleached white.",
-    "generation_prompt": "Editorial architectural photograph: a lime-washed colonnade at midday in Sevilla, bone-white columns under flat zenith sun, terracotta floor tiles, monumental quiet, generous negative space, editorial restraint. no text or logos.",
+  "meridian-adobe-wall": {
+    "html_path": "index.html#hero",
+    "alt_text": "A hand rendered adobe wall caught in low raking sunlight, its lime and clay surface holding a warm grazing light.",
+    "generation_prompt": "Editorial architectural photograph: a hand-troweled adobe and lime-render wall filling the frame, low raking sun grazing across the surface from the left so the hand-applied clay texture reads in relief, warm ochre-to-umber tonal gradient, soft film grain, restrained monumental composition, deep tonal range. no text or logos.",
     "aspect_ratio": "16:9",
-    "placement": "Work grid №178 — Casa Cal Blanca"
+    "placement": "Hero — full-bleed backdrop behind the Meridiana sundial wordmark"
   },
-  "sol-w3": {
-    "html_path": "index.html#works",
-    "alt_text": "Terracotta plastered chimney with cast shadow of a fig leaf.",
-    "generation_prompt": "Editorial architectural close-up: a warm terracotta plastered chimney surface in Granada, sharp cast shadow of a single fig leaf raking across the texture, hand-applied clay-pigment finish, warm amber palette, cinematic stillness. no text or logos.",
-    "aspect_ratio": "1:1",
-    "placement": "Work grid №233 — Chimenea Higuera"
-  },
-  "sol-w4": {
-    "html_path": "index.html#works",
-    "alt_text": "Pale clay wall at dusk, single long shadow from a metal hook.",
-    "generation_prompt": "Editorial architectural photograph: a pale clay-pigment wall in Cádiz at dusk, single long shadow of a metal hook trailing across the plaster, warm red-amber low sun, restrained composition, monumental quiet, film grain. no text or logos.",
-    "aspect_ratio": "1:1",
-    "placement": "Work grid №198 — Muro de Tarde"
-  },
-  "sol-w5": {
-    "html_path": "index.html#works",
-    "alt_text": "Earth-pigment rendered hallway, raking light from clerestory.",
-    "generation_prompt": "Editorial architectural interior: an earth-pigment rendered hallway in Jerez, raking light streaming from a high clerestory, terracotta walls warming as the light arrives, monumental scale, Apple iPhone masthead grammar of restraint and depth. no text or logos.",
+  "meridian-ridge": {
+    "html_path": "index.html#bleed",
+    "alt_text": "An eroded ridge of compacted earth standing across a wide sunlit plain at the close of day.",
+    "generation_prompt": "Editorial landscape photograph: a long eroded ridge of compacted ochre earth standing across a wide flat sunlit plain, fine wind-cut gullies down its face, pale hazy sky above and a bleached foreground plain below, late-day warm light, atmospheric depth, restrained horizon composition, film grain. no text or logos.",
     "aspect_ratio": "16:9",
-    "placement": "Work grid №204 — Pasillo Mosto"
+    "placement": "Full-bleed plate — 'The wall is a clock. The colour is its hand.'"
   },
-  "sol-w6": {
-    "html_path": "index.html#works",
-    "alt_text": "Deep terracotta plaster panel with shadow of an arched window.",
-    "generation_prompt": "Editorial architectural photograph: a deep terracotta plaster panel in Ronda, sharp cast shadow of an arched window forming a clean geometric figure on the wall, warm clay tones, restrained monumental composition, cinematic quiet, film grain. no text or logos.",
+  "meridian-work-1": {
+    "html_path": "index.html#chapters",
+    "alt_text": "An adobe parapet against a pale dawn sky, its top edge lit by a warm rim of first light.",
+    "generation_prompt": "Editorial architectural photograph at dawn: a stepped adobe parapet seen from below against a pale clear sky, its rounded top edge catching a warm rim of first light, the rendered earthen wall glowing ochre, minimal sky negative space above, monumental quiet, film grain. no text or logos.",
     "aspect_ratio": "3:4",
-    "placement": "Work grid №246 — Arco Almazara"
+    "placement": "Chapter 1 — Dawn (full-bleed sticky stack)"
+  },
+  "meridian-grain": {
+    "html_path": "index.html#chapters",
+    "alt_text": "A close field of pale sun bleached sand and fine grit, flat and shadowless under vertical noon light.",
+    "generation_prompt": "Editorial macro photograph at noon: a close flat field of pale sun-bleached sand and fine grit, a single low band of coarser pebbles crossing the frame, flat shadowless vertical light, weightless high-key desaturated tone, restrained minimal composition reading as a blank page. no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "Chapter 2 — Noon (full-bleed sticky stack)"
+  },
+  "meridian-work-4": {
+    "html_path": "index.html#chapters",
+    "alt_text": "A weathered timber door set deep in a warm adobe wall, a long shadow running west across the threshold at dusk.",
+    "generation_prompt": "Editorial architectural photograph at dusk: a weathered timber plank door set deep in a thick warm adobe wall, the door ajar onto a dark interior, a long raking shadow running west across the rendered face and the stone threshold, deep amber low light, monumental stillness, film grain. no text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Chapter 3 — Dusk (full-bleed sticky stack)"
+  },
+  "meridian-work-3": {
+    "html_path": "index.html#works",
+    "alt_text": "A hard diagonal of raking shadow cast across a swept earthen floor toward an open doorway.",
+    "generation_prompt": "Editorial architectural photograph: a hard diagonal of raking shadow cast across a swept earthen floor toward a small dark open doorway in a rendered wall, a thin lime-white skirting line catching the light, restrained geometric composition, warm earth and cool shadow, cinematic quiet. no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "Field grid — Cordoba, 'Suelo de Sombra' (wide)"
+  },
+  "meridian-work-2": {
+    "html_path": "index.html#works",
+    "alt_text": "A hand forged iron hinge bedded into a thick adobe doorframe, the render packed close around the strap.",
+    "generation_prompt": "Editorial architectural close-up: a hand-forged iron strap hinge bedded into a thick adobe doorframe, warm clay render packed close around the metal, the dark timber door edge below, raking afternoon light, hand-made material detail, warm amber palette, film grain. no text or logos.",
+    "aspect_ratio": "4:3",
+    "placement": "Field grid — Sevilla, 'Herraje Almagra' (tall)"
+  },
+  "meridian-dune": {
+    "html_path": "index.html#works",
+    "alt_text": "The crest of a wind sculpted dune, one face in light and one fallen into deep shadow.",
+    "generation_prompt": "Editorial landscape photograph: the sinuous crest of a wind-sculpted sand dune, one face lit warm and rippled, the other fallen into deep cool shadow, a single clean curving ridgeline dividing the frame, late warm light, minimal monumental composition, fine film grain. no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "Field grid — Tabernas, 'Cresta Viva' (tall)"
+  },
+  "meridian-mesa": {
+    "html_path": "index.html#works",
+    "alt_text": "A low bleached mesa lying flat across a wide sunlit plain at the close of day.",
+    "generation_prompt": "Editorial landscape photograph: a low bleached mesa lying flat across a wide sunlit plain, pale hazy high-key sky filling the upper frame, a thin warm band of dry ground below, atmospheric distance, restrained horizon composition, soft film grain, monumental quiet. no text or logos.",
+    "aspect_ratio": "16:9",
+    "placement": "Field grid — Almeria, 'Llano de Sal' (wide)"
   }
 }
