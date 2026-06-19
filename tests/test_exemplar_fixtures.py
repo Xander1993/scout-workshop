@@ -18,9 +18,19 @@ from quality_floor_config import QUALITY_FLOOR as Q
 
 EXEMPLARS = pathlib.Path(__file__).resolve().parent.parent / "exemplars"
 
-# (exemplar dir name, kit-type key for the per-type vertical-void ceiling)
+# (exemplar dir name, kit-type key for the per-type vertical-void ceiling).
+# Every hand-rebuilt exemplar that reached SHIP is pinned here so a future gate
+# change or accidental edit that would regress an award-worthy kit fails in CI.
 FIXTURES = [
     ("casa-umbral-kinetic", "kinetic-experimental"),
+    ("editorial-studio", "editorial-studio"),
+    ("editorial-studio-warm-earth", "editorial-studio"),
+    ("sun-baked-editorial-studio", "editorial-studio"),
+    ("mid-century-foundry", "editorial-studio"),
+    ("sun-baked-single-product", "single-product"),
+    ("sun-baked-single-product-day", "single-product"),
+    ("editorial-mid-century-kinetic", "kinetic-experimental"),
+    ("sun-baked-kinetic", "kinetic-experimental"),
 ]
 
 
