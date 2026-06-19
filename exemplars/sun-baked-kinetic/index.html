@@ -49,12 +49,13 @@
 <!-- ============ MANIFESTO ============ -->
 <section class="stage stage--manifesto plate plate--light" id="manifesto" aria-labelledby="manifesto-title">
   <h2 class="visually-hidden" id="manifesto-title">Atelier</h2>
-  <p class="manifesto" data-split="lines">
-    An atelier of lime and clay, mixed in courtyards where the wall keeps the
-    hour and the colour turns with it. We do not finish surfaces. We set the
-    angle at which they meet the light.
-  </p>
-  <p class="manifesto__sign">Estudio Meridiana, Sevilla</p>
+  <div class="manifesto__grid">
+    <p class="manifesto__lead">Estudio Meridiana, Sevilla. Working in earth, lime and ochre since 2009.</p>
+    <div class="manifesto__main">
+      <p class="manifesto" data-split="lines">An atelier of lime and clay, mixed in courtyards where the wall keeps the hour and the colour turns with it. We do not finish surfaces. We set the angle at which they meet the light.</p>
+      <p class="manifesto__sign">Lime by hand, colour by sun</p>
+    </div>
+  </div>
 </section>
 
 <!-- ============ FULL-BLEED PLATE : THE WALL IS A CLOCK ============ -->
@@ -74,45 +75,42 @@
   </div>
 </section>
 
-<!-- ============ CHAPTERS : DAWN / NOON / DUSK (sticky stack) ============ -->
+<!-- ============ CHAPTERS : DAWN / NOON / DUSK (full-bleed sticky stack) ============ -->
 <section class="stage stage--chapters" id="chapters" aria-label="The wall through three hours">
 
-  <article class="chapter chapter--dawn plate plate--light" data-chapter="dawn">
-    <div class="chapter__frame">
-      <figure class="chapter__figure">
-        <div class="reveal"><img src="assets/images/meridian-work-1.png" alt="An adobe parapet against a pale dawn sky, its top edge lit by a warm rim of first light." width="1086" height="1448"/></div>
-      </figure>
-      <div class="chapter__copy">
-        <span class="chapter__hour">Dawn</span>
-        <h3 class="chapter__title" data-split="words">The long shadow east</h3>
-        <p class="chapter__body">The first ochre lays down warm. Walls glow from within and the shadow climbs the wrong way. We mix the lime thicker, because it drinks the cold.</p>
-      </div>
+  <article class="chapter chapter--dawn" data-chapter="dawn">
+    <div class="chapter__media">
+      <img src="assets/images/meridian-work-1.png" data-cparallax="0.16" alt="An adobe parapet against a pale dawn sky, its top edge lit by a warm rim of first light." width="1086" height="1448"/>
+    </div>
+    <div class="chapter__scrim" aria-hidden="true"></div>
+    <div class="chapter__copy">
+      <span class="chapter__hour">Dawn</span>
+      <h3 class="chapter__title" data-split="words">The long shadow east</h3>
+      <p class="chapter__body">The first ochre lays down warm. Walls glow from within and the shadow climbs the wrong way. We mix the lime thicker, because it drinks the cold.</p>
     </div>
   </article>
 
-  <article class="chapter chapter--noon plate plate--mid" data-chapter="noon">
-    <div class="chapter__frame">
-      <figure class="chapter__figure">
-        <div class="reveal"><img src="assets/images/meridian-mesa.png" alt="A bleached mesa lying flat under a white noon sky, the plain holding no shadow at all." width="1672" height="941"/></div>
-      </figure>
-      <div class="chapter__copy">
-        <span class="chapter__hour">Noon</span>
-        <h3 class="chapter__title" data-split="words">The shadow collapses</h3>
-        <p class="chapter__body">For seven minutes the wall has no time at all. Bone white, flat, weightless. The courtyard becomes a page. The pigment we chose for noon was a refusal.</p>
-      </div>
+  <article class="chapter chapter--noon" data-chapter="noon">
+    <div class="chapter__media">
+      <img src="assets/images/meridian-grain.png" data-cparallax="0.16" alt="A close field of pale sun bleached sand and fine grit, flat and shadowless under vertical noon light." width="1672" height="941"/>
+    </div>
+    <div class="chapter__scrim" aria-hidden="true"></div>
+    <div class="chapter__copy">
+      <span class="chapter__hour">Noon</span>
+      <h3 class="chapter__title" data-split="words">The shadow collapses</h3>
+      <p class="chapter__body">For seven minutes the wall has no time at all. Bone white, flat, weightless. The courtyard becomes a page. The pigment we chose for noon was a refusal.</p>
     </div>
   </article>
 
-  <article class="chapter chapter--dusk plate plate--dark" data-chapter="dusk">
-    <div class="chapter__frame">
-      <figure class="chapter__figure">
-        <div class="reveal"><img src="assets/images/meridian-work-4.png" alt="A weathered timber door set deep in a warm adobe wall, a long shadow running west across the threshold at dusk." width="1086" height="1448"/></div>
-      </figure>
-      <div class="chapter__copy">
-        <span class="chapter__hour">Dusk</span>
-        <h3 class="chapter__title" data-split="words">The shadow runs west</h3>
-        <p class="chapter__body">The clay drinks the last red light and gives back a hum. Long shadows stretch off the wall, into the next courtyard, into the next day.</p>
-      </div>
+  <article class="chapter chapter--dusk" data-chapter="dusk">
+    <div class="chapter__media">
+      <img src="assets/images/meridian-work-4.png" data-cparallax="0.16" alt="A weathered timber door set deep in a warm adobe wall, a long shadow running west across the threshold at dusk." width="1086" height="1448"/>
+    </div>
+    <div class="chapter__scrim" aria-hidden="true"></div>
+    <div class="chapter__copy">
+      <span class="chapter__hour">Dusk</span>
+      <h3 class="chapter__title" data-split="words">The shadow runs west</h3>
+      <p class="chapter__body">The clay drinks the last red light and gives back a hum. Long shadows stretch off the wall, into the next courtyard, into the next day.</p>
     </div>
   </article>
 </section>
@@ -141,9 +139,9 @@
       <h3 class="figure__name">Cresta Viva</h3>
     </li>
     <li class="figure figure--wide">
-      <div class="reveal"><img src="assets/images/meridian-grain.png" alt="A close study of coarse sand and small stones, the grain we grind down for ochre render." width="1672" height="941"/></div>
+      <div class="reveal"><img src="assets/images/meridian-mesa.png" alt="A low bleached mesa lying flat across a wide sunlit plain at the close of day." width="1672" height="941"/></div>
       <span class="figure__meta">Almeria</span>
-      <h3 class="figure__name">Grano de Ocre</h3>
+      <h3 class="figure__name">Llano de Sal</h3>
     </li>
   </ol>
 </section>
