@@ -64,7 +64,11 @@ html,body{
   font-weight:400;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
-  overflow-x:hidden;
+  /* No overflow-x on the root: any non-visible value here makes body a scroll
+     container and breaks position:sticky on .pin__stick (the masked-wordmark
+     scenes), leaving near-black voids mid-scroll. The only wider-than-viewport
+     elements are the parallax .plate images, which are already clipped by their
+     own overflow:hidden parents, so the document never scrolls horizontally. */
 }
 ::selection{background:var(--terra);color:var(--bone)}
 
@@ -312,8 +316,8 @@ h2.maskword{font-size:clamp(3rem,14vw,10rem)}
   min-height:84vh;display:flex;align-items:flex-end;
   padding:clamp(120px,18vh,220px) var(--gutter) clamp(48px,8vh,96px)}
 .pagehero__media{position:absolute;inset:0;z-index:0}
-.pagehero__media img{width:100%;height:100%;object-fit:cover;filter:brightness(.4) saturate(.85);will-change:transform}
-.pagehero__media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,17,13,.5),rgba(20,17,13,.8))}
+.pagehero__media img{width:100%;height:100%;object-fit:cover;filter:brightness(.62) saturate(.92) contrast(1.04);will-change:transform}
+.pagehero__media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,17,13,.22) 0%,rgba(20,17,13,.34) 46%,rgba(20,17,13,.82) 100%)}
 .pagehero__inner{position:relative;z-index:2;max-width:1280px;margin:0 auto;width:100%}
 .pagehero__h{font-family:var(--font-display);font-weight:500;font-size:clamp(2.8rem,9vw,8rem);line-height:0.94;letter-spacing:-0.025em;max-width:15ch}
 .pagehero__h em{font-style:italic;color:var(--terra)}
