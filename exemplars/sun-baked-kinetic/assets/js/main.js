@@ -48,6 +48,7 @@
         return r.top <= probe && r.bottom >= probe;
       });
       document.body.classList.toggle('nav-on-dark', onDark);
+      document.body.classList.toggle('is-scrolled', window.scrollY > 40);
     }
     update();
     window.addEventListener('scroll', update, { passive: true });
@@ -119,16 +120,19 @@
     var layers = hero.querySelectorAll('[data-parallax]');
     var root = document.documentElement;
 
-    // The hero is a clean 100vh moment with no scroll runway, so there is no
-    // scrub range to drive. playIntro() owns the at-rest sun sweep instead;
-    // bail out here so a zero-range trigger can't reset the sun back to dawn.
-    if (hero.offsetHeight - window.innerHeight < 40) return;
+    // The hero is a clean 100vh moment (no runway), but it still has a real
+    // 100vh EXIT range as it scrolls off the top - drive the sun sweep + layer
+    // parallax over that (start top top -> end bottom top) so scroll motion
+    // engages immediately from the very first wheel tick. playIntro() owns the
+    // at-rest sweep before any scroll; this scrub takes over once the visitor
+    // drives the page themselves. At scroll 0 (static capture) progress is 0,
+    // i.e. the at-rest dawn position, so nothing is hidden or displaced.
 
-    // Pin + scrub : drives --sun-progress 0→1 over hero runway
+    // Scrub : drives --sun-progress 0→1 as the hero exits the viewport
     ScrollTrigger.create({
       trigger: hero,
       start: 'top top',
-      end: 'bottom bottom',
+      end: 'bottom top',
       scrub: true,
       onUpdate: function(self){
         var p = self.progress;
@@ -173,31 +177,29 @@
         scrollTrigger: {
           trigger: hero,
           start: 'top top',
-          end: 'bottom bottom',
+          end: 'bottom top',
           scrub: true
         }
       });
     });
   }
 
-  // ---------- STICKY-STACK CHAPTERS ----------
-  function chaptersStack(){
-    var chapters = document.querySelectorAll('.chapter');
-    chapters.forEach(function(ch, i){
-      // Each chapter is an opaque sticky panel; the next simply slides up over the
-      // pinned previous one. (The old leaving-panel opacity:0.45 fade made the
-      // opaque background translucent, so the prior chapter's copy bled through the
-      // incoming one - the overprint defect. Clean stack, no fade.)
-      // image reveal inside each chapter
-      var rev = ch.querySelector('.reveal');
-      var img = ch.querySelector('.reveal img');
-      if (rev && img){
-        var play = defer(function(){
-          gsap.to(rev, { clipPath: 'inset(0 0 0% 0)', duration: 1.2, ease: 'power3.out' });
-          gsap.to(img, { scale: 1.0, duration: 1.6, ease: 'power2.out' });
+  // ---------- FULL-BLEED CHAPTER PARALLAX ----------
+  // Each chapter is one edge-to-edge photograph pinned (sticky) for a beat. The
+  // image is taller than the panel and drifts vertically as the panel passes
+  // through the viewport - continuous scrub motion that is alive whenever the
+  // visitor scrolls, and at rest (offset 0) in a non-scrolled / static capture
+  // because the image is visible by default (no clip, no opacity hide).
+  function chapterParallax(){
+    document.querySelectorAll('.chapter').forEach(function(ch){
+      var img = ch.querySelector('.chapter__media img');
+      if (!img) return;
+      var depth = parseFloat(img.getAttribute('data-cparallax')) || 0.16;
+      gsap.fromTo(img,
+        { yPercent: -depth * 100 / 2 },
+        { yPercent: depth * 100 / 2, ease: 'none',
+          scrollTrigger: { trigger: ch, start: 'top bottom', end: 'bottom top', scrub: true }
         });
-        ScrollTrigger.create({ trigger: ch, start: 'top 78%', once: true, onEnter: play });
-      }
     });
   }
 
@@ -270,7 +272,7 @@
   function init(){
     applySplits();
     heroSundial();
-    chaptersStack();
+    chapterParallax();
     genericReveals();
     magnetic();
     ScrollTrigger.refresh();
