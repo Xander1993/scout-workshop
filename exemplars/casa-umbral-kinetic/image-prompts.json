@@ -1,0 +1,100 @@
+{
+  "terroir-sky": {
+    "html_path": "index.html › header.hero img[aria-hidden] (backdrop) AND section.closing img (line 217)",
+    "alt_text": "",
+    "generation_prompt": "Editorial fine-art landscape, large-format film aesthetic: a wide, near-empty dawn sky over a south-facing Spanish vineyard slope, soft graduated bone-to-ochre wash, the land a low silhouetted band at the bottom of the frame. Warm-earth palette: ochre highlight, terracotta haze, bone-white sky. Natural film grain, monumental restraint, generous negative space, awwwards-grade atmosphere, no text or logos.",
+    "aspect_ratio": "8:5",
+    "placement": "Hero aria-hidden backdrop + closing full-bleed image (decorative, reused)"
+  },
+  "terroir-grove": {
+    "html_path": "index.html › header.hero figure img (fetchpriority high)",
+    "alt_text": "Old vines on the estate's south-facing slope at first light.",
+    "generation_prompt": "Editorial fine-art vineyard photograph at first light, large-format film: gnarled old head-trained vines marching across a south-facing slope of red clay, raking dawn light from camera-left throwing long soft shadows between the rows. Warm-earth palette: ember shadow, ochre highlight, terracotta soil, bone sky. Painterly film grain, monumental composition, awwwards register, no text or logos.",
+    "aspect_ratio": "3:2",
+    "placement": "Hero foreground image"
+  },
+  "spread-soil": {
+    "html_path": "index.html › figure.manifesto__fig img",
+    "alt_text": "Red clay soil of the estate, turned and drying after the harvest.",
+    "generation_prompt": "Editorial fine-art still life, large-format film: a close vertical study of freshly turned red clay estate soil, cracked and drying in late-harvest sun, deep terracotta clods catching hard side light against cooler shadowed earth. Warm-earth palette pushed to saturated terracotta and ember, a single bone highlight. Soft natural grain, tactile detail, monumental restraint, awwwards-grade, no text or logos.",
+    "aspect_ratio": "11:14",
+    "placement": "Manifesto figure (tall portrait)"
+  },
+  "terroir-ridge": {
+    "html_path": "index.html › section.terroir article.parcel[1] CSS --img background (La Cresta)",
+    "alt_text": "",
+    "generation_prompt": "Editorial fine-art landscape, large-format film: a thin-limestone ridge parcel of a Spanish estate under early sun, tight low vines on pale stony ground, mineral and bright. Warm-earth palette held cooler and brighter for the ridge: bone limestone, ochre light, restrained terracotta. Painterly grain, monumental composition, used behind a text card so the right two-thirds stays calm, awwwards register, no text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Terroir parcel card background, La Cresta (ridge)"
+  },
+  "terroir-trees": {
+    "html_path": "index.html › section.terroir article.parcel[2] CSS --img background (El Soto)",
+    "alt_text": "",
+    "generation_prompt": "Editorial fine-art landscape, large-format film: the grove parcel, older vines under high dappled tree shade, the slowest, deepest fruit of the estate, soft green-gold light filtering through canopy onto red earth. Warm-earth palette with a shaded green note: ember shadow, ochre dapple, terracotta ground. Painterly grain, monumental restraint, calm enough behind a text card, awwwards register, no text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Terroir parcel card background, El Soto (grove)"
+  },
+  "terroir-row": {
+    "html_path": "index.html › section.terroir article.parcel[3] CSS --img background (La Hondonada)",
+    "alt_text": "",
+    "generation_prompt": "Editorial fine-art landscape, large-format film: the low rows parcel, heavy dark-red clay holding the night cool, dense vines in a shallow hollow at midday, deep saturated earth and even shade. Warm-earth palette at its most terracotta: saturated red clay, ember shadow, one bone highlight. Painterly grain, monumental composition, calm behind a text card, awwwards register, no text or logos.",
+    "aspect_ratio": "3:4",
+    "placement": "Terroir parcel card background, La Hondonada (low rows)"
+  },
+  "work-amphora": {
+    "html_path": "index.html › section.cellar figure.plate[1] img (Tinaja)",
+    "alt_text": "Tinaja amphora resting in the buried clay cellar.",
+    "generation_prompt": "Editorial fine-art still life, large-format film: a single dark-clay tinaja amphora resting in a cool buried clay cellar, one shaft of warm light from above grazing its shoulder, the rest in deep ember shadow. Warm-earth palette: near-black clay, terracotta wall glow, a bone rim-light. Soft film grain, museum lighting, monumental restraint, generous negative space, awwwards-grade composition, no text or logos.",
+    "aspect_ratio": "11:15",
+    "placement": "Cellar plate, Tinaja (amphora red)"
+  },
+  "work-grove": {
+    "html_path": "index.html › section.cellar figure.plate.plate--tall[2] img (El Soto)",
+    "alt_text": "Hand-harvest baskets at the edge of the old grove.",
+    "generation_prompt": "Editorial fine-art photograph, large-format film, tall portrait: woven hand-harvest baskets brimming with dark grapes set down at the edge of the old grove at first light, raking dawn light across the fruit, the grove soft behind. Warm-earth palette: ember shadow, ochre highlight, terracotta basket, deep purple fruit reading near-black. Painterly grain, monumental composition, awwwards register, no text or logos.",
+    "aspect_ratio": "11:17",
+    "placement": "Cellar plate (tall), El Soto (grove cuvee)"
+  },
+  "work-press": {
+    "html_path": "index.html › section.cellar figure.plate.plate--wide[3] img (Lagar)",
+    "alt_text": "The old basket press at the close of the harvest day.",
+    "generation_prompt": "Editorial fine-art photograph, large-format film, wide: an old wooden basket press at the close of the harvest day, low warm sun raking across the worn timber and the last must, deep shadows pooling around the base. Warm-earth palette at dusk register: terracotta wood, ember shadow, one bone highlight on the screw. Soft long shadow, painterly grain, monumental composition, awwwards-grade still life, no text or logos.",
+    "aspect_ratio": "3:2",
+    "placement": "Cellar plate (wide, full row), Lagar (foot-trodden)"
+  },
+  "terroir-clods": {
+    "html_path": "index.html › section.cellar figure.plate[4] img (La Cresta)",
+    "alt_text": "Sun-dried clods of estate clay held in the hand.",
+    "generation_prompt": "Editorial fine-art still life, large-format film: a pair of weathered hands cupping sun-dried clods of pale-red estate clay, hard noon light picking out the cracked texture of the earth against shadowed palms. Warm-earth palette: bone-and-terracotta clay, ember shadow, warm skin. Tactile detail, soft film grain, monumental restraint, awwwards-grade, no text or logos.",
+    "aspect_ratio": "11:15",
+    "placement": "Cellar plate, La Cresta (ridge white)"
+  },
+  "spread-grove": {
+    "html_path": "index.html › section.spreads figure[1] img",
+    "alt_text": "Morning over the grove parcel.",
+    "generation_prompt": "Editorial fine-art landscape, large-format film, wide: morning over the grove parcel, low mist burning off red-clay rows under old trees, soft gold dawn light flooding from the side. Warm-earth palette: ochre light, terracotta ground, bone mist, ember shade. Painterly grain, monumental composition, generous sky, awwwards register, no text or logos.",
+    "aspect_ratio": "3:2",
+    "placement": "Spreads row, morning over the grove"
+  },
+  "spread-press": {
+    "html_path": "index.html › section.spreads figure[2] img",
+    "alt_text": "Pressing at dusk.",
+    "generation_prompt": "Editorial fine-art photograph, large-format film, wide: pressing at dusk, warm low light raking across the working press and the deep must, long ember shadows, the day's last bone highlight on wet timber. Warm-earth palette pushed to dusk: terracotta wood, ember shadow, near-black must, one bone glint. Soft long shadow, painterly grain, monumental composition, awwwards register, no text or logos.",
+    "aspect_ratio": "3:2",
+    "placement": "Spreads row, pressing at dusk"
+  },
+  "work-label": {
+    "html_path": "index.html › section.spreads figure[3] img",
+    "alt_text": "A bottle of the amphora red, unlabelled.",
+    "generation_prompt": "Editorial fine-art still life, large-format film, wide: a single unlabelled dark-clay-glass bottle of the amphora red standing on a rough stone shelf, warm side light glowing through the deep red wine, bare bone-plaster wall behind. Warm-earth palette: near-black bottle, terracotta wall, ruby wine glow, one bone highlight. Generous negative space, soft film grain, monumental restraint, awwwards-grade, no text or logos.",
+    "aspect_ratio": "3:2",
+    "placement": "Spreads row, the unlabelled bottle"
+  },
+  "spread-bottle": {
+    "html_path": "index.html › section.spreads figure[4] img",
+    "alt_text": "The first bottle of the vintage, drawn from clay.",
+    "generation_prompt": "Editorial fine-art still life, large-format film, wide: the first bottle of the vintage drawn from clay, set beside the buried tinaja in the cool cellar, one warm shaft of light catching the bottle's shoulder against deep ember shadow. Warm-earth palette: near-black clay and glass, terracotta cellar glow, a single bone rim-light. Museum lighting, soft grain, monumental composition, awwwards register, no text or logos.",
+    "aspect_ratio": "3:2",
+    "placement": "Spreads row, first bottle of the vintage"
+  }
+}
