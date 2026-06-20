@@ -100,6 +100,93 @@ def test_present_local_image_passes(tmp_path):
     assert r["ok"], r
 
 
+def test_missing_css_background_image_fails(tmp_path):
+    # a background-image url() in an external stylesheet pointing at a local file
+    # that does not exist on disk is a broken image — must fail the kit. The url()
+    # is resolved relative to the CSS file's own directory ("../images/..").
+    css = tmp_path / "assets" / "css"
+    css.mkdir(parents=True)
+    (css / "style.css").write_text(
+        ".hero{background-image:url('../images/hero.png');}", encoding="utf-8")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><head>'
+        '<link rel="stylesheet" href="assets/css/style.css"></head>'
+        '<body><div class="hero"></div></body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("hero.png" in v and "missing" in v.lower()
+               for v in r["violations"]), r
+
+
+def test_present_css_background_image_passes(tmp_path):
+    # the same reference passes once the file actually exists on disk
+    css = tmp_path / "assets" / "css"
+    css.mkdir(parents=True)
+    (tmp_path / "assets" / "images").mkdir(parents=True)
+    _img(tmp_path / "assets" / "images" / "hero.png")
+    (css / "style.css").write_text(
+        ".hero{background-image:url('../images/hero.png');}", encoding="utf-8")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body><div class="hero"></div></body></html>',
+        encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert r["ok"], r
+
+
+def test_css_font_url_ignored(tmp_path):
+    # a missing non-image url() (e.g. a @font-face .woff2) is out of scope for the
+    # image-hygiene gate and must NOT be flagged as a broken image
+    css = tmp_path / "assets" / "css"
+    css.mkdir(parents=True)
+    (css / "style.css").write_text(
+        "@font-face{font-family:x;src:url('../fonts/x.woff2');}",
+        encoding="utf-8")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body><h1>ok</h1></body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert r["ok"], r
+
+
+def test_missing_img_srcset_fails(tmp_path):
+    # an <img> whose srcset lists a local file missing on disk is a broken image
+    _img(tmp_path / "hero.png")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body>'
+        '<img src="hero.png" srcset="hero.png 1x, hero-2x.png 2x" alt="studio">'
+        '</body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("hero-2x.png" in v and "missing" in v.lower()
+               for v in r["violations"]), r
+
+
+def test_missing_source_srcset_fails(tmp_path):
+    # a <picture><source srcset> pointing at a missing local file is broken
+    _img(tmp_path / "hero.png")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body><picture>'
+        '<source srcset="hero.avif" type="image/avif">'
+        '<img src="hero.png" alt="studio"></picture></body></html>',
+        encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("hero.avif" in v and "missing" in v.lower()
+               for v in r["violations"]), r
+
+
+def test_present_responsive_images_pass(tmp_path):
+    # img srcset + picture source all resolving on disk passes cleanly
+    for n in ("hero.png", "hero-2x.png", "hero.avif"):
+        _img(tmp_path / n)
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body><picture>'
+        '<source srcset="hero.avif" type="image/avif">'
+        '<img src="hero.png" srcset="hero.png 1x, hero-2x.png 2x" alt="x">'
+        '</picture></body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert r["ok"], r
+
+
 def test_data_uri_and_remote_real_images_pass(tmp_path):
     # data: URIs and a normal remote https image (not picsum) are not placeholders
     (tmp_path / "index.html").write_text(
