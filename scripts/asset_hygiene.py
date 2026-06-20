@@ -6,7 +6,11 @@ into delivered kits:
   2. a ``picsum.photos`` URL standing in for a real image,
   3. a PLACEHOLDER-text image — an inline ``<svg>`` or a referenced local image
      file whose visible content is the literal word "PLACEHOLDER" (the SVG/text
-     fake-screenshots the kit used before real images were generated),
+     fake-screenshots the kit used before real images were generated). The
+     referenced-file check covers every channel the browser fetches from disk:
+     ``<img src>``, ``<img srcset>``, ``<source src>``/``<source srcset>``, and
+     ``url(...)`` image refs in inline ``<style>`` blocks, ``style="..."``
+     attributes, and external stylesheets (same channels as defect 4),
   4. a broken image — a local image reference that points at a file which does
      not exist on disk (the browser renders a broken-image icon). Checked across
      every channel the browser actually fetches: ``<img src>``, ``<img srcset>``,
@@ -56,6 +60,22 @@ def _missing_local_image(ref: str, base_dir: Path):
     return clean if not (base_dir / clean).is_file() else None
 
 
+def _placeholder_local_image(ref: str, base_dir: Path):
+    """Return the cleaned ref if it names a *local* image file that exists on
+    disk but is a PLACEHOLDER-text image (a readable SVG whose content is the
+    literal word "PLACEHOLDER"), resolved relative to ``base_dir``; else None.
+    Remote/data refs and missing files are ignored here (missing files are
+    handled by ``_missing_local_image``)."""
+    clean = ref.split("?")[0].split("#")[0].strip()
+    if not clean or clean.lower().startswith(_REMOTE_PREFIXES):
+        return None
+    target = base_dir / clean
+    if target.suffix.lower() not in _TEXT_IMG_SUFFIXES or not target.is_file():
+        return None
+    body = target.read_text(encoding="utf-8", errors="ignore")
+    return clean if _PLACEHOLDER_RE.search(body) else None
+
+
 def _srcset_candidates(srcset: str):
     """Yield each URL token from a srcset value ("a.png 1x, b.png 2x")."""
     for cand in srcset.split(","):
@@ -102,10 +122,16 @@ def check_assets(kit_dir, pages=None) -> dict:
                 miss = _missing_local_image(cand, hf.parent)
                 if miss:
                     violations.append(f"{name}: {miss} is a missing image file")
+                ph = _placeholder_local_image(cand, hf.parent)
+                if ph:
+                    violations.append(f"{name}: {ph} is a PLACEHOLDER image")
         for src in _SOURCE_SRC_RE.findall(html):
             miss = _missing_local_image(src, hf.parent)
             if miss:
                 violations.append(f"{name}: {miss} is a missing image file")
+            ph = _placeholder_local_image(src, hf.parent)
+            if ph:
+                violations.append(f"{name}: {ph} is a PLACEHOLDER image")
         # inline CSS image refs: <style> blocks and style="" attributes
         inline_css = _STYLE_BLOCK_RE.findall(html) + _STYLE_ATTR_RE.findall(html)
         for block in inline_css:
@@ -113,6 +139,9 @@ def check_assets(kit_dir, pages=None) -> dict:
                 miss = _missing_local_image(url, hf.parent)
                 if miss:
                     violations.append(f"{name}: {miss} is a missing image file")
+                ph = _placeholder_local_image(url, hf.parent)
+                if ph:
+                    violations.append(f"{name}: {ph} is a PLACEHOLDER image")
     # external stylesheets: background-image:url() etc., resolved relative to the
     # CSS file's own directory (independent of the html `pages` filter)
     for cf in sorted(kit_dir.rglob("*.css")):
@@ -122,6 +151,9 @@ def check_assets(kit_dir, pages=None) -> dict:
             miss = _missing_local_image(url, cf.parent)
             if miss:
                 violations.append(f"{rel}: {miss} is a missing image file")
+            ph = _placeholder_local_image(url, cf.parent)
+            if ph:
+                violations.append(f"{rel}: {ph} is a PLACEHOLDER image")
     return {
         "ok": not violations,
         "violations": violations,

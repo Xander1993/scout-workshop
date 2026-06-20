@@ -187,6 +187,81 @@ def test_present_responsive_images_pass(tmp_path):
     assert r["ok"], r
 
 
+def _placeholder_svg(p):
+    p.write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">'
+        '<text x="32" y="48">PLACEHOLDER</text></svg>', encoding="utf-8")
+
+
+def test_placeholder_svg_via_img_srcset_fails(tmp_path):
+    # an <img srcset> pointing at an existing-but-PLACEHOLDER svg is a placeholder
+    _img(tmp_path / "hero.png")
+    _placeholder_svg(tmp_path / "plate.svg")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body>'
+        '<img src="hero.png" srcset="plate.svg 1x" alt="studio">'
+        '</body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("plate.svg" in v and "PLACEHOLDER" in v.upper()
+               for v in r["violations"]), r
+
+
+def test_placeholder_svg_via_source_fails(tmp_path):
+    # a <picture><source srcset> pointing at a PLACEHOLDER svg is a placeholder
+    _img(tmp_path / "hero.png")
+    _placeholder_svg(tmp_path / "plate.svg")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body><picture>'
+        '<source srcset="plate.svg" type="image/svg+xml">'
+        '<img src="hero.png" alt="studio"></picture></body></html>',
+        encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("plate.svg" in v and "PLACEHOLDER" in v.upper()
+               for v in r["violations"]), r
+
+
+def test_placeholder_svg_via_css_url_fails(tmp_path):
+    # a background-image url() in an external stylesheet pointing at an existing
+    # PLACEHOLDER svg is a placeholder image — must fail the kit
+    css = tmp_path / "assets" / "css"
+    css.mkdir(parents=True)
+    (tmp_path / "assets" / "images").mkdir(parents=True)
+    _placeholder_svg(tmp_path / "assets" / "images" / "plate.svg")
+    (css / "style.css").write_text(
+        ".hero{background-image:url('../images/plate.svg');}", encoding="utf-8")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><head>'
+        '<link rel="stylesheet" href="assets/css/style.css"></head>'
+        '<body><div class="hero"></div></body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("plate.svg" in v and "PLACEHOLDER" in v.upper()
+               for v in r["violations"]), r
+
+
+def test_present_nonplaceholder_svg_via_channels_passes(tmp_path):
+    # a real (non-PLACEHOLDER) svg referenced via srcset/source/css passes
+    css = tmp_path / "assets" / "css"
+    css.mkdir(parents=True)
+    (tmp_path / "assets" / "images").mkdir(parents=True)
+    real = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">'
+            '<circle cx="5" cy="5" r="4"/></svg>')
+    (tmp_path / "icon.svg").write_text(real, encoding="utf-8")
+    (tmp_path / "assets" / "images" / "bg.svg").write_text(real, encoding="utf-8")
+    (css / "style.css").write_text(
+        ".hero{background-image:url('../images/bg.svg');}", encoding="utf-8")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><head>'
+        '<link rel="stylesheet" href="assets/css/style.css"></head>'
+        '<body><picture><source srcset="icon.svg" type="image/svg+xml">'
+        '<img src="icon.svg" srcset="icon.svg 1x" alt="x"></picture>'
+        '<div class="hero"></div></body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert r["ok"], r
+
+
 def test_data_uri_and_remote_real_images_pass(tmp_path):
     # data: URIs and a normal remote https image (not picsum) are not placeholders
     (tmp_path / "index.html").write_text(
