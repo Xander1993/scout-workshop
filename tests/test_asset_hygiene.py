@@ -75,6 +75,31 @@ def test_all_pages_scanned(tmp_path):
     assert any("services.html" in v for v in r["violations"]), r
 
 
+def test_missing_local_image_fails(tmp_path):
+    # an <img> pointing at a local file that does not exist on disk is a broken
+    # image (browser renders a broken-image icon) — must fail the kit
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body>'
+        '<img src="assets/hero.png" alt="studio"></body></html>',
+        encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("assets/hero.png" in v and "missing" in v.lower()
+               for v in r["violations"]), r
+
+
+def test_present_local_image_passes(tmp_path):
+    # the same reference passes once the file actually exists on disk
+    (tmp_path / "assets").mkdir()
+    _img(tmp_path / "assets" / "hero.png")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body>'
+        '<img src="assets/hero.png" alt="studio"></body></html>',
+        encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert r["ok"], r
+
+
 def test_data_uri_and_remote_real_images_pass(tmp_path):
     # data: URIs and a normal remote https image (not picsum) are not placeholders
     (tmp_path / "index.html").write_text(

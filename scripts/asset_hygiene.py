@@ -6,7 +6,9 @@ into delivered kits:
   2. a ``picsum.photos`` URL standing in for a real image,
   3. a PLACEHOLDER-text image — an inline ``<svg>`` or a referenced local image
      file whose visible content is the literal word "PLACEHOLDER" (the SVG/text
-     fake-screenshots the kit used before real images were generated).
+     fake-screenshots the kit used before real images were generated),
+  4. a broken image — an ``<img>`` whose local ``src`` points at a file that
+     does not exist on disk (the browser renders a broken-image icon).
 
 This is a *static* complement to ``assets_gate.py`` (which executes the page for
 JS-runtime defects). Where the runtime gate fails OPEN so a Playwright hiccup
@@ -53,8 +55,10 @@ def check_assets(kit_dir, pages=None) -> dict:
             if clean.lower().startswith(_REMOTE_PREFIXES) or not clean:
                 continue
             target = (hf.parent / clean)
-            if (target.is_file()
-                    and target.suffix.lower() in _TEXT_IMG_SUFFIXES):
+            if not target.is_file():
+                violations.append(f"{name}: {src} is a missing image file")
+                continue
+            if target.suffix.lower() in _TEXT_IMG_SUFFIXES:
                 body = target.read_text(encoding="utf-8", errors="ignore")
                 if _PLACEHOLDER_RE.search(body):
                     violations.append(f"{name}: {src} is a PLACEHOLDER image")
