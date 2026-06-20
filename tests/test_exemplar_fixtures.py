@@ -10,7 +10,7 @@ the contract:
 Only the deterministic gates are asserted (asset hygiene + rendered density /
 hero / tells metrics); the LLM craft/codex review is out of scope for CI.
 """
-import sys, pathlib, pytest
+import sys, re, json, pathlib, pytest
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
 import asset_hygiene as ah
 import render_metrics as rm
@@ -32,6 +32,65 @@ FIXTURES = [
     ("editorial-mid-century-kinetic", "kinetic-experimental"),
     ("sun-baked-kinetic", "kinetic-experimental"),
 ]
+
+
+# image basenames referenced anywhere a kit can pull an asset from
+_IMG_REF_RE = re.compile(r"[\w\-./]+\.(?:png|jpg|jpeg|webp|avif|svg)", re.I)
+_SRC_SUFFIXES = (".html", ".css", ".js")
+
+
+def _referenced_image_stems(kit: pathlib.Path) -> set[str]:
+    """Every image basename (sans extension) referenced by the kit's
+    html/css/js — i.e. every asset the kit actually renders."""
+    stems: set[str] = set()
+    for f in kit.rglob("*"):
+        if not f.is_file() or f.suffix.lower() not in _SRC_SUFFIXES:
+            continue
+        txt = f.read_text(encoding="utf-8", errors="ignore")
+        for m in _IMG_REF_RE.findall(txt):
+            stems.add(pathlib.PurePosixPath(m).stem)
+    return stems
+
+
+def _documented_image_stems(kit: pathlib.Path) -> set[str]:
+    """Top-level keys of image-prompts.json — the documented provenance set."""
+    return set(json.loads((kit / "image-prompts.json").read_text(encoding="utf-8")))
+
+
+@pytest.mark.parametrize("name,kit_type", FIXTURES)
+def test_exemplar_image_prompts_match_shipped_images(name, kit_type):
+    """image-prompts.json must honestly document EXACTLY the images the kit
+    renders: no stale entry for an image the redesign dropped, and no shipped
+    image left with zero provenance record. Locks the hand-audited provenance
+    of every exemplar so a future edit can't silently desync the two."""
+    kit = EXEMPLARS / name
+    if not kit.is_dir() or not (kit / "image-prompts.json").is_file():
+        pytest.skip(f"exemplar {name} has no image-prompts.json")
+    documented = _documented_image_stems(kit)
+    referenced = _referenced_image_stems(kit)
+    assert documented == referenced, {
+        "documented_but_unreferenced": sorted(documented - referenced),
+        "referenced_but_undocumented": sorted(referenced - documented),
+    }
+
+
+def test_provenance_check_detects_desync(tmp_path):
+    """Self-test: the documented==referenced invariant must actually flag a
+    stale extra and a missing entry (guards against a no-op checker)."""
+    kit = tmp_path / "kit"
+    kit.mkdir()
+    (kit / "index.html").write_text(
+        '<img src="assets/real-hero.png"><img src="assets/real-tile.png">',
+        encoding="utf-8",
+    )
+    (kit / "image-prompts.json").write_text(
+        json.dumps({"real-hero": {}, "stale-dropped": {}}), encoding="utf-8"
+    )
+    documented = _documented_image_stems(kit)
+    referenced = _referenced_image_stems(kit)
+    assert documented != referenced
+    assert sorted(documented - referenced) == ["stale-dropped"]
+    assert sorted(referenced - documented) == ["real-tile"]
 
 
 @pytest.mark.parametrize("name,kit_type", FIXTURES)
