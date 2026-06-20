@@ -241,6 +241,29 @@ def test_placeholder_svg_via_css_url_fails(tmp_path):
                for v in r["violations"]), r
 
 
+def test_placeholder_svg_via_css_mask_and_clip_path_fails(tmp_path):
+    # a PLACEHOLDER svg referenced via mask-image / clip-path url() in an external
+    # stylesheet (NOT just background-image) must also fail the kit — the url()
+    # disk/placeholder check is property-agnostic, so every CSS url() image
+    # channel is covered, not only background-image. Locks that coverage.
+    css = tmp_path / "assets" / "css"
+    css.mkdir(parents=True)
+    (tmp_path / "assets" / "images").mkdir(parents=True)
+    _placeholder_svg(tmp_path / "assets" / "images" / "mask.svg")
+    (css / "style.css").write_text(
+        ".hero{-webkit-mask-image:url('../images/mask.svg');"
+        "mask-image:url('../images/mask.svg');"
+        "clip-path:url('../images/mask.svg');}", encoding="utf-8")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><head>'
+        '<link rel="stylesheet" href="assets/css/style.css"></head>'
+        '<body><div class="hero"></div></body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("mask.svg" in v and "PLACEHOLDER" in v.upper()
+               for v in r["violations"]), r
+
+
 def test_present_nonplaceholder_svg_via_channels_passes(tmp_path):
     # a real (non-PLACEHOLDER) svg referenced via srcset/source/css passes
     css = tmp_path / "assets" / "css"
