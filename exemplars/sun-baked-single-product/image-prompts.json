@@ -1,30 +1,23 @@
 {
-  "sun-baked-sky-04": {
-    "html_path": "kit/index.html#hero .plate__sky",
-    "alt_text": "Sun-baked terracotta courtyard wall, low desert sky above, raking light from the right.",
-    "generation_prompt": "Editorial product-glamour wide plate of a sun-baked terracotta courtyard wall in low desert sky country, horizon line at 62% of frame, late-morning warm light raking from upper right, ochre and dust-blue palette (#E7DCC4, #DDD0B4, #9C8E73 with a thin band of cooler blue at the top), restrained painterly grading, anamorphic 16:9 framing, deep optical depth, no people, hard ground-shadow zone empty bottom-centre awaiting product, sharp medium-format clarity, awwwards-grade editorial photography, no text or logos.",
-    "aspect_ratio": "16:9",
-    "placement": "Pinned hero background plate; fills the 100vh sticky frame behind the product."
-  },
   "vessel-centre-04": {
-    "html_path": "kit/index.html#hero .plate__product",
-    "alt_text": "A single sun-cured ceramic vessel standing dead-centre on warm flagstone.",
+    "html_path": "index.html#hero figure.plate__frame img.plate__hero-img (fetchpriority high)",
+    "alt_text": "A single sun-cured terracotta vessel standing on warm flagstone against a sunlit courtyard wall, its long shadow cast across the stone.",
     "generation_prompt": "Single sun-cured red-earthenware vessel, hand-thrown, unglazed exterior with burnished interior, approximately 264 mm tall and 180 mm at the shoulder, photographed dead-centre on warm honey flagstone in a terracotta courtyard, hard-edged morning sun raking from upper right so a sharp graphic shadow falls toward lower-left, medium-format clarity, restrained ochre palette (#E7DCC4, #B8462C earthy slip, #1A1814 deep shadow), product-glamour editorial register, isolated subject with negative space around it, no people, no styling props, no text or logos.",
     "aspect_ratio": "3:4",
-    "placement": "Product stage inside the pinned hero; centred lower third, with the live CSS shadow extending from its base."
+    "placement": "Hero foreground product image; the centred vessel anchors the first viewport with its live cast shadow."
   },
   "noon-vessel-rim": {
-    "html_path": "kit/index.html#chapter-noon .plate__detail img",
+    "html_path": "index.html#chapter-noon .plate__detail img",
     "alt_text": "Close detail of the vessel rim; light raking across a single firing scar.",
     "generation_prompt": "Tight editorial macro of the same sun-cured ceramic vessel's rim and upper shoulder, late-morning sun raking from camera-left at low angle so a single firing scar reads as a hairline shadow across the burnished interior lip, palette of warm dust ochre (#DDD0B4), terracotta (#B8462C in micro flecks), deep umber (#1A1814 in the cast shade), shallow depth of field, medium-format clarity, premium ceramic-studio photography, no text or logos.",
     "aspect_ratio": "4:3",
-    "placement": "Chapter II detail plate, right-aligned beneath the editorial paragraph."
+    "placement": "Noon chapter detail plate, set beneath the editorial paragraph."
   },
-  "floated-vessel-04": {
-    "html_path": "kit/index.html#floated .floated__product",
-    "alt_text": "The vessel floated alone on warm paper; its cast shadow has become part of the page.",
-    "generation_prompt": "The same sun-cured ceramic vessel floated alone against a warm paper-toned ground that exactly matches the page background (#E7DCC4), hard-edged single-source light from upper right, the product itself cleanly rendered with no surrounding scene, the cast shadow exiting the frame toward lower-left so the page CSS can continue it across the layout, medium-format clarity, product-glamour register with radical restraint, no horizon, no props, no text or logos.",
-    "aspect_ratio": "3:4",
-    "placement": "Chapter IV — vessel re-floated on the page; CSS shadow continues from its base across the layout."
+  "wordmark-context": {
+    "html_path": "index.html#chapter-afternoon figure.plate__media img",
+    "alt_text": "The four o'clock sun burning low over the courtyard wall.",
+    "generation_prompt": "Minimal atmospheric editorial plate: a soft white-gold afternoon sun, a diffuse glowing disc just past centre, burning low over a flat sun-baked courtyard wall, the ground a warm grainy ochre-to-bone wash with no horizon line and no objects, gentle radial bloom around the sun, restrained painterly grading in the locked palette (#E7DCC4 bone, #DDD0B4 dust, warm gold core), medium-format clarity, calm full-bleed negative space behind editorial copy, no people, no props, no text or logos.",
+    "aspect_ratio": "3:2",
+    "placement": "Afternoon 'An object that earns its shadow' plate; full-bleed media figure under the split prose columns."
   }
 }
