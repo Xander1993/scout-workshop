@@ -97,13 +97,6 @@
     "aspect_ratio": "4:3",
     "placement": "process grid — wide tile (03)"
   },
-  "proc-file": {
-    "html_path": "work.html",
-    "alt_text": "Draw-filing the stem seam, fine brass swarf curling away from the blade.",
-    "generation_prompt": "Hands draw-filing the seam of a brass stem held in a vice, fine brass swarf curling away from the file, warm raking work light, intimate vertical craft study, shallow depth of field, warm-earth palette, no text or logos.",
-    "aspect_ratio": "3:4",
-    "placement": "process grid — tall tile (04)"
-  },
   "proc-lacquer": {
     "html_path": "work.html",
     "alt_text": "A thin lacquer drawn evenly across the polished brass surface.",
