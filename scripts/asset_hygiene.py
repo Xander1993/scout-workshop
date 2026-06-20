@@ -2,8 +2,10 @@
 if it ships any of the three placeholder defects that the generator kept leaking
 into delivered kits:
 
-  1. an unsubstituted template token (``{{BRAND}}`` etc.) left in the markup,
-  2. a ``picsum.photos`` URL standing in for a real image,
+  1. an unsubstituted template token (``{{BRAND}}`` etc.) left in the markup
+     or in an external stylesheet,
+  2. a ``picsum.photos`` URL standing in for a real image, in the markup or an
+     external stylesheet,
   3. a PLACEHOLDER-text image — an inline ``<svg>`` or a referenced local image
      file whose visible content is the literal word "PLACEHOLDER" (the SVG/text
      fake-screenshots the kit used before real images were generated). The
@@ -147,6 +149,10 @@ def check_assets(kit_dir, pages=None) -> dict:
     for cf in sorted(kit_dir.rglob("*.css")):
         rel = cf.relative_to(kit_dir).as_posix()
         css = cf.read_text(encoding="utf-8", errors="ignore")
+        for tok in sorted(set(_TOKEN_RE.findall(css))):
+            violations.append(f"{rel}: unsubstituted template token {tok}")
+        if _PICSUM_RE.search(css):
+            violations.append(f"{rel}: picsum.photos placeholder image URL")
         for url in _CSS_URL_RE.findall(css):
             miss = _missing_local_image(url, cf.parent)
             if miss:

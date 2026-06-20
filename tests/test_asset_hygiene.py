@@ -262,6 +262,55 @@ def test_present_nonplaceholder_svg_via_channels_passes(tmp_path):
     assert r["ok"], r
 
 
+def test_picsum_url_in_external_css_fails(tmp_path):
+    # a picsum.photos background-image in an EXTERNAL stylesheet is a placeholder
+    # image URL — the same defect the HTML scan catches, must also fail in *.css
+    css = tmp_path / "assets" / "css"
+    css.mkdir(parents=True)
+    (css / "style.css").write_text(
+        ".hero{background-image:url('https://picsum.photos/seed/x/1800/1100');}",
+        encoding="utf-8")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><head>'
+        '<link rel="stylesheet" href="assets/css/style.css"></head>'
+        '<body><div class="hero"></div></body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("picsum" in v.lower() and "style.css" in v
+               for v in r["violations"]), r
+
+
+def test_unsubstituted_token_in_external_css_fails(tmp_path):
+    # an unsubstituted template token left in an EXTERNAL stylesheet (e.g. a
+    # content:"{{BRAND}}" or a token in a url()) must fail like the HTML scan
+    css = tmp_path / "assets" / "css"
+    css.mkdir(parents=True)
+    (css / "style.css").write_text(
+        '.brand::after{content:"{{BRAND}}";}', encoding="utf-8")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><head>'
+        '<link rel="stylesheet" href="assets/css/style.css"></head>'
+        '<body><span class="brand"></span></body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert not r["ok"], r
+    assert any("{{BRAND}}" in v and "style.css" in v
+               for v in r["violations"]), r
+
+
+def test_clean_external_css_passes(tmp_path):
+    # a normal external stylesheet with no picsum/token strings passes cleanly
+    css = tmp_path / "assets" / "css"
+    css.mkdir(parents=True)
+    (css / "style.css").write_text(
+        ".hero{color:#111;background:#faf6ef;}", encoding="utf-8")
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><head>'
+        '<link rel="stylesheet" href="assets/css/style.css"></head>'
+        '<body><div class="hero"></div></body></html>', encoding="utf-8")
+    r = ah.check_assets(tmp_path)
+    assert r["ok"], r
+
+
 def test_data_uri_and_remote_real_images_pass(tmp_path):
     # data: URIs and a normal remote https image (not picsum) are not placeholders
     (tmp_path / "index.html").write_text(
