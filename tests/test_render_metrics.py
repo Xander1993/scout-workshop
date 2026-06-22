@@ -4,6 +4,11 @@ import render_metrics as rm
 
 RUNS = pathlib.Path("/opt/scout-workshop/workshop/runs")
 
+# RFC 5737 TEST-NET-1: a guaranteed-unroutable address. Connects to it stall exactly
+# like picsum.photos does from this host (no route -> the TCP connect never completes),
+# faithfully reproducing the "load" event that never fires.
+UNROUTABLE_ASSET = "http://192.0.2.1/never-responds.png"
+
 
 def _kit(glob):
     hits = sorted(RUNS.glob(glob))
@@ -103,6 +108,21 @@ def test_render_metrics_all_takes_worst_case(tmp_path):
     assert m["void_ratio"] > 0.60, m          # worst (about.html) wins
     assert m["ink_coverage"] < 0.05, m        # worst (about.html) wins
     assert m["hero_scale_ratio"] >= 4, m      # base stays anchored to index @ desktop
+
+
+def test_render_metrics_survives_hanging_external_resource(tmp_path):
+    # An unreachable external asset (picsum.photos has no route from this VPS) must
+    # never abort the gate: wait_until="load" hangs on it, but the page's DOM is fully
+    # rendered, so render_metrics must tolerate the load-timeout and still measure.
+    (tmp_path / "index.html").write_text(
+        '<!doctype html><html><body style="margin:0;background:#fff">'
+        f'<img src="{UNROUTABLE_ASSET}" alt="">'
+        '<h1 style="font-size:120px;margin:0;line-height:1">Real Headline</h1>'
+        '<p>Body copy proving the DOM was measured despite the hung asset.</p>'
+        '</body></html>', encoding="utf-8")
+    m = rm.render_metrics(tmp_path, nav_timeout_ms=3000)
+    assert m["template_tells"] == [], m
+    assert m["hero_scale_ratio"] >= 3, m
 
 
 def test_planted_generic_tells_fire(tmp_path):

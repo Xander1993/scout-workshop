@@ -93,7 +93,8 @@ def _ink_coverage(png_bytes: bytes) -> float:
 
 
 def render_metrics(kit_dir, page_file: str = "index.html", port: int = 8201,
-                   viewport: tuple[int, int] = (1440, 900)) -> dict:
+                   viewport: tuple[int, int] = (1440, 900),
+                   nav_timeout_ms: int = 20000) -> dict:
     kit_dir = Path(kit_dir)
     server = subprocess.Popen(
         [sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1"],
@@ -108,14 +109,28 @@ def render_metrics(kit_dir, page_file: str = "index.html", port: int = 8201,
             except Exception:
                 time.sleep(0.1)
         from playwright.sync_api import sync_playwright
+        from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
         with sync_playwright() as pw:
             b = pw.chromium.launch(headless=True)
             try:
                 pg = b.new_context(
                     viewport={"width": viewport[0], "height": viewport[1]}).new_page()
-                pg.goto(root + page_file, wait_until="load", timeout=20000)
+                # A decorative external asset that is unreachable (e.g. picsum.photos
+                # with no route from the host) hangs the "load" event forever; the DOM
+                # is fully rendered regardless, so tolerate the timeout and measure the
+                # page rather than aborting the whole gate.
+                try:
+                    pg.goto(root + page_file, wait_until="load", timeout=nav_timeout_ms)
+                except PlaywrightTimeoutError:
+                    pass
                 pg.wait_for_timeout(1500)
                 raw = pg.evaluate(_EVAL)
+                # Cancel any still-pending fetch (an unreachable external asset that
+                # never completes) before screenshotting; otherwise screenshot's
+                # implicit font/stability wait hangs on it. Everything the page needs
+                # has already loaded by the post-"load" settle, so this is a no-op for
+                # healthy pages and only frees a blackholed request.
+                pg.evaluate("() => window.stop()")
                 shot = pg.screenshot(full_page=True)
             finally:
                 b.close()
