@@ -7,6 +7,7 @@ ADVISORY telemetry (it saturates ~1.0 in this design language). The real
 deterministic signals are template_tells (rendered DOM) + vertical_void.
 """
 from __future__ import annotations
+import socket
 import subprocess
 import sys
 import time
@@ -92,22 +93,49 @@ def _ink_coverage(png_bytes: bytes) -> float:
     return round(float((dist > 40).mean()), 4)
 
 
-def render_metrics(kit_dir, page_file: str = "index.html", port: int = 8201,
+def _free_port() -> int:
+    """OS-assigned free localhost port. Using a fresh ephemeral port per render
+    avoids a fixed-port collision when render_metrics_all runs are chained (a
+    just-terminated server lingering in TIME_WAIT would refuse the next bind)."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.bind(("127.0.0.1", 0))
+        return s.getsockname()[1]
+    finally:
+        s.close()
+
+
+def render_metrics(kit_dir, page_file: str = "index.html", port: int | None = None,
                    viewport: tuple[int, int] = (1440, 900),
                    nav_timeout_ms: int = 20000) -> dict:
     kit_dir = Path(kit_dir)
+    if port is None:
+        port = _free_port()
     server = subprocess.Popen(
         [sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1"],
         cwd=str(kit_dir), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     try:
         root = f"http://127.0.0.1:{port}/"
-        for _ in range(50):
+        # Wait (wall-clock bounded) for the server to actually serve the page. A
+        # heavily loaded host can take several seconds to spawn the subprocess, so
+        # never navigate into a not-yet-ready server (that surfaces as a confusing
+        # ERR_CONNECTION_REFUSED); raise a clear error if it truly never comes up.
+        deadline = time.monotonic() + 20.0
+        ready = False
+        while time.monotonic() < deadline:
+            if server.poll() is not None:  # server died (e.g. port bind failed)
+                raise RuntimeError(
+                    f"http.server for {kit_dir} exited early (rc={server.returncode}) on port {port}")
             try:
                 with urllib.request.urlopen(root + page_file, timeout=0.5) as r:
                     if r.status == 200:
+                        ready = True
                         break
             except Exception:
                 time.sleep(0.1)
+        if not ready:
+            raise RuntimeError(
+                f"http.server for {kit_dir} not ready within 20s on port {port}")
         from playwright.sync_api import sync_playwright
         from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
         with sync_playwright() as pw:
@@ -162,7 +190,7 @@ def render_metrics(kit_dir, page_file: str = "index.html", port: int = 8201,
     }
 
 
-def render_metrics_all(kit_dir, port: int = 8201) -> dict:
+def render_metrics_all(kit_dir, port: int | None = None) -> dict:
     """Gate-facing metrics over EVERY page at EVERY viewport, reduced to the worst case.
 
     Genericness/hero-floor/tells stay anchored to index.html @ desktop (their original,
@@ -176,11 +204,9 @@ def render_metrics_all(kit_dir, port: int = 8201) -> dict:
     base = None
     worst = {"max_vertical_void_px": 0, "void_ratio": 0.0,
              "ink_coverage": 1.0, "hero_vh_ratio": 0.0}
-    pnum = port
     for page in pages:
         for vp in VIEWPORTS:
-            m = render_metrics(kit_dir, page_file=page, port=pnum, viewport=vp)
-            pnum += 1
+            m = render_metrics(kit_dir, page_file=page, port=port, viewport=vp)
             if base is None and page == base_page and vp == (1440, 900):
                 base = dict(m)
             worst["max_vertical_void_px"] = max(worst["max_vertical_void_px"], m["max_vertical_void_px"])
@@ -188,7 +214,7 @@ def render_metrics_all(kit_dir, port: int = 8201) -> dict:
             worst["ink_coverage"] = min(worst["ink_coverage"], m["ink_coverage"])
             worst["hero_vh_ratio"] = max(worst["hero_vh_ratio"], m["hero_vh_ratio"])
     if base is None:  # base_page never hit desktop (only non-index pages) → use first run
-        base = render_metrics(kit_dir, page_file=base_page, port=pnum)
+        base = render_metrics(kit_dir, page_file=base_page, port=port)
     base.update(worst)
     base["pages_measured"] = pages
     return base
