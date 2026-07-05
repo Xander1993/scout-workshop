@@ -15,8 +15,10 @@ import datetime
 import json
 import os
 import pathlib
+import re
 import subprocess
 import sys
+import time
 import urllib.request
 
 PLAYBOOK_PATH = "/opt/scout-workshop/skills/scout-playbook.md"
@@ -47,6 +49,20 @@ LAST_RUN_STATE = pathlib.Path(
 # One day's sensible spend (stealth scrapes cost ~5 credits each); below
 # this the playbook can't do useful work, so don't burn an Opus session.
 FIRECRAWL_MIN_CREDITS = 35
+
+# ── claude_rate_limited auto-retry (2026-07-05) ───────────────────────
+# When the claude session dies on the shared Claude Code 5-hour rolling
+# usage window (HTTP 429 "You've hit your session limit · resets Xam"), the
+# corpus used to freeze until the NEXT daily 06:00 cron — a whole day lost to
+# a limit that lifts in a few hours. The 429 payload carries the exact reset
+# epoch ("resetsAt":<unix>), so instead scout schedules ONE same-day retry a
+# few minutes after that reset (a fresh window ≈ full budget). Hard-capped to
+# a single retry/day by a date-stamped marker written BEFORE scheduling, so a
+# retry that also 429s (or a marker-write failure) can never start a loop.
+RETRY_UNIT = "scout-429-retry"
+RETRY_BUFFER_SEC = 180          # fire this long AFTER the reset (fresh window)
+RETRY_MAX_DELAY_SEC = 6 * 3600  # only auto-retry if the reset is within 6h
+RETRY_MARKER_DIR = LAST_RUN_STATE.parent
 
 
 def _load_env_file() -> None:
@@ -155,6 +171,86 @@ def write_skip_state(remaining: int, ts: str) -> None:
     _persist_last_run(ts, "budget_exhausted", note)
 
 
+def _now_epoch() -> int:
+    """Seconds since epoch (UTC). Wrapped so tests can freeze the clock."""
+    return int(time.time())
+
+
+def _run_schedule_cmd(cmd):
+    """Run the retry-scheduling command. Isolated so tests can capture the
+    argv without invoking sudo/systemd-run for real."""
+    return subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+
+
+def parse_reset_epoch(log_path: pathlib.Path):
+    """Pull the rolling-window reset time out of a 429 session-limit payload.
+    Claude Code emits `"resetsAt":<unix-seconds>` in the error body. Returns the
+    (last) epoch int found, or None if absent/unparseable (fail-safe)."""
+    try:
+        tail = log_path.read_text(encoding="utf-8", errors="replace")[-8000:]
+    except Exception:  # noqa: BLE001
+        return None
+    matches = re.findall(r'"resetsAt"\s*:\s*(\d{10,})', tail)
+    if not matches:
+        return None
+    try:
+        return int(matches[-1])
+    except ValueError:
+        return None
+
+
+def _retry_marker(ts: str) -> pathlib.Path:
+    """One marker per UTC day (ts is '%Y%m%dT%H%M%SZ') → ≤1 auto-retry/day."""
+    return RETRY_MARKER_DIR / f"scout-retry-{ts[:8]}.marker"
+
+
+def maybe_schedule_retry(log_path: pathlib.Path, ts: str) -> str:
+    """Best-effort: on a 429 session-limit, schedule ONE same-day auto-retry a
+    few minutes after the window reset parsed from the payload. Returns a short
+    human clause (leading space) for the state note + owner alert. NEVER raises
+    and NEVER changes the exit code — a retry we couldn't schedule just falls
+    back to the next daily cron. Loop-proof: the day marker is written BEFORE
+    the schedule call, so a retry that also fails (or a marker-write failure)
+    can't spawn another retry today."""
+    try:
+        reset_epoch = parse_reset_epoch(log_path)
+        if reset_epoch is None:
+            return " No reset time in the payload; will retry at the next daily cron."
+        reset_hhmm = datetime.datetime.fromtimestamp(
+            reset_epoch, datetime.timezone.utc).strftime("%H:%MZ")
+        delay = reset_epoch + RETRY_BUFFER_SEC - _now_epoch()
+        if delay <= 0 or delay > RETRY_MAX_DELAY_SEC:
+            return (f" Window resets {reset_hhmm} (outside the auto-retry range); "
+                    f"will retry at the next daily cron.")
+        marker = _retry_marker(ts)
+        if marker.exists():
+            return (f" Window resets {reset_hhmm}; an auto-retry was already "
+                    f"scheduled today — waiting for the next daily cron.")
+        # Guard FIRST so a marker-write failure skips scheduling (no loop risk).
+        try:
+            marker.parent.mkdir(parents=True, exist_ok=True)
+            marker.write_text(
+                f"auto-retry scheduled after run {ts} for window reset {reset_hhmm}\n",
+                encoding="utf-8")
+        except Exception as exc:  # noqa: BLE001
+            return (f" Window resets {reset_hhmm}; could not set the retry guard "
+                    f"({exc}); skipping auto-retry to avoid a loop.")
+        cmd = ["sudo", "-n", "systemd-run", f"--on-active={delay}",
+               f"--unit={RETRY_UNIT}", "--collect",
+               "systemctl", "start", "scout.service"]
+        proc = _run_schedule_cmd(cmd)
+        if proc.returncode != 0:
+            err = (proc.stderr or proc.stdout or "").strip()[:140]
+            return (f" Window resets {reset_hhmm}; auto-retry schedule FAILED "
+                    f"(rc={proc.returncode}: {err}); will retry at the next daily cron.")
+        fire_hhmm = datetime.datetime.fromtimestamp(
+            _now_epoch() + delay, datetime.timezone.utc).strftime("%H:%MZ")
+        return (f" Auto-retry scheduled ~{fire_hhmm} UTC "
+                f"(window resets {reset_hhmm}); no owner action needed.")
+    except Exception as exc:  # noqa: BLE001 — retry is strictly best-effort
+        return f" Auto-retry scheduling error ({exc}); the next daily cron will retry."
+
+
 def classify_claude_failure(log_path: pathlib.Path):
     """Inspect the tail of a failed scout run log and classify WHY the claude
     session failed. Returns (status_slug, owner_reason). Fail-safe: any read
@@ -191,13 +287,20 @@ def handle_claude_failure(returncode: int, log_path: pathlib.Path, ts: str) -> s
     outage exited 1 silently — no alert, no state — and the corpus quietly
     stopped growing until someone read the logs by hand."""
     status, reason = classify_claude_failure(log_path)
+    # A 429 on the shared 5-hour usage window lifts in hours, not a day — try to
+    # self-heal with one same-day retry after the reset instead of freezing the
+    # corpus until the next cron. Best-effort; the clause is folded into the note
+    # + alert so both record what actually happened.
+    retry_clause = maybe_schedule_retry(log_path, ts) if status == "claude_rate_limited" else ""
     note = (f"claude session FAILED (exit {returncode}) at {ts} — {status}: "
-            f"{reason} log={log_path.name}")
+            f"{reason}{retry_clause} log={log_path.name}")
     _persist_last_run(ts, status, note)
     urgent = "‼️ ACTION NEEDED — " if status == "claude_org_disabled" else ""
+    retry_line = f"{retry_clause.strip()}\n" if retry_clause.strip() else ""
     notify_telegram(
         f"❌ Scout {ts}: claude session FAILED (exit {returncode}).\n"
         f"{urgent}{reason}\n"
+        f"{retry_line}"
         f"Nothing scraped this run; scout-last-run.json marked '{status}'. "
         f"Log: {log_path}")
     return status
